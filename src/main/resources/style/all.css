@@ -1,0 +1,64 @@
+.sideView-background {
+    -fx-background-color: #BDD7EE; /* Light blue background */
+}
+
+.left-box {
+    -fx-background-color: #F8FCEC;
+    -fx-min-width: 300px;
+    -fx-max-width: 300px;
+    -fx-font-family: "Arial"; /* Font family for items within the boxes */
+    -fx-font-size: 14px; /* Font size for items within the boxes */
+}
+
+.right-box {
+    -fx-background-color: #F8FCEC;
+    -fx-min-width: 300px;
+    -fx-max-width: 300px;
+    -fx-font-family: "Arial"; /* Font family for items within the boxes */
+    -fx-font-size: 14px; /* Font size for items within the boxes */
+}
+
+/* You might also want to ensure any text or labels within those boxes are styled */
+.label {
+    -fx-text-fill: black; /* Color of the text */
+    -fx-font-family: "Arial"; /* Font family */
+    -fx-font-size: 14px; /* Font size */
+}
+
+
+
+
+/* Style for the HBox */
+.menu-hbox {
+    -fx-background-color: #4472C4;
+    -fx-padding: 5px; /* Adjust padding to control the height */
+    -fx-alignment: center-left;
+}
+
+/* Style for the MenuBar and Menus */
+.menu-bar, .menu {
+    -fx-background-color: transparent;
+}
+
+/* Style for the Menu Items */
+.menu-item {
+    -fx-background-color: transparent;
+}
+
+/* Style for the Menu Items when hovered */
+.menu-item:hover {
+    -fx-font-weight: bold;
+}
+
+/* Style for the Log out button */
+.logout-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white; /* Text color for the button */
+    -fx-font-weight: bold;
+    -fx-alignment: center-right;
+}
+
+/* Push the logout button to the right */
+.logout-button {
+    -fx-max-width: infinity; /* Make button grow to push it to the right */
+}
