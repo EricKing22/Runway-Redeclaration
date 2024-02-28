@@ -6,7 +6,7 @@
     -fx-background-color: #F8FCEC;
     -fx-min-width: 300px;
     -fx-max-width: 300px;
-    -fx-font-family: "Arial"; /* Font family for items within the boxes */
+    -fx-font-family: "calibri"; /* Font family for items within the boxes */
     -fx-font-size: 14px; /* Font size for items within the boxes */
 }
 
@@ -14,17 +14,9 @@
     -fx-background-color: #F8FCEC;
     -fx-min-width: 300px;
     -fx-max-width: 300px;
-    -fx-font-family: "Arial"; /* Font family for items within the boxes */
+    -fx-font-family: "calibri"; /* Font family for items within the boxes */
     -fx-font-size: 14px; /* Font size for items within the boxes */
 }
-
-/* You might also want to ensure any text or labels within those boxes are styled */
-.label {
-    -fx-text-fill: black; /* Color of the text */
-    -fx-font-family: "Arial"; /* Font family */
-    -fx-font-size: 14px; /* Font size */
-}
-
 
 
 
@@ -33,16 +25,29 @@
     -fx-background-color: #4472C4;
     -fx-padding: 5px; /* Adjust padding to control the height */
     -fx-alignment: center-left;
+
 }
 
 /* Style for the MenuBar and Menus */
-.menu-bar, .menu {
-    -fx-background-color: transparent;
+.menu-bar, .menu, .label{
+    -fx-background-color: #4472C4;
+    -fx-font-family: "Calibri";
+    -fx-text-fill: white; /* Color of the text */
+    -fx-font-size: 16px; /* Font size */
 }
+
+.menu .context-menu {
+    -fx-background-color: #4472C4; /* This changes the dropdown part's background color */
+}
+
+.menu > .label:hover {
+    -fx-font-weight: bold;
+}
+
 
 /* Style for the Menu Items */
 .menu-item {
-    -fx-background-color: transparent;
+    -fx-background-color: #4472C4;
 }
 
 /* Style for the Menu Items when hovered */
@@ -54,11 +59,14 @@
 .logout-button {
     -fx-background-color: transparent;
     -fx-text-fill: white; /* Text color for the button */
-    -fx-font-weight: bold;
     -fx-alignment: center-right;
+    -fx-max-width: infinity; /* Make button grow to push it to the right */
 }
 
-/* Push the logout button to the right */
-.logout-button {
-    -fx-max-width: infinity; /* Make button grow to push it to the right */
+.logout-button:hover {
+    -fx-font-weight: bold;
+}
+
+.empty {
+    -fx-background-color: transparent;
 }

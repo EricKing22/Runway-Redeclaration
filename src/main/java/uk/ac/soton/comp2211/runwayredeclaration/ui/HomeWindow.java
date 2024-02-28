@@ -53,9 +53,10 @@ public class HomeWindow {
         logger.info("Loading resources");
 
         //We need to load fonts here due to the Font loader bug with spaces in URLs in the CSS files
-        Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-Regular.ttf"),32);
-        Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-Bold.ttf"),32);
-        Font.loadFont(getClass().getResourceAsStream("/style/Orbitron-ExtraBold.ttf"),32);
+        Font.loadFont(getClass().getResourceAsStream("/style/calibri-regular.ttf"),32);
+        Font.loadFont(getClass().getResourceAsStream("/style/calibri-bold.ttf"),32);
+        Font.loadFont(getClass().getResourceAsStream("/style/calibri-italic.ttf"),32);
+
     }
 
 

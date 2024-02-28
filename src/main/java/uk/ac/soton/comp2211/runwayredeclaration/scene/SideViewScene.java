@@ -76,24 +76,26 @@ public class SideViewScene extends BaseScene{
         // File Menu
         Menu fileMenu = new Menu("File");
         fileMenu.getItems().addAll(new MenuItem("Import XML"), new MenuItem("Export XML"), new MenuItem("Export Report"));
-
         // View Menu
         Menu viewMenu = new Menu("View");
         viewMenu.getItems().addAll(new MenuItem("Side On"), new MenuItem("Top Down"), new MenuItem("Simultaneous"));
-
         // Help Menu
         Menu helpMenu = new Menu("Help");
         helpMenu.getItems().addAll(new MenuItem("About"), new MenuItem("Contact"));
 
+        // Add Menus to the MenuBar
         menuBar.getMenus().addAll(fileMenu, viewMenu, helpMenu);
 
         // Create Log out button
         Button logoutButton = new Button("Log out");
         logoutButton.getStyleClass().add("logout-button");
 
+        HBox empty = new HBox();
+        empty.getStyleClass().add("empty");
+
         // Add MenuBar and Logout button to the HBox
-        menuHBox.getChildren().addAll(menuBar, logoutButton);
-        HBox.setHgrow(logoutButton, Priority.ALWAYS); // This will push the logout button to the right
+        menuHBox.getChildren().addAll(menuBar, empty, logoutButton);
+        HBox.setHgrow(empty, Priority.ALWAYS); // This will push the logout button to the right
 
         // Set the style class for the HBox
         menuHBox.getStyleClass().add("menu-hbox");
