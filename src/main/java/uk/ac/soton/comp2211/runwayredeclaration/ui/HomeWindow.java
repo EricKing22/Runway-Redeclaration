@@ -43,7 +43,7 @@ public class HomeWindow {
     }
 
     public void startHome() {
-        loadScene(new TopViewScene(this));
+        loadScene(new SideViewScene(this));
     }
 
     /**

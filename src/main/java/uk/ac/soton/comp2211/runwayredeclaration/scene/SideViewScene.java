@@ -1,9 +1,11 @@
 package uk.ac.soton.comp2211.runwayredeclaration.scene;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomePane;
@@ -54,16 +56,13 @@ public class SideViewScene extends BaseScene{
         sideViewPane.getChildren().add(mainPane);
 
 
-                //Awful title
-        var title = new Text("Side View");
-
 
         VBox left_box = new VBox();
         left_box.getStyleClass().add("left-box");
         mainPane.setLeft(left_box);
         BorderPane.setAlignment(left_box, Pos.CENTER);
 
-        VBox right_box = new VBox();
+        right_box = new VBox();
         right_box.getStyleClass().add("right-box");
         mainPane.setRight(right_box);
         BorderPane.setAlignment(right_box, Pos.CENTER);
@@ -113,9 +112,33 @@ public class SideViewScene extends BaseScene{
 
         // Set the style class for the HBox
         menuHBox.getStyleClass().add("menu-hbox");
-
-        mainPane.setTop(menuHBox);
         BorderPane.setAlignment(menuHBox, Pos.CENTER);
+        mainPane.setTop(menuHBox);
+
+
+
+
+        StackPane displayStackPane = new StackPane();
+        mainPane.setCenter(displayStackPane);
+
+        BorderPane displayBorderPane = new BorderPane();
+        displayStackPane.getChildren().add(displayBorderPane);
+
+        Pane bluePane = new Pane();
+        bluePane.setMaxWidth(Double.MAX_VALUE);
+        bluePane.setMaxHeight(Double.MAX_VALUE);
+        bluePane.getStyleClass().add("sideView-background");
+        displayBorderPane.setTop(bluePane);
+
+        Pane groundPane = new Pane();
+        groundPane.setMaxWidth(Double.MAX_VALUE);
+        groundPane.setMaxHeight(Double.MAX_VALUE);
+        groundPane.setBackground(new Background(new BackgroundFill(Color.web("#A9D18E"), CornerRadii.EMPTY, Insets.EMPTY)));
+        displayBorderPane.setBottom(groundPane);
+
+
+
+
 
 
         this.initialise();
