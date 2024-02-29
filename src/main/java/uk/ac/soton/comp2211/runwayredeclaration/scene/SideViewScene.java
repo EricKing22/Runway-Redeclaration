@@ -25,6 +25,12 @@ public class SideViewScene extends BaseScene{
 
     private static final Logger logger = LogManager.getLogger(SideViewScene.class);
 
+
+    private VBox left_box;
+    private VBox right_box;
+
+
+
     /**
      * Create a new side view scene
      * @param homeWindow the home Window this will be displayed in
@@ -57,7 +63,20 @@ public class SideViewScene extends BaseScene{
 
 
 
-        VBox left_box = new VBox();
+
+
+
+        TableView resultsTable = new TableView();
+
+        resultsTable.setEditable(true);
+        TableColumn tableRunway = new TableColumn("Runway");
+        TableColumn tableTORA = new TableColumn("TORA");
+        TableColumn tableTODA = new TableColumn("TODA");
+        TableColumn tableLSA = new TableColumn("LSA");
+        TableColumn tableASDA = new TableColumn("ASDA");
+
+
+        left_box = new VBox(makeResultsBox());
         left_box.getStyleClass().add("left-box");
         mainPane.setLeft(left_box);
         BorderPane.setAlignment(left_box, Pos.CENTER);
@@ -142,5 +161,47 @@ public class SideViewScene extends BaseScene{
 
 
         this.initialise();
+    }
+
+
+
+
+
+    public VBox makeResultsBox(){
+        VBox calculations = new VBox();
+
+
+        Text justResults = new Text("Results");
+
+
+        Image image = new Image(getClass().getResource("/images/foldButton.png").toExternalForm());
+        ImageView foldButtonImage = new ImageView(image);
+        foldButtonImage.setFitHeight(9);
+        foldButtonImage.setFitWidth(9);
+        Button foldButton = new Button();
+        foldButton.setGraphic(foldButtonImage);
+
+        HBox emptyR = new HBox();
+        emptyR.getStyleClass().add("empty");
+        HBox.setHgrow(emptyR, Priority.ALWAYS);
+
+        HBox topResultsBar = new HBox(justResults, emptyR, foldButton);
+
+
+
+
+
+
+
+
+
+
+        VBox results = new VBox(topResultsBar);
+
+
+
+
+
+        return results;
     }
 }
