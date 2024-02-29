@@ -10,6 +10,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.runwayredeclaration.scene.BaseScene;
 import uk.ac.soton.comp2211.runwayredeclaration.scene.SideViewScene;
+import uk.ac.soton.comp2211.runwayredeclaration.scene.SimultaneousScene;
+import uk.ac.soton.comp2211.runwayredeclaration.scene.TopViewScene;
 
 public class HomeWindow {
 
@@ -41,9 +43,29 @@ public class HomeWindow {
     }
 
     public void startHome() {
+        loadScene(new TopViewScene(this));
+    }
+
+    /**
+     * Start the side view
+     */
+    public void startSideView() {
         loadScene(new SideViewScene(this));
     }
 
+    /**
+     * Start the top view
+     */
+    public void startTopView() {
+        loadScene(new TopViewScene(this));
+    }
+
+    /**
+     * Start the simultaneous view
+     */
+    public void startSimultaneousView(){
+        loadScene(new SimultaneousScene(this));
+    }
 
 
     /**

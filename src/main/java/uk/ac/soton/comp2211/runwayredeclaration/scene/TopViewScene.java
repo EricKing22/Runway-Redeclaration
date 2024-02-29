@@ -71,7 +71,14 @@ public class TopViewScene extends BaseScene{
 
         // View Menu
         Menu viewMenu = new Menu("View");
-        viewMenu.getItems().addAll(new MenuItem("Side On"), new MenuItem("Top Down"), new MenuItem("Simultaneous"));
+        // Switch to side view
+        MenuItem sideView = new MenuItem("Side View");
+        sideView.setOnAction(e -> homeWindow.startSideView());
+        // Switch to simultaneous view
+        MenuItem simultaneous = new MenuItem("Simultaneous");
+        simultaneous.setOnAction(e -> homeWindow.startSimultaneousView());
+        // Add menu items
+        viewMenu.getItems().addAll(sideView, simultaneous);
 
         // Help Menu
         Menu helpMenu = new Menu("Help");
@@ -81,10 +88,17 @@ public class TopViewScene extends BaseScene{
 
         // Create Log out button
         Button logoutButton = new Button("Log out");
+        //logoutButton.setOnAction(e -> homeWindow.startLogin());
         logoutButton.getStyleClass().add("logout-button");
 
+
+        // Empty box to push the logout button to the right
+        HBox empty = new HBox();
+        empty.getStyleClass().add("empty");
+
+
         // Add MenuBar and Logout button to the HBox
-        menuHBox.getChildren().addAll(menuBar, logoutButton);
+        menuHBox.getChildren().addAll(menuBar, empty, logoutButton);
         HBox.setHgrow(logoutButton, Priority.ALWAYS); // This will push the logout button to the right
 
         // Set the style class for the HBox

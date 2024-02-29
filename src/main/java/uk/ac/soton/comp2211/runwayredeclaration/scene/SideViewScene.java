@@ -76,9 +76,20 @@ public class SideViewScene extends BaseScene{
         // File Menu
         Menu fileMenu = new Menu("File");
         fileMenu.getItems().addAll(new MenuItem("Import XML"), new MenuItem("Export XML"), new MenuItem("Export Report"));
+
         // View Menu
         Menu viewMenu = new Menu("View");
-        viewMenu.getItems().addAll(new MenuItem("Side On"), new MenuItem("Top Down"), new MenuItem("Simultaneous"));
+        // Switch to side view
+        MenuItem topView = new MenuItem("Top View");
+        topView.setOnAction(e -> homeWindow.startTopView());
+        // Switch to simultaneous view
+        MenuItem simultaneous = new MenuItem("Simultaneous");
+        simultaneous.setOnAction(e -> homeWindow.startSimultaneousView());
+        // Add menu items
+        viewMenu.getItems().addAll(topView, simultaneous);
+
+
+
         // Help Menu
         Menu helpMenu = new Menu("Help");
         helpMenu.getItems().addAll(new MenuItem("About"), new MenuItem("Contact"));
@@ -88,8 +99,11 @@ public class SideViewScene extends BaseScene{
 
         // Create Log out button
         Button logoutButton = new Button("Log out");
+        //logoutButton.setOnAction(e -> homeWindow.startLogin());
         logoutButton.getStyleClass().add("logout-button");
 
+
+        // Empty box to push the logout button to the right
         HBox empty = new HBox();
         empty.getStyleClass().add("empty");
 
