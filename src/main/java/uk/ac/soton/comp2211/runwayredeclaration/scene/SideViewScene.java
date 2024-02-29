@@ -61,13 +61,15 @@ public class SideViewScene extends BaseScene{
         mainPane.getStyleClass().add("sideView-background");
         sideViewPane.getChildren().add(mainPane);
 
+        left_box = new VBox(makeResultsBox());
+        left_box.getStyleClass().add("left-box");
+        mainPane.setLeft(left_box);
+        BorderPane.setAlignment(left_box, Pos.CENTER);
 
 
 
-
-
+        VBox resultsBox = makeResultsBox();
         TableView resultsTable = new TableView();
-
         resultsTable.setEditable(true);
         TableColumn tableRunway = new TableColumn("Runway");
         TableColumn tableTORA = new TableColumn("TORA");
@@ -76,10 +78,7 @@ public class SideViewScene extends BaseScene{
         TableColumn tableASDA = new TableColumn("ASDA");
 
 
-        left_box = new VBox(makeResultsBox());
-        left_box.getStyleClass().add("left-box");
-        mainPane.setLeft(left_box);
-        BorderPane.setAlignment(left_box, Pos.CENTER);
+
 
         right_box = new VBox();
         right_box.getStyleClass().add("right-box");
@@ -188,20 +187,6 @@ public class SideViewScene extends BaseScene{
         HBox topResultsBar = new HBox(justResults, emptyR, foldButton);
 
 
-
-
-
-
-
-
-
-
-        VBox results = new VBox(topResultsBar);
-
-
-
-
-
-        return results;
+        return new VBox(topResultsBar);
     }
 }
