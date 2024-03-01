@@ -94,10 +94,19 @@ public class TopViewScene extends BaseScene{
 
         Image runwayImage = new Image(getClass().getResource("/images/Runway1.png").toExternalForm());
         ImageView runwayImageView = new ImageView(runwayImage);
-        runwayImageView.setPreserveRatio(true);
-        runwayImageView.setFitWidth(230);
 
-        displayStackPane.getChildren().add(runwayImageView);
+        runwayImageView.setPreserveRatio(true);
+        runwayImageView.setFitWidth(500);
+
+
+        Image gradeArea = new Image(getClass().getResource("/images/GradedArea.png").toExternalForm());
+        ImageView gradeAreaImageView = new ImageView(gradeArea);
+
+        gradeAreaImageView.setPreserveRatio(true);
+        gradeAreaImageView.setFitWidth(600);
+
+
+        displayStackPane.getChildren().addAll(gradeAreaImageView, runwayImageView);
 
 
         return displayStackPane;

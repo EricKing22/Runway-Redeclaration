@@ -80,18 +80,6 @@ public class SideViewScene extends BaseScene{
         BorderPane.setAlignment(left_box, Pos.CENTER);
 
 
-
-        VBox resultsBox = makeResultsBox();
-        TableView resultsTable = new TableView();
-        resultsTable.setEditable(true);
-        TableColumn tableRunway = new TableColumn("Runway");
-        TableColumn tableTORA = new TableColumn("TORA");
-        TableColumn tableTODA = new TableColumn("TODA");
-        TableColumn tableLSA = new TableColumn("LSA");
-        TableColumn tableASDA = new TableColumn("ASDA");
-
-
-
         // Right Box Set-up
         right_box = new VBox();
         right_box.getStyleClass().add("right-box");
@@ -152,7 +140,7 @@ public class SideViewScene extends BaseScene{
         Image runwayImage = new Image(getClass().getResource("/images/Runway2.png").toExternalForm());
         ImageView runwayImageView = new ImageView(runwayImage);
         runwayImageView.setPreserveRatio(true);
-        runwayImageView.setFitWidth(750);
+        runwayImageView.setFitWidth(500);
 
 
         StackPane runwayPane = new StackPane();

@@ -1,4 +1,4 @@
-.sideView-background, .topView-background {
+.sideView-background, .topView-background, .simultaneous-background {
     -fx-background-color: #BDD7EE; /* Light blue background */
 }
 
