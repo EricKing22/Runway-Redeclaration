@@ -8,6 +8,8 @@
     -fx-max-width: 300px;
     -fx-font-family: "Calirbi"; /* Font family for items within the boxes */
     -fx-font-size: 14px; /* Font size for items within the boxes */
+    -fx-border-color: black; /* Border color */
+    -fx-border-width: 2px;
 }
 
 .right-box {
@@ -16,6 +18,8 @@
     -fx-max-width: 300px;
     -fx-font-family: "Calirbi"; /* Font family for items within the boxes */
     -fx-font-size: 14px; /* Font size for items within the boxes */
+    -fx-border-color: black; /* Border color */
+    -fx-border-width: 2px;
 }
 
 /* You might also want to ensure any text or labels within those boxes are styled */
@@ -29,10 +33,11 @@
 
 
 /* Style for the HBox */
-.menu-hbox {
+.menu-box {
     -fx-background-color: #4472C4;
     -fx-padding: 5px; /* Adjust padding to control the height */
     -fx-alignment: center-left;
+
 }
 
 /* Style for the MenuBar and Menus */
@@ -63,11 +68,14 @@
     -fx-text-fill: white; /* Text color for the button */
     -fx-alignment: center-right;
     -fx-font-family: "Calirbi";
+    -fx-alignment: center-right;
+    -fx-font-size: 14px;
 }
 
 .logout-button:hover {
     -fx-font-weight: bold;
 }
+
 
 /* Push the logout button to the right */
 .logout-button {

@@ -1,10 +1,13 @@
 package uk.ac.soton.comp2211.runwayredeclaration.scene;
 
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
@@ -14,6 +17,13 @@ import uk.ac.soton.comp2211.runwayredeclaration.ui.HomeWindow;
 public class TopViewScene extends BaseScene{
 
     private static final Logger logger = LogManager.getLogger(TopViewScene.class);
+
+    private VBox left_box;
+    private VBox right_box;
+
+    private HBox menuBox;
+
+    private StackPane middleDisplayBox;
 
     /**
      * Create a new scene, passing in the GameWindow the scene will be displayed in
@@ -46,22 +56,58 @@ public class TopViewScene extends BaseScene{
         topViewPane.getChildren().add(mainPane);
 
 
-        //Awful title
-        var title = new Text("Top View");
 
 
-        VBox left_box = new VBox();
+        left_box = new VBox();
         left_box.getStyleClass().add("left-box");
         mainPane.setLeft(left_box);
         BorderPane.setAlignment(left_box, Pos.CENTER);
 
-        VBox right_box = new VBox();
+        right_box = new VBox();
         right_box.getStyleClass().add("right-box");
         mainPane.setRight(right_box);
         BorderPane.setAlignment(right_box, Pos.CENTER);
 
-        HBox menuHBox = new HBox();
+        menuBox = new HBox(makeMenuBox());
+        menuBox.getStyleClass().add("menu-box");
+        mainPane.setTop(menuBox);
+        BorderPane.setAlignment(menuBox, Pos.TOP_CENTER);
 
+        // Middle Display Box Set-up
+        middleDisplayBox = new StackPane(makeMiddleDisplayBox());
+        middleDisplayBox.getStyleClass().add("sideView-background");
+        BorderPane.setAlignment(middleDisplayBox, Pos.CENTER);
+        mainPane.setCenter(middleDisplayBox);
+
+
+        this.initialise();
+    }
+
+    /**
+     * Create the results box
+     * @return StackPane the middle display
+     */
+    private StackPane makeMiddleDisplayBox() {
+        StackPane displayStackPane = new StackPane();
+
+
+
+        Image runwayImage = new Image(getClass().getResource("/images/Runway1.png").toExternalForm());
+        ImageView runwayImageView = new ImageView(runwayImage);
+        runwayImageView.setPreserveRatio(true);
+        runwayImageView.setFitWidth(230);
+
+        displayStackPane.getChildren().add(runwayImageView);
+
+
+        return displayStackPane;
+    }
+
+    /**
+     * Create the menu box
+     * @return the menu box
+     */
+    private HBox makeMenuBox() {
         // Create Menus
         MenuBar menuBar = new MenuBar();
 
@@ -91,23 +137,15 @@ public class TopViewScene extends BaseScene{
         //logoutButton.setOnAction(e -> homeWindow.startLogin());
         logoutButton.getStyleClass().add("logout-button");
 
-
         // Empty box to push the logout button to the right
         HBox empty = new HBox();
         empty.getStyleClass().add("empty");
 
 
-        // Add MenuBar and Logout button to the HBox
-        menuHBox.getChildren().addAll(menuBar, empty, logoutButton);
-        HBox.setHgrow(logoutButton, Priority.ALWAYS); // This will push the logout button to the right
+        HBox.setHgrow(empty, Priority.ALWAYS); // This will push the logout button to the right
 
-        // Set the style class for the HBox
-        menuHBox.getStyleClass().add("menu-hbox");
-
-        mainPane.setTop(menuHBox);
-        BorderPane.setAlignment(menuHBox, Pos.CENTER);
-
-
-        this.initialise();
+        HBox result = new HBox(menuBar, empty, logoutButton);
+        HBox.setHgrow(result, Priority.ALWAYS);
+        return (result);
     }
 }

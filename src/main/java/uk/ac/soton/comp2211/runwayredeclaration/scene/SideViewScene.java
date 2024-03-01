@@ -1,5 +1,8 @@
 package uk.ac.soton.comp2211.runwayredeclaration.scene;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -29,6 +32,11 @@ public class SideViewScene extends BaseScene{
     private VBox left_box;
     private VBox right_box;
 
+    private HBox menuBox;
+
+    private StackPane middleDisplayBox;
+
+    private DoubleProperty stopWay = new SimpleDoubleProperty(20);
 
 
     /**
@@ -45,6 +53,9 @@ public class SideViewScene extends BaseScene{
 
     }
 
+    /**
+     * Build the layout of the scene
+     */
     @Override
     public void build() {
         logger.info("Building " + this.getClass().getName());
@@ -61,6 +72,8 @@ public class SideViewScene extends BaseScene{
         mainPane.getStyleClass().add("sideView-background");
         sideViewPane.getChildren().add(mainPane);
 
+
+        // Left Box Set-up
         left_box = new VBox(makeResultsBox());
         left_box.getStyleClass().add("left-box");
         mainPane.setLeft(left_box);
@@ -79,14 +92,108 @@ public class SideViewScene extends BaseScene{
 
 
 
-
+        // Right Box Set-up
         right_box = new VBox();
         right_box.getStyleClass().add("right-box");
         mainPane.setRight(right_box);
         BorderPane.setAlignment(right_box, Pos.CENTER);
 
-        HBox menuHBox = new HBox();
+        // Menu Set-up
+        menuBox = new HBox(makeMenuBox());
+        menuBox.getStyleClass().add("menu-box");
+        BorderPane.setAlignment(menuBox, Pos.TOP_CENTER);
+        mainPane.setTop(menuBox);
 
+        // Middle Display Box Set-up
+        middleDisplayBox = new StackPane(makeMiddleDisplayBox());
+        middleDisplayBox.getStyleClass().add("sideView-background");
+        BorderPane.setAlignment(middleDisplayBox, Pos.CENTER);
+        mainPane.setCenter(middleDisplayBox);
+
+
+
+
+
+
+
+        this.initialise();
+    }
+
+    /**
+     * Create the middle display box
+     * @return StackPane Middle display box
+     */
+
+    public StackPane makeMiddleDisplayBox(){
+        StackPane displayStackPane = new StackPane();
+        BorderPane displayBorderPane = new BorderPane();
+        displayStackPane.getChildren().add(displayBorderPane);
+
+        // Sky Part
+        GridPane bluePane = new GridPane();
+        bluePane.getStyleClass().add("sideView-background");
+        bluePane.prefHeightProperty().bind(displayStackPane.heightProperty().divide(2));
+        displayBorderPane.setTop(bluePane);
+
+        // Ground Part
+        BorderPane groundPane = new BorderPane();
+        groundPane.setBackground(new Background(new BackgroundFill(Color.web("#A9D18E"), CornerRadii.EMPTY, Insets.EMPTY)));
+        groundPane.prefHeightProperty().bind(displayStackPane.heightProperty().divide(2));
+        displayBorderPane.setBottom(groundPane);
+
+        // Empty boxes to push the runway to the center
+        HBox empty1 = new HBox();
+        empty1.getStyleClass().add("empty");
+        HBox.setHgrow(empty1, Priority.ALWAYS);
+        HBox empty2 = new HBox();
+        empty2.getStyleClass().add("empty");
+        HBox.setHgrow(empty2, Priority.ALWAYS);
+        // Runway Image
+        Image runwayImage = new Image(getClass().getResource("/images/Runway2.png").toExternalForm());
+        ImageView runwayImageView = new ImageView(runwayImage);
+        runwayImageView.setPreserveRatio(true);
+        runwayImageView.setFitWidth(750);
+
+
+        StackPane runwayPane = new StackPane();
+        runwayPane.getChildren().add(runwayImageView);
+        runwayPane.setPrefWidth(runwayImageView.getFitWidth());
+        runwayPane.setPrefHeight(runwayImageView.getFitHeight());
+
+
+        // Stop ways
+        HBox stopWay1 = new HBox();
+        stopWay1.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
+        stopWay1.prefWidthProperty().bind(stopWay);
+        stopWay1.setAlignment(Pos.CENTER_LEFT);
+        HBox stopWay2 = new HBox();
+        stopWay2.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
+        stopWay2.prefWidthProperty().bind(stopWay);
+        stopWay2.setAlignment(Pos.CENTER_RIGHT);
+        BorderPane stopWayPane = new BorderPane();
+        stopWayPane.setLeft(stopWay1);
+        stopWayPane.setRight(stopWay2);
+
+        runwayPane.getChildren().add(stopWayPane);
+
+
+
+        HBox hBox = new HBox(empty1, runwayPane ,empty2);
+        hBox.setAlignment(Pos.TOP_CENTER);
+
+
+        groundPane.setTop(hBox);
+
+
+
+        return displayStackPane;
+    }
+
+    /**
+     * Create the menu box
+     * @return HBox the Menu Bar
+     */
+    private HBox makeMenuBox(){
         // Create Menus
         MenuBar menuBar = new MenuBar();
 
@@ -106,7 +213,6 @@ public class SideViewScene extends BaseScene{
         viewMenu.getItems().addAll(topView, simultaneous);
 
 
-
         // Help Menu
         Menu helpMenu = new Menu("Help");
         helpMenu.getItems().addAll(new MenuItem("About"), new MenuItem("Contact"));
@@ -124,48 +230,18 @@ public class SideViewScene extends BaseScene{
         HBox empty = new HBox();
         empty.getStyleClass().add("empty");
 
-        // Add MenuBar and Logout button to the HBox
-        menuHBox.getChildren().addAll(menuBar, empty, logoutButton);
+
         HBox.setHgrow(empty, Priority.ALWAYS); // This will push the logout button to the right
 
-        // Set the style class for the HBox
-        menuHBox.getStyleClass().add("menu-hbox");
-        BorderPane.setAlignment(menuHBox, Pos.CENTER);
-        mainPane.setTop(menuHBox);
-
-
-
-
-        StackPane displayStackPane = new StackPane();
-        mainPane.setCenter(displayStackPane);
-
-        BorderPane displayBorderPane = new BorderPane();
-        displayStackPane.getChildren().add(displayBorderPane);
-
-        Pane bluePane = new Pane();
-        bluePane.setMaxWidth(Double.MAX_VALUE);
-        bluePane.setMaxHeight(Double.MAX_VALUE);
-        bluePane.getStyleClass().add("sideView-background");
-        displayBorderPane.setTop(bluePane);
-
-        Pane groundPane = new Pane();
-        groundPane.setMaxWidth(Double.MAX_VALUE);
-        groundPane.setMaxHeight(Double.MAX_VALUE);
-        groundPane.setBackground(new Background(new BackgroundFill(Color.web("#A9D18E"), CornerRadii.EMPTY, Insets.EMPTY)));
-        displayBorderPane.setBottom(groundPane);
-
-
-
-
-
-
-        this.initialise();
+        HBox result = new HBox(menuBar, empty, logoutButton);
+        HBox.setHgrow(result, Priority.ALWAYS);
+        return (result);
     }
 
-
-
-
-
+    /**
+     * Create the results box
+     * @return VBox
+     */
     public VBox makeResultsBox(){
         VBox calculations = new VBox();
 
