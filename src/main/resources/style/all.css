@@ -85,3 +85,97 @@
 .empty {
     -fx-background-color: transparent;
 }
+
+
+
+/* below is all the stuff added in for the left and right side */
+/**/
+.vbox {
+    -fx-background-color: #f2f2f2;
+}
+.titled-pane{
+    -fx-font-size: 16px;
+    -fx-padding: 3px;
+}
+.grid-pane {
+    -fx-border-color: black; -fx-border-insets: 5; -fx-border-width: 1; -fx-padding: 5;
+}
+
+
+
+
+.titled-pane .label {
+    -fx-text-fill: #333;
+    -fx-font-size: 13px;
+}
+
+
+
+/* Default style for the tabs */
+.toggle-button {
+    -fx-background-color: #336699; /* Dark blue color */
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-font-size: 12px;
+    -fx-border-width: 1.25;
+}
+
+/* Style for the tabs when hovered */
+.toggle-button:hover {
+    -fx-background-color: #0055cc; /* Slightly lighter blue color for hover */
+}
+
+/* Style for the tabs when selected */
+.toggle-button:selected, .toggle-button:armed {
+    -fx-background-color: #003366; /* Medium blue color for selected */
+}
+
+/* Adjust the style for the TitledPane title */
+.titled-pane > .title {
+    -fx-font-size: 14px;
+    -fx-background-color: #D6D6D6;
+}
+
+/* Style for the TitledPane content area */
+.titled-pane > .content {
+    -fx-padding: 10;
+}
+
+
+
+.combo-box {
+    -fx-font-size: 12px;
+}
+
+
+
+
+
+.header-label {
+    -fx-font-weight: bold;
+}
+
+.center-label {
+    -fx-text-fill: white !important;
+    -fx-font-weight: bold;
+    -fx-pref-width: 100%;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-background-color: #4472C4;
+}
+
+
+
+.text {
+    -fx-font-family: "Calirbi";
+    -fx-padding: bold;
+}
+
+
+.grid-pane-airportstuff {
+    -fx-font-family: "Calirbi";
+}
+
+.gridpane-label-left {
+    -fx-font-weight: bold;
+}

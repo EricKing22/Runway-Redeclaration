@@ -1,11 +1,10 @@
 package uk.ac.soton.comp2211.runwayredeclaration.scene;
 
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -58,12 +57,15 @@ public class TopViewScene extends BaseScene{
 
 
 
-        left_box = new VBox();
+        // Left Box Set-up
+        left_box = new VBox(2, makeResultsTPane(), makeCalcBreakTPane());
         left_box.getStyleClass().add("left-box");
         mainPane.setLeft(left_box);
         BorderPane.setAlignment(left_box, Pos.CENTER);
 
-        right_box = new VBox();
+
+        // Right Box Set-up
+        right_box = new VBox(2, makeAirportTPane(), makeObstacleTPane());
         right_box.getStyleClass().add("right-box");
         mainPane.setRight(right_box);
         BorderPane.setAlignment(right_box, Pos.CENTER);
@@ -156,5 +158,177 @@ public class TopViewScene extends BaseScene{
         HBox result = new HBox(menuBar, empty, logoutButton);
         HBox.setHgrow(result, Priority.ALWAYS);
         return (result);
+    }
+
+
+
+    //all this below is for the left and right
+    public TitledPane makeResultsTPane(){
+        TitledPane tpane = new TitledPane();
+        tpane.setText("Results:");
+        tpane.setCollapsible(true);
+
+
+
+        GridPane gpanething = new GridPane();
+        gpanething.setPadding(new Insets(10));
+        gpanething.setHgap(10);
+        gpanething.setVgap(10);
+        //gpanething. getStyleClass().add(getClass().getResource("/style/all.css").toExternalForm());
+        String[] headers = {"Runway", "TORA", "TODA", "LDA", "ASDA"};
+        for (int i = 0; i < headers.length; i++) {
+            Label label = new Label(headers[i]);
+            label.getStyleClass().add("header-label");
+            gpanething.add(label, i, 0);
+        }
+
+        Label lblOriginal = new Label("Original Values");
+        lblOriginal.setMaxWidth(Double.MAX_VALUE);
+        lblOriginal.getStyleClass().add("center-label");
+        GridPane.setColumnSpan(lblOriginal, GridPane.REMAINING);
+        GridPane.setHalignment(lblOriginal, HPos.CENTER);
+        gpanething.add(lblOriginal, 0, 1);
+
+        for (int row = 2; row < 4; row++) {
+            for (int col = 0; col < headers.length; col++) {
+                gpanething.add(new Label("1000m"), col, row);
+            }
+        }
+
+        Label lblRecalculated = new Label("New Values");
+        lblRecalculated.setMaxWidth(Double.MAX_VALUE);
+        lblRecalculated.getStyleClass().add("center-label");
+        GridPane.setColumnSpan(lblRecalculated, GridPane.REMAINING);
+        GridPane.setHalignment(lblRecalculated, HPos.CENTER);
+        gpanething.add(lblRecalculated, 0, 4);
+
+        // Adding two rows of arbitrary values after "Re-Calculated Values"
+        for (int row = 5; row < 7; row++) {
+            for (int col = 0; col < headers.length; col++) {
+                gpanething.add(new Label("750m"), col, row);
+            }
+        }
+
+
+        tpane.setContent(gpanething);
+        return tpane;
+    }
+
+
+
+    public TitledPane makeCalcBreakTPane(){
+        TitledPane tpane2 = new TitledPane();
+        tpane2.setText("Calculation Breakdown:");
+        tpane2.setCollapsible(true);
+
+        //part to create hbo for upper bit
+
+        HBox tabs = new HBox(5);
+        tabs.setPadding(new Insets(5));
+        ToggleButton buttonTORA = new ToggleButton("TORA");
+        ToggleButton buttonTODA = new ToggleButton("TODA");
+        ToggleButton buttonLDA = new ToggleButton("LDA");
+        ToggleButton buttonASDA = new ToggleButton("ASDA");
+
+        ToggleGroup toggleGroup = new ToggleGroup();
+        buttonTORA.setToggleGroup(toggleGroup);
+        buttonTODA.setToggleGroup(toggleGroup);
+        buttonLDA.setToggleGroup(toggleGroup);
+        buttonASDA.setToggleGroup(toggleGroup);
+
+        tabs.getChildren().addAll(buttonTORA, buttonTODA, buttonLDA, buttonASDA);
+
+        // White box below the tabs
+        StackPane whiteBox = new StackPane();
+        whiteBox.setPrefSize(200, 375); // Set your preferred size
+        whiteBox.setStyle("-fx-background-color: white; -fx-border-color: black;");
+
+        // Adding tabs and white box to a VBox
+        VBox vbox = new VBox(tabs, whiteBox);
+
+        // Set the content of the TitledPane
+        tpane2.setContent(vbox);
+
+        // Apply CSS to the scene
+        return tpane2;
+    }
+
+
+
+
+    public TitledPane makeAirportTPane(){
+        GridPane airportGrid = new GridPane();
+        airportGrid.getStyleClass().add("full-width-grid");
+
+        airportGrid.setVgap(5);
+        airportGrid.setHgap(25);
+
+        TitledPane airportTPane = new TitledPane();
+        airportTPane.setText("Airport:");
+        airportTPane.setCollapsible(true);
+
+
+        ComboBox<String> airports = new ComboBox<>();
+        airports.getItems().addAll("Heathrow (LHR)", "Gatwick (LGW)", "Luton (LTN)", "Stansted (STN)", "City (LCY)");
+        airports.setValue("Heathrow (LHR)");
+
+        ComboBox<String> runways = new ComboBox<>();
+        runways.getItems().addAll("27R/09L");
+        runways.setValue("27R/09L");
+
+
+        airportGrid.addRow(0, new Label("Airport:"), airports);
+        airportGrid.addRow(1, new Label("Runway:"), runways);
+        airportGrid.addRow(2, new Label("Length:"),  new Text("5555.0m"));
+
+        airportGrid.addRow(3, new Label("Threshold:"), new Text("1111.0m"));
+        airportGrid.addRow(4, new Label("Clearway:"), new Text("100.0m"));
+        airportGrid.addRow(5, new Label("Stopway:"), new Text("80.0m"));
+
+        airportTPane.setContent(airportGrid);
+
+
+        return airportTPane;
+    }
+    public TitledPane makeObstacleTPane(){
+        GridPane obstacleGrid = new GridPane();
+        obstacleGrid.setVgap(5);
+        obstacleGrid.setHgap(10);
+
+        TitledPane obstacleTPane = new TitledPane();
+        obstacleTPane.setText("Obstacle:");
+        obstacleTPane.setCollapsible(true);
+
+        ComboBox<String> obstacle = new ComboBox<>();
+        obstacle.getItems().addAll("XXXX Plane", "Car", "Boxes");
+        obstacle.setValue("XXXX Plane");
+
+        VBox obstacleBox = new VBox(5);
+
+        //obstacleBox.getChildren().add((new Label("Obstacle:"), obstacle);
+        //obstacleBox.getChildren().add(obstacle);
+        obstacleBox.getChildren().addAll(new Label("Height:"), new TextField());
+        obstacleBox.getChildren().addAll(new Label("Width:"), new TextField());
+        obstacleBox.getChildren().addAll(new Label("Distance from plane:"), new TextField());
+        obstacleBox.getChildren().addAll(new Label("Distance from centerline:"), new TextField());
+
+        HBox buttons = new HBox(5);
+        buttons.getChildren().add(new Button("Edit"));
+        buttons.getChildren().add(new Button("Add"));
+        obstacleBox.getChildren().add(buttons);
+
+
+
+        Button recalculateB = new Button("Recalculate");
+        recalculateB.setMaxWidth(Double.MAX_VALUE);
+
+        obstacleGrid.addRow(0, new Label("Obstacle: "), obstacle);
+        obstacleGrid.addRow(1, obstacleBox);
+        obstacleGrid.addRow(2, buttons);
+        obstacleGrid.addRow(3, recalculateB);
+
+        obstacleTPane.setContent(obstacleGrid);
+
+        return obstacleTPane;
     }
 }
