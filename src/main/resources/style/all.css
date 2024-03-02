@@ -179,3 +179,11 @@
 .gridpane-label-left {
     -fx-font-weight: bold;
 }
+
+.grid-pane-label{
+
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-family: "Calirbi";
+
+}
