@@ -6,8 +6,8 @@
     -fx-background-color: #F8FCEC;
     -fx-min-width: 300px;
     -fx-max-width: 300px;
-    -fx-font-family: "Calirbi"; /* Font family for items within the boxes */
-    -fx-font-size: 14px; /* Font size for items within the boxes */
+    -fx-font-family: "Calibri"; /* Font family for items within the boxes */
+    -fx-font-size: 16px; /* Font size for items within the boxes */
     -fx-border-color: black; /* Border color */
     -fx-border-width: 2px;
 }
@@ -16,8 +16,8 @@
     -fx-background-color: #F8FCEC;
     -fx-min-width: 300px;
     -fx-max-width: 300px;
-    -fx-font-family: "Calirbi"; /* Font family for items within the boxes */
-    -fx-font-size: 14px; /* Font size for items within the boxes */
+    -fx-font-family: "Calibri"; /* Font family for items within the boxes */
+    -fx-font-size: 16px; /* Font size for items within the boxes */
     -fx-border-color: black; /* Border color */
     -fx-border-width: 2px;
 }
@@ -25,8 +25,8 @@
 /* You might also want to ensure any text or labels within those boxes are styled */
 .label {
     -fx-text-fill: white; /* Color of the text */
-    -fx-font-family: "Calirbi"; /* Font family */
-    -fx-font-size: 14px; /* Font size */
+    -fx-font-family: "Calibri"; /* Font family */
+    -fx-font-size: 16px; /* Font size */
 }
 
 
@@ -67,9 +67,9 @@
     -fx-background-color: transparent;
     -fx-text-fill: white; /* Text color for the button */
     -fx-alignment: center-right;
-    -fx-font-family: "Calirbi";
+    -fx-font-family: "Calibri";
     -fx-alignment: center-right;
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;
 }
 
 .logout-button:hover {
@@ -132,7 +132,7 @@
 
 /* Adjust the style for the TitledPane title */
 .titled-pane > .title {
-    -fx-font-size: 14px;
+    -fx-font-size: 16px;
     -fx-background-color: #D6D6D6;
 }
 
@@ -146,8 +146,6 @@
 .combo-box {
     -fx-font-size: 12px;
 }
-
-
 
 
 
@@ -166,14 +164,16 @@
 
 
 
-.text {
-    -fx-font-family: "Calirbi";
+.arrow-text {
+    -fx-font-family: "Calibri";
+    -fx-fill: white !important;
     -fx-padding: bold;
+    -fx-font-size: 26px;
 }
 
 
 .grid-pane-airportstuff {
-    -fx-font-family: "Calirbi";
+    -fx-font-family: "Calirbri";
 }
 
 .gridpane-label-left {
@@ -184,6 +184,6 @@
 
     -fx-text-fill: white;
     -fx-font-size: 12px;
-    -fx-font-family: "Calirbi";
+    -fx-font-family: "Calibri";
 
 }

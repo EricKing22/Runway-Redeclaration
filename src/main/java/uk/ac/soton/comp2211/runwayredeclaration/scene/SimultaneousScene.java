@@ -149,6 +149,41 @@ public class SimultaneousScene extends BaseScene{
         BorderPane displayBorderPane = new BorderPane();
         displayStackPane.getChildren().add(displayBorderPane);
 
+        // Direction Pane
+        BorderPane directionPane = new BorderPane();
+        displayStackPane.getChildren().add(directionPane);
+
+        // Landing Direction
+        Image arrow1 = new Image(getClass().getResource("/images/Arrow2.png").toExternalForm());
+        ImageView landingArrow = new ImageView(arrow1);
+        landingArrow.setPreserveRatio(true);
+        landingArrow.setFitWidth(100);
+        landingArrow.setRotate(180);
+        VBox landingArrowBox = new VBox();
+        landingArrowBox.setAlignment(Pos.CENTER);
+        VBox arrowEmpty1 = new VBox();
+        arrowEmpty1.getStyleClass().add("empty");
+        VBox.setVgrow(arrowEmpty1, Priority.ALWAYS);
+        Text landingText = new Text("Landing");
+        landingText.getStyleClass().add("arrow-text");
+        landingArrowBox.getChildren().addAll(landingArrow, landingText, arrowEmpty1);
+        directionPane.setRight(landingArrowBox);
+
+        // Takeoff Direction
+        Image arrow2 = new Image(getClass().getResource("/images/Arrow1.png").toExternalForm());
+        ImageView takeoffArrow = new ImageView(arrow2);
+        takeoffArrow.setPreserveRatio(true);
+        takeoffArrow.setFitWidth(100);
+        VBox takeoffArrowBox = new VBox();
+        takeoffArrowBox.setAlignment(Pos.CENTER);
+        VBox arrowEmpty2 = new VBox();
+        arrowEmpty2.getStyleClass().add("empty");
+        VBox.setVgrow(arrowEmpty2, Priority.ALWAYS);
+        Text takeoffText = new Text("Take off");
+        takeoffText.getStyleClass().add("arrow-text");
+        takeoffArrowBox.getChildren().addAll(takeoffArrow, takeoffText, arrowEmpty2);
+        directionPane.setLeft(takeoffArrowBox);
+
 
         // Top-View Part
         StackPane topViewPane = new StackPane();
@@ -157,30 +192,22 @@ public class SimultaneousScene extends BaseScene{
         topViewPane.prefHeightProperty().bind(displayBorderPane.heightProperty().divide(2));
         Image toprunwayImage = new Image(getClass().getResource("/images/Runway1.png").toExternalForm());
         ImageView toprunwayImageView = new ImageView(toprunwayImage);
-
         toprunwayImageView.setFitHeight(50);
         toprunwayImageView.setFitWidth(500);
-
-
+        // Graded Area
         Image gradeArea = new Image(getClass().getResource("/images/GradedArea.png").toExternalForm());
         ImageView gradeAreaImageView = new ImageView(gradeArea);
-
         gradeAreaImageView.setFitHeight(200);
         gradeAreaImageView.setFitWidth(700);
-
-
+        // Border for the views
         topViewPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 2, 0))));
         topViewPane.getChildren().addAll(gradeAreaImageView, toprunwayImageView);
-
-
 
 
         // Side-View Part
         BorderPane sideViewPane = new BorderPane();
         sideViewPane.setBackground(new Background(new BackgroundFill(Color.web("#F8FCEC"), CornerRadii.EMPTY, Insets.EMPTY)));
         displayBorderPane.setBottom(sideViewPane);
-
-
 
         // Sky Part
         StackPane bluePane = new StackPane();

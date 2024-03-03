@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.TextAlignment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomePane;
@@ -38,7 +39,11 @@ public class SideViewScene extends BaseScene{
 
     private StackPane middleDisplayBox;
 
-    private DoubleProperty stopWay = new SimpleDoubleProperty(20);
+    private DoubleProperty stopWayLength = new SimpleDoubleProperty(40);
+
+    private DoubleProperty clearWayLength = new SimpleDoubleProperty(60);
+
+    private DoubleProperty distBetweenPlaneObstacle = new SimpleDoubleProperty(10);
 
 
     /**
@@ -117,20 +122,89 @@ public class SideViewScene extends BaseScene{
     public StackPane makeMiddleDisplayBox(){
         StackPane displayStackPane = new StackPane();
         BorderPane displayBorderPane = new BorderPane();
+        BorderPane directionPane = new BorderPane();
         displayStackPane.getChildren().add(displayBorderPane);
+        displayStackPane.getChildren().add(directionPane);
+
+        // Landing Direction
+        Image arrow1 = new Image(getClass().getResource("/images/Arrow2.png").toExternalForm());
+        ImageView landingArrow = new ImageView(arrow1);
+        landingArrow.setPreserveRatio(true);
+        landingArrow.setFitWidth(100);
+        landingArrow.setRotate(180);
+        VBox landingArrowBox = new VBox();
+        landingArrowBox.setAlignment(Pos.CENTER);
+        VBox arrowEmpty1 = new VBox();
+        arrowEmpty1.getStyleClass().add("empty");
+        VBox.setVgrow(arrowEmpty1, Priority.ALWAYS);
+        Text landingText = new Text("Landing");
+        landingText.getStyleClass().add("arrow-text");
+        landingArrowBox.getChildren().addAll(landingArrow, landingText, arrowEmpty1);
+        directionPane.setRight(landingArrowBox);
+
+        // Takeoff Direction
+        Image arrow2 = new Image(getClass().getResource("/images/Arrow1.png").toExternalForm());
+        ImageView takeoffArrow = new ImageView(arrow2);
+        takeoffArrow.setPreserveRatio(true);
+        takeoffArrow.setFitWidth(100);
+        VBox takeoffArrowBox = new VBox();
+        takeoffArrowBox.setAlignment(Pos.CENTER);
+        VBox arrowEmpty2 = new VBox();
+        arrowEmpty2.getStyleClass().add("empty");
+        VBox.setVgrow(arrowEmpty2, Priority.ALWAYS);
+        Text takeoffText = new Text("Take off");
+        takeoffText.getStyleClass().add("arrow-text");
+        takeoffArrowBox.getChildren().addAll(takeoffArrow, takeoffText, arrowEmpty2);
+        directionPane.setLeft(takeoffArrowBox);
+
+
+
 
         // Sky Part
-        GridPane bluePane = new GridPane();
+        BorderPane bluePane = new BorderPane();
         bluePane.getStyleClass().add("sideView-background");
         bluePane.prefHeightProperty().bind(displayStackPane.heightProperty().divide(2));
         displayBorderPane.setTop(bluePane);
+
+
+        // Plane Image
+        Image planeImage = new Image(getClass().getResource("/images/Plane1.png").toExternalForm());
+        ImageView planeImageView = new ImageView(planeImage);
+        planeImageView.setPreserveRatio(true);
+        planeImageView.setFitHeight(30);
+        // HBox distance between plane and obstacle
+        HBox planeObstacleDistance = new HBox();
+        planeObstacleDistance.getStyleClass().add("empty");
+        planeObstacleDistance.setPrefWidth(distBetweenPlaneObstacle.getValue());
+        // Obstacle Image
+        Image obstacleImage = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
+        ImageView obstacleImageView = new ImageView(obstacleImage);
+        obstacleImageView.setPreserveRatio(true);
+        obstacleImageView.setFitHeight(20);
+
+        // Plane & Obstacle Pane (Might change)
+        HBox planeObstacleBox = new HBox();
+        planeObstacleBox.setAlignment(Pos.BOTTOM_LEFT);
+        HBox frontPlaneEmpty = new HBox();
+        frontPlaneEmpty.getStyleClass().add("empty");
+        HBox.setHgrow(frontPlaneEmpty, Priority.ALWAYS);
+        HBox backPlaneEmpty = new HBox();
+        backPlaneEmpty.getStyleClass().add("empty");
+        HBox.setHgrow(backPlaneEmpty, Priority.ALWAYS);
+
+
+        planeObstacleBox.getChildren().addAll(frontPlaneEmpty, planeImageView, planeObstacleDistance, obstacleImageView, backPlaneEmpty);
+
+        bluePane.setBottom(planeObstacleBox);
+
+
+
 
         // Ground Part
         BorderPane groundPane = new BorderPane();
         groundPane.setBackground(new Background(new BackgroundFill(Color.web("#A9D18E"), CornerRadii.EMPTY, Insets.EMPTY)));
         groundPane.prefHeightProperty().bind(displayStackPane.heightProperty().divide(2));
         displayBorderPane.setBottom(groundPane);
-
         // Empty boxes to push the runway to the center
         HBox empty1 = new HBox();
         empty1.getStyleClass().add("empty");
@@ -142,37 +216,32 @@ public class SideViewScene extends BaseScene{
         Image runwayImage = new Image(getClass().getResource("/images/Runway2.png").toExternalForm());
         ImageView runwayImageView = new ImageView(runwayImage);
         runwayImageView.setPreserveRatio(true);
-        runwayImageView.setFitWidth(500);
+        runwayImageView.setFitWidth(650);
 
-
+        // Runway Pane
         StackPane runwayPane = new StackPane();
         runwayPane.getChildren().add(runwayImageView);
         runwayPane.setPrefWidth(runwayImageView.getFitWidth());
         runwayPane.setPrefHeight(runwayImageView.getFitHeight());
-
-
-        // Stop ways
+        // Stop Ways
         HBox stopWay1 = new HBox();
         stopWay1.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
-        stopWay1.prefWidthProperty().bind(stopWay);
+        stopWay1.prefWidthProperty().bind(stopWayLength);
         stopWay1.setAlignment(Pos.CENTER_LEFT);
         HBox stopWay2 = new HBox();
         stopWay2.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
-        stopWay2.prefWidthProperty().bind(stopWay);
+        stopWay2.prefWidthProperty().bind(stopWayLength);
         stopWay2.setAlignment(Pos.CENTER_RIGHT);
         BorderPane stopWayPane = new BorderPane();
         stopWayPane.setLeft(stopWay1);
         stopWayPane.setRight(stopWay2);
-
         runwayPane.getChildren().add(stopWayPane);
 
+        HBox runwayPaneBox = new HBox(empty1, runwayPane ,empty2);
+        runwayPaneBox.setAlignment(Pos.TOP_CENTER);
 
 
-        HBox hBox = new HBox(empty1, runwayPane ,empty2);
-        hBox.setAlignment(Pos.TOP_CENTER);
-
-
-        groundPane.setTop(hBox);
+        groundPane.setTop(runwayPaneBox);
 
 
 
