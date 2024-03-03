@@ -205,11 +205,11 @@ public class SimultaneousScene extends BaseScene{
         // Stop Ways
         HBox stopWayTop1 = new HBox();
         stopWayTop1.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
-        stopWayTop1.prefWidthProperty().bind(stopWayLength);
+        stopWayTop1.prefWidthProperty().bind(displayStopWayLength);
         stopWayTop1.setAlignment(Pos.CENTER_LEFT);
         HBox stopWayTop2 = new HBox();
         stopWayTop2.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
-        stopWayTop2.prefWidthProperty().bind(stopWayLength);
+        stopWayTop2.prefWidthProperty().bind(displayStopWayLength);
         stopWayTop2.setAlignment(Pos.CENTER_RIGHT);
 
         HBox stopWayEmpty = new HBox();
@@ -248,6 +248,7 @@ public class SimultaneousScene extends BaseScene{
         topViewPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 2, 0))));
 
 
+        // Add the runway, plane, obstacle and graded area to the top view pane
         topViewPane.getChildren().addAll(gradeAreaImageView, runwayTopPane, planeObstacleTopBox);
 
 
@@ -328,11 +329,11 @@ public class SimultaneousScene extends BaseScene{
         // Stop ways
         HBox stopWay1 = new HBox();
         stopWay1.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
-        stopWay1.prefWidthProperty().bind(stopWayLength);
+        stopWay1.prefWidthProperty().bind(displayStopWayLength);
         stopWay1.setAlignment(Pos.CENTER_LEFT);
         HBox stopWay2 = new HBox();
         stopWay2.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
-        stopWay2.prefWidthProperty().bind(stopWayLength);
+        stopWay2.prefWidthProperty().bind(displayStopWayLength);
         stopWay2.setAlignment(Pos.CENTER_RIGHT);
         BorderPane stopWayPane = new BorderPane();
         stopWayPane.setMaxWidth(displayRunwayLength.getValue());

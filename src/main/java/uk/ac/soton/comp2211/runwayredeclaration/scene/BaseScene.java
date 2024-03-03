@@ -24,20 +24,26 @@ public abstract class BaseScene {
     protected HomePane root;
     protected Scene scene;
 
-    protected DoubleProperty stopWayLength = new SimpleDoubleProperty(40);
-
-    protected DoubleProperty clearWayLength = new SimpleDoubleProperty(60);
+    protected DoubleProperty runwayLength = new SimpleDoubleProperty();
+    protected DoubleProperty stopWayLength = new SimpleDoubleProperty();
+    protected DoubleProperty clearWayLength = new SimpleDoubleProperty();
+    protected DoubleProperty displayStopWayLength = new SimpleDoubleProperty(40); // Need to be rescaled
+    protected DoubleProperty displayClearWayLength = new SimpleDoubleProperty(60); // Need to be rescaled
+    protected DoubleProperty displayRunwayLength = new SimpleDoubleProperty(650); // FIXED
 
     protected DoubleProperty distBetweenPlaneObstacle = new SimpleDoubleProperty(10);
 
-    protected DoubleProperty displayRunwayLength = new SimpleDoubleProperty(650);
 
-    protected DoubleProperty displayThreshold = new SimpleDoubleProperty();
+    // Take Off Parameters
+    protected DoubleProperty TORA = new SimpleDoubleProperty();
+    protected DoubleProperty displayTORA = new SimpleDoubleProperty(displayRunwayLength.getValue() - 2 * displayStopWayLength.getValue());
+    protected DoubleProperty TODA = new SimpleDoubleProperty();
+    protected DoubleProperty displayTODA = new SimpleDoubleProperty(displayRunwayLength.getValue() + displayClearWayLength.getValue());
+    protected DoubleProperty ASDA = new SimpleDoubleProperty();
+    protected DoubleProperty displayASDA = new SimpleDoubleProperty(displayRunwayLength.getValue() + displayStopWayLength.getValue());
 
-    protected DoubleProperty TORA = new SimpleDoubleProperty(500);
-    protected DoubleProperty TODA = new SimpleDoubleProperty(600);
-    protected DoubleProperty ASDA = new SimpleDoubleProperty(700);
-    protected DoubleProperty LDA = new SimpleDoubleProperty(800);
+
+    protected DoubleProperty LDA = new SimpleDoubleProperty();
 
 
     /**

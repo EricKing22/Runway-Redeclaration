@@ -182,3 +182,13 @@
     -fx-font-family: "Calibri";
 
 }
+
+.clearway-box{
+    -fx-background-color: transparent;
+    -fx-max-height: 100;
+    -fx-border-color: black;
+    -fx-border-width: 2;
+    -fx-border-style: dashed;
+}
+
+

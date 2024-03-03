@@ -153,11 +153,11 @@ public class TopViewScene extends BaseScene{
         // Stop Ways
         HBox stopWay1 = new HBox();
         stopWay1.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
-        stopWay1.prefWidthProperty().bind(stopWayLength);
+        stopWay1.prefWidthProperty().bind(displayStopWayLength);
         stopWay1.setAlignment(Pos.CENTER_LEFT);
         HBox stopWay2 = new HBox();
         stopWay2.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
-        stopWay2.prefWidthProperty().bind(stopWayLength);
+        stopWay2.prefWidthProperty().bind(displayStopWayLength);
         stopWay2.setAlignment(Pos.CENTER_RIGHT);
 
         HBox stopWayEmpty = new HBox();
