@@ -32,6 +32,14 @@ public abstract class BaseScene {
 
     protected DoubleProperty displayRunwayLength = new SimpleDoubleProperty(650);
 
+    protected DoubleProperty displayThreshold = new SimpleDoubleProperty();
+
+    protected DoubleProperty TORA = new SimpleDoubleProperty(500);
+    protected DoubleProperty TODA = new SimpleDoubleProperty(600);
+    protected DoubleProperty ASDA = new SimpleDoubleProperty(700);
+    protected DoubleProperty LDA = new SimpleDoubleProperty(800);
+
+
     /**
      * Create a new scene, passing in the GameWindow the scene will be displayed in
      * @param homeWindow the home window

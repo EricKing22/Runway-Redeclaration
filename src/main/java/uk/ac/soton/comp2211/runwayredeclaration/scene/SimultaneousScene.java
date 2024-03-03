@@ -26,6 +26,8 @@ public class SimultaneousScene extends BaseScene{
 
     private StackPane middleDisplayBox;
 
+    private DoubleProperty topRunwayHeight = new SimpleDoubleProperty(50);
+
 
 
     /**
@@ -190,10 +192,53 @@ public class SimultaneousScene extends BaseScene{
         topViewPane.getStyleClass().add("topView-background");
         displayBorderPane.setTop(topViewPane);
         topViewPane.prefHeightProperty().bind(displayBorderPane.heightProperty().divide(2));
+
+        // Top-View Runway Image
         Image toprunwayImage = new Image(getClass().getResource("/images/Runway1.png").toExternalForm());
         ImageView toprunwayImageView = new ImageView(toprunwayImage);
-        toprunwayImageView.setFitHeight(50);
+        toprunwayImageView.setFitHeight(topRunwayHeight.getValue());
         toprunwayImageView.setFitWidth(displayRunwayLength.getValue());
+
+        // Runway Pane
+        StackPane runwayTopPane = new StackPane();
+        runwayTopPane.getChildren().addAll(toprunwayImageView);
+        // Stop Ways
+        HBox stopWayTop1 = new HBox();
+        stopWayTop1.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
+        stopWayTop1.prefWidthProperty().bind(stopWayLength);
+        stopWayTop1.setAlignment(Pos.CENTER_LEFT);
+        HBox stopWayTop2 = new HBox();
+        stopWayTop2.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
+        stopWayTop2.prefWidthProperty().bind(stopWayLength);
+        stopWayTop2.setAlignment(Pos.CENTER_RIGHT);
+
+        HBox stopWayEmpty = new HBox();
+        stopWayEmpty.getStyleClass().add("empty");
+        HBox.setHgrow(stopWayEmpty, Priority.ALWAYS);
+        HBox stopWayTopPane = new HBox(stopWayTop1, stopWayEmpty, stopWayTop2);
+        stopWayTopPane.setMaxHeight(topRunwayHeight.getValue());
+        stopWayTopPane.setMaxWidth(displayRunwayLength.getValue());
+        runwayTopPane.getChildren().add(stopWayTopPane);
+
+        // Plane Image
+        Image planeImageTop = new Image(getClass().getResource("/images/Plane-TopView1.png").toExternalForm());
+        ImageView planeImageViewTop = new ImageView(planeImageTop);
+        planeImageViewTop.setFitWidth(50);
+        planeImageViewTop.setPreserveRatio(true);
+        // HBox distance between the plane and obstacle
+        HBox planeObstacleTopDistance = new HBox();
+        planeObstacleTopDistance.getStyleClass().add("empty");
+        planeObstacleTopDistance.setPrefWidth(distBetweenPlaneObstacle.getValue());
+        // Obstacle Image
+        Image obstacleImageTop = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
+        ImageView obstacleImageViewTop = new ImageView(obstacleImageTop);
+        obstacleImageViewTop.setFitWidth(30);
+        obstacleImageViewTop.setPreserveRatio(true);
+        // Plane & Obstacle Pane
+        HBox planeObstacleTopBox = new HBox(planeImageViewTop, planeObstacleTopDistance, obstacleImageViewTop);
+        planeObstacleTopBox.setAlignment(Pos.CENTER);
+        planeObstacleTopBox.setMaxWidth(displayRunwayLength.getValue());
+
         // Graded Area
         Image gradeArea = new Image(getClass().getResource("/images/GradedArea.png").toExternalForm());
         ImageView gradeAreaImageView = new ImageView(gradeArea);
@@ -201,19 +246,58 @@ public class SimultaneousScene extends BaseScene{
         gradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 50);
         // Border for the views
         topViewPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 2, 0))));
-        topViewPane.getChildren().addAll(gradeAreaImageView, toprunwayImageView);
+
+
+        topViewPane.getChildren().addAll(gradeAreaImageView, runwayTopPane, planeObstacleTopBox);
+
+
+
 
 
         // Side-View Part
         BorderPane sideViewPane = new BorderPane();
-        sideViewPane.setBackground(new Background(new BackgroundFill(Color.web("#F8FCEC"), CornerRadii.EMPTY, Insets.EMPTY)));
         displayBorderPane.setBottom(sideViewPane);
 
         // Sky Part
-        StackPane bluePane = new StackPane();
+        BorderPane bluePane = new BorderPane();
         bluePane.getStyleClass().add("sideView-background");
         bluePane.prefHeightProperty().bind(displayBorderPane.heightProperty().divide(4));
         sideViewPane.setTop(bluePane);
+
+        // Plane Image
+        Image planeImageSide = new Image(getClass().getResource("/images/Plane1.png").toExternalForm());
+        ImageView planeImageViewSide = new ImageView(planeImageSide);
+        planeImageViewSide.setPreserveRatio(true);
+        planeImageViewSide.setFitWidth(50);
+        // HBox distance between the plane and obstacle
+        HBox planeObstacleSideDistance = new HBox();
+        planeObstacleSideDistance.getStyleClass().add("empty");
+        planeObstacleSideDistance.setPrefWidth(distBetweenPlaneObstacle.getValue());
+        // Obstacle Image
+        Image obstacleImageSide = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
+        ImageView obstacleImageViewSide = new ImageView(obstacleImageSide);
+        obstacleImageViewSide.setPreserveRatio(true);
+        obstacleImageViewSide.setFitWidth(30);
+
+
+
+
+        // Plane & Obstacle Pane (Might change)
+        HBox planeObstacleSideBox = new HBox();
+        planeObstacleSideBox.setAlignment(Pos.BOTTOM_LEFT);
+        HBox frontPlaneEmpty = new HBox();
+        frontPlaneEmpty.getStyleClass().add("empty");
+        HBox.setHgrow(frontPlaneEmpty, Priority.ALWAYS);
+        HBox backPlaneEmpty = new HBox();
+        backPlaneEmpty.getStyleClass().add("empty");
+        HBox.setHgrow(backPlaneEmpty, Priority.ALWAYS);
+
+        // Plane & Obstacle Pane
+
+        //planeObstacleSideBox.setMaxWidth(displayRunwayLength.getValue());
+        planeObstacleSideBox.getChildren().addAll(frontPlaneEmpty, planeImageViewSide, planeObstacleSideDistance, obstacleImageViewSide, backPlaneEmpty);
+
+        bluePane.setBottom(planeObstacleSideBox);
 
 
         // Ground Part
@@ -235,7 +319,6 @@ public class SimultaneousScene extends BaseScene{
         siderunwayImageView.setPreserveRatio(true);
         siderunwayImageView.setFitWidth(displayRunwayLength.getValue());
 
-
         StackPane runwayPane = new StackPane();
         runwayPane.getChildren().add(siderunwayImageView);
         runwayPane.setPrefWidth(siderunwayImageView.getFitWidth());
@@ -252,19 +335,16 @@ public class SimultaneousScene extends BaseScene{
         stopWay2.prefWidthProperty().bind(stopWayLength);
         stopWay2.setAlignment(Pos.CENTER_RIGHT);
         BorderPane stopWayPane = new BorderPane();
+        stopWayPane.setMaxWidth(displayRunwayLength.getValue());
         stopWayPane.setLeft(stopWay1);
         stopWayPane.setRight(stopWay2);
+
 
         runwayPane.getChildren().add(stopWayPane);
 
 
 
-        HBox hBox = new HBox(empty1, runwayPane ,empty2);
-        hBox.setAlignment(Pos.TOP_CENTER);
-
-
-        groundPane.setTop(hBox);
-
+        groundPane.setTop(runwayPane);
 
 
         return displayStackPane;

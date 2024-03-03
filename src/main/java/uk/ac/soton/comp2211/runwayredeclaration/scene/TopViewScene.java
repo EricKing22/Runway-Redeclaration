@@ -192,6 +192,7 @@ public class TopViewScene extends BaseScene{
         ImageView obstacleImageView = new ImageView(obstacleImage);
         obstacleImageView.setPreserveRatio(true);
         obstacleImageView.setFitWidth(30);
+
         // Plane & Obstacle Pane (Might change)
         HBox planeObstacleBox = new HBox();
         planeObstacleBox.setAlignment(Pos.CENTER);
@@ -206,7 +207,7 @@ public class TopViewScene extends BaseScene{
 
 
 
-        planeObstacleBox.getChildren().addAll(frontPlaneEmpty, planeImageView, planeObstacleDistance, obstacleImageView, backPlaneEmpty);
+        planeObstacleBox.getChildren().addAll(planeImageView, planeObstacleDistance, obstacleImageView);
 
 
 
