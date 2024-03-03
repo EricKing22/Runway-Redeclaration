@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -130,22 +131,67 @@ public class TopViewScene extends BaseScene{
         directionPane.setLeft(takeoffArrowBox);
 
 
-
+        // Top-View Runway
         Image runwayImage = new Image(getClass().getResource("/images/Runway1.png").toExternalForm());
         ImageView runwayImageView = new ImageView(runwayImage);
-
         runwayImageView.setPreserveRatio(true);
-        runwayImageView.setFitWidth(500);
-
-
+        runwayImageView.setFitWidth(displayRunwayLength.getValue());
+        // Graded Area
         Image gradeArea = new Image(getClass().getResource("/images/GradedArea.png").toExternalForm());
         ImageView gradeAreaImageView = new ImageView(gradeArea);
-
         gradeAreaImageView.setPreserveRatio(true);
-        gradeAreaImageView.setFitWidth(600);
+        gradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 50);
+
+        // Stop Ways
+        HBox stopWay1 = new HBox();
+        stopWay1.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
+        stopWay1.prefWidthProperty().bind(stopWayLength);
+        stopWay1.setAlignment(Pos.CENTER_LEFT);
+        HBox stopWay2 = new HBox();
+        stopWay2.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
+        stopWay2.prefWidthProperty().bind(stopWayLength);
+        stopWay2.setAlignment(Pos.CENTER_RIGHT);
+        BorderPane stopWayPane = new BorderPane();
+        stopWayPane.setPrefHeight(runwayImageView.getFitHeight());
+        stopWayPane.setLeft(stopWay1);
+        stopWayPane.setRight(stopWay2);
 
 
-        displayStackPane.getChildren().addAll(gradeAreaImageView, runwayImageView);
+        // Plane Images
+        Image planeImage = new Image(getClass().getResource("/images/Plane-TopView1.png").toExternalForm());
+        ImageView planeImageView = new ImageView(planeImage);
+        planeImageView.setPreserveRatio(true);
+        planeImageView.setFitWidth(50);
+        // HBox distance between plane and obstacle
+        HBox planeObstacleDistance = new HBox();
+        planeObstacleDistance.getStyleClass().add("empty");
+        planeObstacleDistance.setPrefWidth(distBetweenPlaneObstacle.getValue());
+        // Obstacle Images
+        Image obstacleImage = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
+        ImageView obstacleImageView = new ImageView(obstacleImage);
+        obstacleImageView.setPreserveRatio(true);
+        obstacleImageView.setFitWidth(30);
+        // Plane & Obstacle Pane (Might change)
+        HBox planeObstacleBox = new HBox();
+        planeObstacleBox.setAlignment(Pos.CENTER);
+        HBox frontPlaneEmpty = new HBox();
+        frontPlaneEmpty.getStyleClass().add("empty");
+        HBox.setHgrow(frontPlaneEmpty, Priority.ALWAYS);
+        HBox backPlaneEmpty = new HBox();
+        backPlaneEmpty.getStyleClass().add("empty");
+        HBox.setHgrow(backPlaneEmpty, Priority.ALWAYS);
+
+
+
+
+
+        planeObstacleBox.getChildren().addAll(frontPlaneEmpty, planeImageView, planeObstacleDistance, obstacleImageView, backPlaneEmpty);
+
+
+
+
+
+        displayStackPane.getChildren().addAll(gradeAreaImageView, runwayImageView, stopWayPane, planeObstacleBox);
 
 
         return displayStackPane;

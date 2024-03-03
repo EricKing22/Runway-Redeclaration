@@ -1,5 +1,7 @@
 package uk.ac.soton.comp2211.runwayredeclaration.scene;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -21,6 +23,14 @@ public abstract class BaseScene {
 
     protected HomePane root;
     protected Scene scene;
+
+    protected DoubleProperty stopWayLength = new SimpleDoubleProperty(40);
+
+    protected DoubleProperty clearWayLength = new SimpleDoubleProperty(60);
+
+    protected DoubleProperty distBetweenPlaneObstacle = new SimpleDoubleProperty(10);
+
+    protected DoubleProperty displayRunwayLength = new SimpleDoubleProperty(650);
 
     /**
      * Create a new scene, passing in the GameWindow the scene will be displayed in

@@ -26,7 +26,7 @@ public class SimultaneousScene extends BaseScene{
 
     private StackPane middleDisplayBox;
 
-    private DoubleProperty stopWay = new SimpleDoubleProperty(20);
+
 
     /**
      * Create a new scene, passing in the GameWindow the scene will be displayed in
@@ -193,12 +193,12 @@ public class SimultaneousScene extends BaseScene{
         Image toprunwayImage = new Image(getClass().getResource("/images/Runway1.png").toExternalForm());
         ImageView toprunwayImageView = new ImageView(toprunwayImage);
         toprunwayImageView.setFitHeight(50);
-        toprunwayImageView.setFitWidth(500);
+        toprunwayImageView.setFitWidth(displayRunwayLength.getValue());
         // Graded Area
         Image gradeArea = new Image(getClass().getResource("/images/GradedArea.png").toExternalForm());
         ImageView gradeAreaImageView = new ImageView(gradeArea);
         gradeAreaImageView.setFitHeight(200);
-        gradeAreaImageView.setFitWidth(700);
+        gradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 50);
         // Border for the views
         topViewPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 2, 0))));
         topViewPane.getChildren().addAll(gradeAreaImageView, toprunwayImageView);
@@ -233,7 +233,7 @@ public class SimultaneousScene extends BaseScene{
         Image siderunwayImage = new Image(getClass().getResource("/images/Runway2.png").toExternalForm());
         ImageView siderunwayImageView = new ImageView(siderunwayImage);
         siderunwayImageView.setPreserveRatio(true);
-        siderunwayImageView.setFitWidth(500);
+        siderunwayImageView.setFitWidth(displayRunwayLength.getValue());
 
 
         StackPane runwayPane = new StackPane();
@@ -245,11 +245,11 @@ public class SimultaneousScene extends BaseScene{
         // Stop ways
         HBox stopWay1 = new HBox();
         stopWay1.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
-        stopWay1.prefWidthProperty().bind(stopWay);
+        stopWay1.prefWidthProperty().bind(stopWayLength);
         stopWay1.setAlignment(Pos.CENTER_LEFT);
         HBox stopWay2 = new HBox();
         stopWay2.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
-        stopWay2.prefWidthProperty().bind(stopWay);
+        stopWay2.prefWidthProperty().bind(stopWayLength);
         stopWay2.setAlignment(Pos.CENTER_RIGHT);
         BorderPane stopWayPane = new BorderPane();
         stopWayPane.setLeft(stopWay1);

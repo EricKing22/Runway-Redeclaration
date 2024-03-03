@@ -91,7 +91,7 @@ public class HomeWindow {
         stage.setMinWidth(width);
         stage.setMinHeight(height + 20);
         stage.setOnCloseRequest(ev -> App.getInstance().shutdown());
-        stage.setAlwaysOnTop(true);
+
     }
     /**
      * Load a given scene which extends BaseScene and switch over.

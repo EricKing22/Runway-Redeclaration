@@ -39,11 +39,7 @@ public class SideViewScene extends BaseScene{
 
     private StackPane middleDisplayBox;
 
-    private DoubleProperty stopWayLength = new SimpleDoubleProperty(40);
 
-    private DoubleProperty clearWayLength = new SimpleDoubleProperty(60);
-
-    private DoubleProperty distBetweenPlaneObstacle = new SimpleDoubleProperty(10);
 
 
     /**
@@ -205,18 +201,13 @@ public class SideViewScene extends BaseScene{
         groundPane.setBackground(new Background(new BackgroundFill(Color.web("#A9D18E"), CornerRadii.EMPTY, Insets.EMPTY)));
         groundPane.prefHeightProperty().bind(displayStackPane.heightProperty().divide(2));
         displayBorderPane.setBottom(groundPane);
-        // Empty boxes to push the runway to the center
-        HBox empty1 = new HBox();
-        empty1.getStyleClass().add("empty");
-        HBox.setHgrow(empty1, Priority.ALWAYS);
-        HBox empty2 = new HBox();
-        empty2.getStyleClass().add("empty");
-        HBox.setHgrow(empty2, Priority.ALWAYS);
+
+
         // Runway Image
         Image runwayImage = new Image(getClass().getResource("/images/Runway2.png").toExternalForm());
         ImageView runwayImageView = new ImageView(runwayImage);
         runwayImageView.setPreserveRatio(true);
-        runwayImageView.setFitWidth(650);
+        runwayImageView.setFitWidth(displayRunwayLength.getValue());
 
         // Runway Pane
         StackPane runwayPane = new StackPane();
@@ -235,8 +226,16 @@ public class SideViewScene extends BaseScene{
         BorderPane stopWayPane = new BorderPane();
         stopWayPane.setLeft(stopWay1);
         stopWayPane.setRight(stopWay2);
+
         runwayPane.getChildren().add(stopWayPane);
 
+        // Empty boxes to push the runway to the center
+        HBox empty1 = new HBox();
+        empty1.getStyleClass().add("empty");
+        HBox.setHgrow(empty1, Priority.ALWAYS);
+        HBox empty2 = new HBox();
+        empty2.getStyleClass().add("empty");
+        HBox.setHgrow(empty2, Priority.ALWAYS);
         HBox runwayPaneBox = new HBox(empty1, runwayPane ,empty2);
         runwayPaneBox.setAlignment(Pos.TOP_CENTER);
 
