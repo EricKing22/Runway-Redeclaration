@@ -237,7 +237,7 @@ public class SideViewScene extends BaseScene{
         empty2.getStyleClass().add("empty");
         HBox.setHgrow(empty2, Priority.ALWAYS);
         HBox runwayPaneBox = new HBox(empty1, runwayPane ,empty2);
-        runwayPaneBox.setAlignment(Pos.TOP_CENTER);
+
 
 
         groundPane.setTop(runwayPaneBox);

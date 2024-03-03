@@ -142,6 +142,14 @@ public class TopViewScene extends BaseScene{
         gradeAreaImageView.setPreserveRatio(true);
         gradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 50);
 
+
+        // Runway Pane
+        StackPane runwayPane = new StackPane();
+        runwayPane.getChildren().addAll(runwayImageView);
+
+
+
+
         // Stop Ways
         HBox stopWay1 = new HBox();
         stopWay1.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -151,11 +159,24 @@ public class TopViewScene extends BaseScene{
         stopWay2.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
         stopWay2.prefWidthProperty().bind(stopWayLength);
         stopWay2.setAlignment(Pos.CENTER_RIGHT);
-        BorderPane stopWayPane = new BorderPane();
-        stopWayPane.setPrefHeight(runwayImageView.getFitHeight());
-        stopWayPane.setLeft(stopWay1);
-        stopWayPane.setRight(stopWay2);
 
+        HBox stopWayEmpty = new HBox();
+        stopWayEmpty.getStyleClass().add("empty");
+        HBox.setHgrow(stopWayEmpty, Priority.ALWAYS);
+        HBox stopWayPane = new HBox(stopWay1, stopWayEmpty, stopWay2);
+        stopWayPane.setMaxHeight(70);
+
+
+        runwayPane.getChildren().add(stopWayPane);
+
+        // Empty boxes to push the runwayPane to the center
+        HBox empty1 = new HBox();
+        empty1.getStyleClass().add("empty");
+        HBox.setHgrow(empty1, Priority.ALWAYS);
+        HBox empty2 = new HBox();
+        empty2.getStyleClass().add("empty");
+        HBox.setHgrow(empty2, Priority.ALWAYS);
+        HBox runwayPaneBox = new HBox(empty1, runwayPane ,empty2);
 
         // Plane Images
         Image planeImage = new Image(getClass().getResource("/images/Plane-TopView1.png").toExternalForm());
@@ -191,7 +212,7 @@ public class TopViewScene extends BaseScene{
 
 
 
-        displayStackPane.getChildren().addAll(gradeAreaImageView, runwayImageView, stopWayPane, planeObstacleBox);
+        displayStackPane.getChildren().addAll(gradeAreaImageView, runwayPaneBox, planeObstacleBox);
 
 
         return displayStackPane;
