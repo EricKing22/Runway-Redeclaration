@@ -12,6 +12,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp2211.runwayredeclaration.Component.DashedLine;
+import uk.ac.soton.comp2211.runwayredeclaration.Component.EmptyVBox;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomePane;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomeWindow;
 public class TopViewScene extends BaseScene{
@@ -147,9 +149,6 @@ public class TopViewScene extends BaseScene{
         StackPane runwayPane = new StackPane();
         runwayPane.getChildren().addAll(runwayImageView);
 
-
-
-
         // Stop Ways
         HBox stopWay1 = new HBox();
         stopWay1.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -159,13 +158,11 @@ public class TopViewScene extends BaseScene{
         stopWay2.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
         stopWay2.prefWidthProperty().bind(displayStopWayLength);
         stopWay2.setAlignment(Pos.CENTER_RIGHT);
-
         HBox stopWayEmpty = new HBox();
         stopWayEmpty.getStyleClass().add("empty");
         HBox.setHgrow(stopWayEmpty, Priority.ALWAYS);
         HBox stopWayPane = new HBox(stopWay1, stopWayEmpty, stopWay2);
         stopWayPane.setMaxHeight(70);
-
 
         runwayPane.getChildren().add(stopWayPane);
 
@@ -204,17 +201,145 @@ public class TopViewScene extends BaseScene{
         HBox.setHgrow(backPlaneEmpty, Priority.ALWAYS);
 
 
-
-
-
         planeObstacleBox.getChildren().addAll(planeImageView, planeObstacleDistance, obstacleImageView);
 
 
+        // Clearways
+        HBox clearWayBox = new HBox();
+        clearWayBox.getStyleClass().add("empty");
+        clearWayBox.setAlignment(Pos.CENTER);
+
+        HBox clearWay1 = new HBox();
+        clearWay1.getStyleClass().add("clearway-box");
+        clearWay1.prefWidthProperty().bind(displayClearWayLength);
+
+        HBox distanceBetweenStopways = new HBox();
+        distanceBetweenStopways.getStyleClass().add("empty");
+        distanceBetweenStopways.setPrefWidth(displayRunwayLength.get() - 2 * displayStopWayLength.getValue());
+
+        HBox clearWay2 = new HBox();
+        clearWay2.getStyleClass().add("clearway-box");
+        clearWay2.prefWidthProperty().bind(displayClearWayLength);
+
+        clearWayBox.getChildren().addAll(clearWay1, distanceBetweenStopways, clearWay2);
 
 
 
-        displayStackPane.getChildren().addAll(gradeAreaImageView, runwayPaneBox, planeObstacleBox);
+        displayStackPane.getChildren().addAll(gradeAreaImageView, runwayPaneBox, clearWayBox, planeObstacleBox);
 
+        // Take Off Indicators: TORA, TODA, ASDA
+        StackPane takeOffIndicators = new StackPane();
+        takeOffIndicators.getStyleClass().add("empty");
+        takeOffIndicators.setAlignment(Pos.CENTER);
+        displayStackPane.getChildren().add(takeOffIndicators);
+
+        // TORA HBox
+        HBox toraBox = new HBox();
+        toraBox.getStyleClass().add("empty");
+        toraBox.setAlignment(Pos.CENTER_LEFT);
+        takeOffIndicators.getChildren().add(toraBox);
+        HBox borderToTORA = new HBox();
+        borderToTORA.getStyleClass().add("empty");
+        borderToTORA.setPrefWidth(displayBorderToRunway.getValue() + displayStopWayLength.getValue() - 1);
+        DashedLine toraStart = new DashedLine(0.1, 500);
+        DashedLine toraEnd = new DashedLine(0.1, 500);
+        // TORA Distance Box (Line + Text)
+        VBox toraDistanceBox = new VBox();
+        toraDistanceBox.getStyleClass().add("empty");
+        toraDistanceBox.prefWidthProperty().bindBidirectional(displayTORA);
+        toraDistanceBox.setMaxHeight(500);
+        toraDistanceBox.setAlignment(Pos.BOTTOM_CENTER);
+        DashedLine toraArrow = new DashedLine(displayTORA.get(), 0.1, false);
+        Text toraText = new Text("TORA");
+        toraText.getStyleClass().add("arrow-text");
+        toraDistanceBox.getChildren().addAll(toraArrow, toraText, new EmptyVBox(0.1, 50));
+
+        toraBox.getChildren().addAll(borderToTORA, toraStart, toraDistanceBox, toraEnd);
+
+
+
+        // TODA HBox
+        HBox todaBox = new HBox();
+        todaBox.getStyleClass().add("empty");
+        todaBox.setAlignment(Pos.CENTER_LEFT);
+        takeOffIndicators.getChildren().add(todaBox);
+        DashedLine todaStart = new DashedLine(0.1, 500);
+        DashedLine todaEnd = new DashedLine(0.1, 500);
+
+        VBox todaDistanceBox = new VBox();
+        todaDistanceBox.setAlignment(Pos.BOTTOM_CENTER);
+        todaDistanceBox.setMaxHeight(500);
+        todaDistanceBox.getStyleClass().add("empty");
+        todaDistanceBox.prefWidthProperty().bindBidirectional(displayTODA);
+        DashedLine todaArrow = new DashedLine(displayTODA.get(), 0.1, false);
+        Text todaText = new Text("TODA");
+        todaText.getStyleClass().add("arrow-text");
+        todaDistanceBox.getChildren().addAll(todaArrow, todaText, new EmptyVBox(0.1, 100));
+
+        HBox borderToTODA = new HBox();
+        borderToTODA.getStyleClass().add("empty");
+        borderToTODA.setPrefWidth(displayBorderToRunway.getValue() + displayStopWayLength.getValue() - 1);
+
+        todaBox.getChildren().addAll(borderToTODA, todaStart, todaDistanceBox, todaEnd);
+
+
+        // ASDA HBox
+        HBox asdaBox = new HBox();
+        asdaBox.getStyleClass().add("empty");
+        asdaBox.setAlignment(Pos.CENTER_LEFT);
+        takeOffIndicators.getChildren().add(asdaBox);
+
+        DashedLine asdaStart = new DashedLine(0.1, 500);
+        DashedLine asdaEnd = new DashedLine(0.1, 500);
+
+        VBox asdaDistanceBox = new VBox();
+        asdaDistanceBox.getStyleClass().add("empty");
+        asdaDistanceBox.prefWidthProperty().bindBidirectional(displayASDA);
+        asdaDistanceBox.setMaxHeight(500);
+        asdaDistanceBox.setAlignment(Pos.BOTTOM_CENTER);
+        DashedLine asdaArrow = new DashedLine(displayASDA.get(), 0.1, false);
+        Text asdaText = new Text("ASDA");
+        asdaText.getStyleClass().add("arrow-text");
+        asdaDistanceBox.getChildren().addAll(asdaArrow, asdaText, new EmptyVBox(0.1, 150));
+
+
+        HBox borderToASDA = new HBox();
+        borderToASDA.getStyleClass().add("empty");
+        borderToASDA.setPrefWidth(displayBorderToRunway.getValue() + displayStopWayLength.getValue() - 1);
+
+        asdaBox.getChildren().addAll(borderToASDA, asdaStart, asdaDistanceBox, asdaEnd);
+
+        // Landing Indicators: LDA
+        StackPane landingIndicators = new StackPane();
+        landingIndicators.getStyleClass().add("empty");
+        landingIndicators.setAlignment(Pos.CENTER);
+        displayStackPane.getChildren().add(landingIndicators);
+
+
+        // LDA HBox
+        HBox ldaBox = new HBox();
+        ldaBox.getStyleClass().add("empty");
+        ldaBox.setAlignment(Pos.CENTER_LEFT);
+        landingIndicators.getChildren().add(ldaBox);
+
+        DashedLine ldaStart = new DashedLine(0.1, 500);
+        DashedLine ldaEnd = new DashedLine(0.1, 500);
+
+        VBox ldaDistanceBox = new VBox();
+        ldaDistanceBox.getStyleClass().add("empty");
+        ldaDistanceBox.prefWidthProperty().bindBidirectional(displayLDA);
+        ldaDistanceBox.setMaxHeight(500);
+        ldaDistanceBox.setAlignment(Pos.TOP_CENTER);
+        DashedLine ldaArrow = new DashedLine(displayLDA.get(), 0.1, false);
+        Text ldaText = new Text("LDA");
+        ldaText.getStyleClass().add("arrow-text");
+        ldaDistanceBox.getChildren().addAll(new EmptyVBox(0.1, 150), ldaArrow, ldaText);
+
+        HBox borderToLDA = new HBox();
+        borderToLDA.getStyleClass().add("empty");
+        borderToLDA.setPrefWidth(displayBorderToRunway.getValue() + displayStopWayLength.getValue() - 1);
+
+        ldaBox.getChildren().addAll(borderToLDA, ldaStart, ldaDistanceBox, ldaEnd);
 
         return displayStackPane;
     }

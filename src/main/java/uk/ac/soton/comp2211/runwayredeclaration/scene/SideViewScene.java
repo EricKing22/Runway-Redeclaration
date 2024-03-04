@@ -32,7 +32,7 @@ public class SideViewScene extends BaseScene{
 
     private StackPane middleDisplayBox;
 
-    private DoubleProperty displayBorderToRunway = new SimpleDoubleProperty(75);
+
 
 
 
@@ -50,7 +50,21 @@ public class SideViewScene extends BaseScene{
 
     @Override
     public void initialise() {
+        buttonASDA.setOnAction(e -> {
+            displayASDA.set(100);
+        });
 
+        buttonTODA.setOnAction(e -> {
+            displayTODA.set(100);
+        });
+
+        buttonTORA.setOnAction(e -> {
+            displayTORA.set(100);
+        });
+
+        buttonLDA.setOnAction(e -> {
+            displayLDA.set(100);
+        });
     }
 
     /**

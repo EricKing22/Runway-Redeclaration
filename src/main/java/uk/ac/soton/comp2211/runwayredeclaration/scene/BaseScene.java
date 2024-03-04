@@ -47,6 +47,14 @@ public abstract class BaseScene {
     protected DoubleProperty LDA = new SimpleDoubleProperty();
     protected DoubleProperty displayLDA = new SimpleDoubleProperty(displayRunwayLength.getValue() - 2 * displayStopWayLength.getValue());
 
+    protected DoubleProperty displayBorderToRunway = new SimpleDoubleProperty(75);
+
+    protected ToggleButton buttonTORA;
+    protected ToggleButton buttonTODA;
+    protected ToggleButton buttonLDA;
+    protected ToggleButton buttonASDA;
+
+
 
     /**
      * Create a new scene, passing in the GameWindow the scene will be displayed in
@@ -154,10 +162,10 @@ public abstract class BaseScene {
 
         HBox tabs = new HBox(5);
         tabs.setPadding(new Insets(5));
-        ToggleButton buttonTORA = new ToggleButton("TORA");
-        ToggleButton buttonTODA = new ToggleButton("TODA");
-        ToggleButton buttonLDA = new ToggleButton("LDA");
-        ToggleButton buttonASDA = new ToggleButton("ASDA");
+        buttonTORA = new ToggleButton("TORA");
+        buttonTODA = new ToggleButton("TODA");
+        buttonLDA = new ToggleButton("LDA");
+        buttonASDA = new ToggleButton("ASDA");
 
         ToggleGroup toggleGroup = new ToggleGroup();
         buttonTORA.setToggleGroup(toggleGroup);
