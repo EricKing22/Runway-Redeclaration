@@ -125,6 +125,21 @@
     -fx-background-color: #0055cc; /* Medium blue color for selected */
 }
 
+.button {
+    -fx-background-color: #9DC3E6; /* Dark blue color */
+    -fx-text-fill: white;
+    -fx-border-color: white;
+    -fx-font-size: 12px;
+    -fx-border-width: 1.25;
+}
+
+.button-selected {
+    -fx-background-color: #0055cc; /* Medium blue color for selected */
+}
+
+
+
+
 /* Adjust the style for the TitledPane title */
 .titled-pane > .title {
     -fx-font-size: 16px;

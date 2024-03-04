@@ -11,8 +11,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import uk.ac.soton.comp2211.runwayredeclaration.Component.Airport;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomePane;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomeWindow;
+import uk.ac.soton.comp2211.runwayredeclaration.Component.Runway;
+import uk.ac.soton.comp2211.runwayredeclaration.Component.Obstacle;
 
 
 /**
@@ -24,6 +27,9 @@ public abstract class BaseScene {
 
     protected HomePane root;
     protected Scene scene;
+
+    protected Runway currentRunway;
+    protected Obstacle currentObstacle;
 
     protected DoubleProperty runwayLength = new SimpleDoubleProperty();
     protected DoubleProperty stopWayLength = new SimpleDoubleProperty();
@@ -65,6 +71,22 @@ public abstract class BaseScene {
     public double calculateThreshold(){
         return currentObstacle.getPositionOnRunway() - currentRunway.getDisplacedThreshold();
     }
+
+    public double calculateTORA(){
+        return currentRunway.getOriginalTORA() - currentRunway.getBlastProtection() - calculateThreshold() - currentRunway.getDisplacedThreshold();
+    }
+
+    public double calculateASDA(){
+       return calculateTORA() + currentRunway.getStopwayLength();
+    }
+
+    public double calculateTODA(){
+       return calculateTORA() + currentRunway.getClearwayLength();
+    }
+
+//    private static double calculateLDA() {
+//        return originalLDA - distanceFromThreshold - stripEnd - (currentObstacle.getHeight() * distanceFromThresholdForLDA);
+//    }
 
 
     /**
@@ -169,37 +191,93 @@ public abstract class BaseScene {
         tpane2.setText("Calculation Breakdown:");
         tpane2.setCollapsible(true);
 
-        //part to create hbo for upper bit
+        TextArea displayArea = new TextArea();
+        displayArea.setEditable(false);
+        displayArea.setPrefHeight(300);
 
-        HBox tabs = new HBox(5);
-        tabs.setPadding(new Insets(5));
-        buttonTORA = new ToggleButton("TORA");
-        buttonTODA = new ToggleButton("TODA");
-        buttonLDA = new ToggleButton("LDA");
-        buttonASDA = new ToggleButton("ASDA");
+        // Create Buttons
+        Button buttonTORA = new Button("TORA");
+        Button buttonTODA = new Button("TODA");
+        Button buttonLDA = new Button("LDA");
+        Button buttonASDA = new Button("ASDA");
 
-        ToggleGroup toggleGroup = new ToggleGroup();
-        buttonTORA.setToggleGroup(toggleGroup);
-        buttonTODA.setToggleGroup(toggleGroup);
-        buttonLDA.setToggleGroup(toggleGroup);
-        buttonASDA.setToggleGroup(toggleGroup);
+        // Apply the normal style to all buttons initially
+        buttonTORA.getStyleClass().add("button");
+        buttonTODA.getStyleClass().add("button");
+        buttonLDA.getStyleClass().add("button");
+        buttonASDA.getStyleClass().add("button");
 
-        tabs.getChildren().addAll(buttonTORA, buttonTODA, buttonLDA, buttonASDA);
+        // Button Actions
+        Button[] allButtons = new Button[]{buttonTORA, buttonTODA, buttonLDA, buttonASDA};
 
-        // White box below the tabs
-        StackPane whiteBox = new StackPane();
-        whiteBox.setPrefSize(200, 375); // Set your preferred size
-        whiteBox.setStyle("-fx-background-color: white; -fx-border-color: black;");
+        // Button Actions
+        for (Button button : allButtons) {
+            button.setOnAction(e -> {
+                updateButtonStyles(button, allButtons, displayArea);
+            });
+        }
+        HBox layout = new HBox(5);
+        layout.setPadding(new Insets(10));
+        layout.getChildren().addAll(buttonTORA, buttonTODA, buttonLDA, buttonASDA);
 
-        // Adding tabs and white box to a VBox
-        VBox vbox = new VBox(tabs, whiteBox);
-
-        // Set the content of the TitledPane
+        VBox vbox = new VBox(layout, displayArea);
         tpane2.setContent(vbox);
 
-        // Apply CSS to the scene
         return tpane2;
     }
+
+    private void updateButtonStyles(Button selectedButton, Button[] allButtons, TextArea displayArea) {
+        boolean isSelected = selectedButton.getStyleClass().contains("button-selected");
+        for (Button btn : allButtons) {
+            btn.getStyleClass().remove("button-selected");
+        }
+        //System.out.println(selectedButton.getText());
+        // If the selected button was not already highlighted, highlight it
+
+
+        if (!isSelected) {
+            selectedButton.getStyleClass().add("button-selected");
+            displayArea.setText("Content for " + selectedButton.getText());
+
+            if (this instanceof SimultaneousScene){
+                return;
+            }
+
+
+            if (selectedButton.getText().equals("TORA")){
+                takeOffIndicators.getChildren().clear();
+                takeOffIndicators.getChildren().add(toraBox);
+            }
+            else if (selectedButton.getText().equals("TODA")){
+                takeOffIndicators.getChildren().clear();
+                takeOffIndicators.getChildren().add(todaBox);
+            }
+            else if (selectedButton.getText().equals("ASDA")){
+                takeOffIndicators.getChildren().clear();
+                takeOffIndicators.getChildren().add(asdaBox);
+            }
+            else {
+                takeOffIndicators.getChildren().clear();
+            }
+            //else if()
+
+
+        } else {
+            displayArea.clear();
+            if (this instanceof SimultaneousScene){
+                return;
+            }
+            // If it was already selected, clear the text area as the button is deselected
+            takeOffIndicators.getChildren().clear();
+            takeOffIndicators.getChildren().add(asdaBox);
+            takeOffIndicators.getChildren().add(todaBox);
+            takeOffIndicators.getChildren().add(toraBox);
+
+        }
+
+    }
+
+
 
 
     /**
@@ -263,10 +341,10 @@ public abstract class BaseScene {
 
         //obstacleBox.getChildren().add((new Label("Obstacle:"), obstacle);
         //obstacleBox.getChildren().add(obstacle);
-        obstacleBox.getChildren().addAll(new Label("Height:"), new TextField());
-        obstacleBox.getChildren().addAll(new Label("Width:"), new TextField());
-        obstacleBox.getChildren().addAll(new Label("Distance from plane:"), new TextField());
-        obstacleBox.getChildren().addAll(new Label("Distance from centerline:"), new TextField());
+        obstacleBox.getChildren().addAll(new Label("Height (metres):"), new TextField());
+        obstacleBox.getChildren().addAll(new Label("Width (metres):"), new TextField());
+        obstacleBox.getChildren().addAll(new Label("Distance from left stopway (metres):"), new TextField());
+        //obstacleBox.getChildren().addAll(new Label("Distance from centerline (metres):"), new TextField());
 
         HBox buttons = new HBox(5);
         buttons.getChildren().add(new Button("Edit"));
@@ -278,7 +356,9 @@ public abstract class BaseScene {
         Button recalculateB = new Button("Recalculate");
         recalculateB.setMaxWidth(Double.MAX_VALUE);
 
-        obstacleGrid.addRow(0, new Label("Obstacle: "), obstacle);
+        HBox something = new HBox(30, new Label("Obstacle: "), obstacle);
+
+        obstacleGrid.addRow(0, something);
         obstacleGrid.addRow(1, obstacleBox);
         obstacleGrid.addRow(2, buttons);
         obstacleGrid.addRow(3, recalculateB);
