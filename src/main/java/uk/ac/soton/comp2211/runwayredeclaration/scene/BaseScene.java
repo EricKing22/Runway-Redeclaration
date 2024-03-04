@@ -27,9 +27,10 @@ public abstract class BaseScene {
     protected DoubleProperty runwayLength = new SimpleDoubleProperty();
     protected DoubleProperty stopWayLength = new SimpleDoubleProperty();
     protected DoubleProperty clearWayLength = new SimpleDoubleProperty();
-    protected DoubleProperty displayStopWayLength = new SimpleDoubleProperty(40); // Need to be rescaled
-    protected DoubleProperty displayClearWayLength = new SimpleDoubleProperty(60); // Need to be rescaled
+    protected DoubleProperty displayStopWayLength = new SimpleDoubleProperty(50); // Need to be rescaled
+    protected DoubleProperty displayClearWayLength = new SimpleDoubleProperty(80); // Need to be rescaled
     protected DoubleProperty displayRunwayLength = new SimpleDoubleProperty(650); // FIXED
+
 
     protected DoubleProperty distBetweenPlaneObstacle = new SimpleDoubleProperty(10);
 
@@ -38,12 +39,13 @@ public abstract class BaseScene {
     protected DoubleProperty TORA = new SimpleDoubleProperty();
     protected DoubleProperty displayTORA = new SimpleDoubleProperty(displayRunwayLength.getValue() - 2 * displayStopWayLength.getValue());
     protected DoubleProperty TODA = new SimpleDoubleProperty();
-    protected DoubleProperty displayTODA = new SimpleDoubleProperty(displayRunwayLength.getValue() + displayClearWayLength.getValue());
+    protected DoubleProperty displayTODA = new SimpleDoubleProperty(displayRunwayLength.getValue() - 2 * displayStopWayLength.getValue() + displayClearWayLength.getValue() - 2);
     protected DoubleProperty ASDA = new SimpleDoubleProperty();
-    protected DoubleProperty displayASDA = new SimpleDoubleProperty(displayRunwayLength.getValue() + displayStopWayLength.getValue());
+    protected DoubleProperty displayASDA = new SimpleDoubleProperty(displayRunwayLength.getValue() - 2 * displayStopWayLength.getValue() + displayStopWayLength.getValue() - 2);
 
 
     protected DoubleProperty LDA = new SimpleDoubleProperty();
+    protected DoubleProperty displayLDA = new SimpleDoubleProperty(displayRunwayLength.getValue() - 2 * displayStopWayLength.getValue());
 
 
     /**

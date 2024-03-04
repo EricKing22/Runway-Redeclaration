@@ -161,7 +161,7 @@
 
 .arrow-text {
     -fx-font-family: "Calibri";
-    -fx-fill: white !important;
+    -fx-fill: black !important;
     -fx-padding: bold;
     -fx-font-size: 26px;
 }

@@ -6,10 +6,21 @@ import javafx.scene.shape.Rectangle;
 public class DashedLine extends Rectangle {
     public DashedLine(double width, double height) {
         super(width, height);
-        setFill(Color.TRANSPARENT);
+        setFill(null);
         setStroke(Color.web("#4472C4"));
-        setStrokeWidth(2);
+        setStrokeWidth(1);
         getStrokeDashArray().addAll(10d, 5d);
+    }
+
+    public DashedLine(double width, double height, boolean isDashed) {
+        super(width, height);
+        setFill(null);
+        setStrokeWidth(1);
+        setStroke(Color.web("#4472C4"));
+        if (isDashed) {
+            getStrokeDashArray().addAll(10d, 5d);
+        }
+
     }
 
 }
