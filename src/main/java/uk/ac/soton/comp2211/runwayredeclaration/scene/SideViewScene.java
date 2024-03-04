@@ -50,21 +50,7 @@ public class SideViewScene extends BaseScene{
 
     @Override
     public void initialise() {
-        buttonASDA.setOnAction(e -> {
-            displayASDA.set(100);
-        });
 
-        buttonTODA.setOnAction(e -> {
-            displayTODA.set(100);
-        });
-
-        buttonTORA.setOnAction(e -> {
-            displayTORA.set(100);
-        });
-
-        buttonLDA.setOnAction(e -> {
-            displayLDA.set(100);
-        });
     }
 
     /**
@@ -277,13 +263,13 @@ public class SideViewScene extends BaseScene{
 
 
         // Take Off Indicators: TORA, TODA, ASDA
-        StackPane takeOffIndicators = new StackPane();
+        takeOffIndicators = new StackPane();
         takeOffIndicators.getStyleClass().add("empty");
         takeOffIndicators.setAlignment(Pos.CENTER);
         displayStackPane.getChildren().add(takeOffIndicators);
 
         // TORA HBox
-        HBox toraBox = new HBox();
+        toraBox = new HBox();
         toraBox.getStyleClass().add("empty");
         toraBox.setAlignment(Pos.CENTER_LEFT);
         takeOffIndicators.getChildren().add(toraBox);
@@ -308,7 +294,7 @@ public class SideViewScene extends BaseScene{
 
 
         // TODA HBox
-        HBox todaBox = new HBox();
+        todaBox = new HBox();
         todaBox.getStyleClass().add("empty");
         todaBox.setAlignment(Pos.CENTER_LEFT);
         takeOffIndicators.getChildren().add(todaBox);
@@ -333,7 +319,7 @@ public class SideViewScene extends BaseScene{
 
 
         // ASDA HBox
-        HBox asdaBox = new HBox();
+        asdaBox = new HBox();
         asdaBox.getStyleClass().add("empty");
         asdaBox.setAlignment(Pos.CENTER_LEFT);
         takeOffIndicators.getChildren().add(asdaBox);
@@ -366,7 +352,7 @@ public class SideViewScene extends BaseScene{
 
 
         // LDA HBox
-        HBox ldaBox = new HBox();
+        ldaBox = new HBox();
         ldaBox.getStyleClass().add("empty");
         ldaBox.setAlignment(Pos.CENTER_LEFT);
         landingIndicators.getChildren().add(ldaBox);

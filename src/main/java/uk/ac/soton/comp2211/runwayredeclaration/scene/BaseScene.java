@@ -4,6 +4,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -54,6 +55,16 @@ public abstract class BaseScene {
     protected ToggleButton buttonLDA;
     protected ToggleButton buttonASDA;
 
+    protected StackPane takeOffIndicators;
+    protected HBox toraBox;
+    protected HBox todaBox;
+    protected HBox ldaBox;
+    protected HBox asdaBox;
+
+
+    public double calculateThreshold(){
+        return currentObstacle.getPositionOnRunway() - currentRunway.getDisplacedThreshold();
+    }
 
 
     /**
@@ -248,6 +259,7 @@ public abstract class BaseScene {
         obstacle.setValue("XXXX Plane");
 
         VBox obstacleBox = new VBox(5);
+
 
         //obstacleBox.getChildren().add((new Label("Obstacle:"), obstacle);
         //obstacleBox.getChildren().add(obstacle);

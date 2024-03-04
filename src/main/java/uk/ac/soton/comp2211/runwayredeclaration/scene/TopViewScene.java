@@ -228,13 +228,13 @@ public class TopViewScene extends BaseScene{
         displayStackPane.getChildren().addAll(gradeAreaImageView, runwayPaneBox, clearWayBox, planeObstacleBox);
 
         // Take Off Indicators: TORA, TODA, ASDA
-        StackPane takeOffIndicators = new StackPane();
+        takeOffIndicators = new StackPane();
         takeOffIndicators.getStyleClass().add("empty");
         takeOffIndicators.setAlignment(Pos.CENTER);
         displayStackPane.getChildren().add(takeOffIndicators);
 
         // TORA HBox
-        HBox toraBox = new HBox();
+        toraBox = new HBox();
         toraBox.getStyleClass().add("empty");
         toraBox.setAlignment(Pos.CENTER_LEFT);
         takeOffIndicators.getChildren().add(toraBox);
@@ -259,7 +259,7 @@ public class TopViewScene extends BaseScene{
 
 
         // TODA HBox
-        HBox todaBox = new HBox();
+        todaBox = new HBox();
         todaBox.getStyleClass().add("empty");
         todaBox.setAlignment(Pos.CENTER_LEFT);
         takeOffIndicators.getChildren().add(todaBox);
@@ -284,7 +284,7 @@ public class TopViewScene extends BaseScene{
 
 
         // ASDA HBox
-        HBox asdaBox = new HBox();
+        asdaBox = new HBox();
         asdaBox.getStyleClass().add("empty");
         asdaBox.setAlignment(Pos.CENTER_LEFT);
         takeOffIndicators.getChildren().add(asdaBox);
@@ -317,7 +317,7 @@ public class TopViewScene extends BaseScene{
 
 
         // LDA HBox
-        HBox ldaBox = new HBox();
+        ldaBox = new HBox();
         ldaBox.getStyleClass().add("empty");
         ldaBox.setAlignment(Pos.CENTER_LEFT);
         landingIndicators.getChildren().add(ldaBox);
