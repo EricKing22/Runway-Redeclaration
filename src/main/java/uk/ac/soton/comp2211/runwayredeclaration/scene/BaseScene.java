@@ -28,7 +28,8 @@ public abstract class BaseScene {
     protected HomePane root;
     protected Scene scene;
 
-    protected Runway currentRunway;
+    protected Runway currentRunway1;
+    protected Runway currentRunway2;
     protected Obstacle currentObstacle;
 
     protected DoubleProperty runwayLength = new SimpleDoubleProperty();
@@ -56,10 +57,6 @@ public abstract class BaseScene {
 
     protected DoubleProperty displayBorderToRunway = new SimpleDoubleProperty(75);
 
-    protected ToggleButton buttonTORA;
-    protected ToggleButton buttonTODA;
-    protected ToggleButton buttonLDA;
-    protected ToggleButton buttonASDA;
 
     protected StackPane takeOffIndicators;
     protected HBox toraBox;
@@ -69,19 +66,19 @@ public abstract class BaseScene {
 
 
     public double calculateThreshold(){
-        return currentObstacle.getPositionOnRunway() - currentRunway.getDisplacedThreshold();
+        return currentObstacle.getPositionOnRunway() - currentRunway1.getDisplacedThreshold();
     }
 
     public double calculateTORA(){
-        return currentRunway.getOriginalTORA() - currentRunway.getBlastProtection() - calculateThreshold() - currentRunway.getDisplacedThreshold();
+        return currentRunway1.getOriginalTORA().get() - currentRunway1.getBlastProtection() - calculateThreshold() - currentRunway1.getDisplacedThreshold();
     }
 
     public double calculateASDA(){
-       return calculateTORA() + currentRunway.getStopwayLength();
+       return calculateTORA() + currentRunway1.getStopwayLength();
     }
 
     public double calculateTODA(){
-       return calculateTORA() + currentRunway.getClearwayLength();
+       return calculateTORA() + currentRunway1.getClearwayLength();
     }
 
 //    private static double calculateLDA() {
@@ -95,6 +92,11 @@ public abstract class BaseScene {
      */
     public BaseScene(HomeWindow homeWindow) {
         this.homeWindow = homeWindow;
+
+
+        // For demo
+        this.currentRunway1 = new Runway("09L27R", 3902.0, 3902.0, 3902.0, 3595.0, 9, 0.0, "L");
+        this.currentRunway2 = new Runway("09L27R", 3884.0, 3862.0, 3884.0, 3884.0, 27, 0.0, "R");
     }
 
     /**
@@ -149,15 +151,70 @@ public abstract class BaseScene {
         GridPane.setHalignment(lblOriginal, HPos.CENTER);
         gpanething.add(lblOriginal, 0, 1);
 
-        for (int row = 2; row < 4; row++) {
-            for (int col = 0; col < headers.length; col++) {
-                Label label = new Label("1000m");
-                label.getStyleClass().add("grid-pane-label");
-                GridPane.setHalignment(label, HPos.CENTER); // For horizontal alignment
-                GridPane.setValignment(label, VPos.CENTER); // For vertical alignment
-                gpanething.add(label, col, row);
-            }
-        }
+        // Original Values:
+        Label runway1 = new Label("09L");
+        runway1.getStyleClass().add("grid-pane-label");
+        gpanething.add(runway1, 0, 2);
+
+        Label tora_original = new Label();
+        tora_original.textProperty().bind(currentRunway1.getOriginalTORA().asString());
+        tora_original.getStyleClass().add("grid-pane-label");
+        gpanething.add(tora_original, 1, 2);
+
+        Label toda_original = new Label();
+        toda_original.textProperty().bind(currentRunway1.getOriginalTODA().asString());
+        toda_original.getStyleClass().add("grid-pane-label");
+        gpanething.add(toda_original, 2, 2);
+
+        Label lda_original = new Label();
+        lda_original.textProperty().bind(currentRunway1.getOriginalLDA().asString());
+        lda_original.getStyleClass().add("grid-pane-label");
+        gpanething.add(lda_original, 3, 2);
+
+        Label asda_original = new Label();
+        asda_original.textProperty().bind(currentRunway1.getOriginalASDA().asString());
+        asda_original.getStyleClass().add("grid-pane-label");
+        gpanething.add(asda_original, 4, 2);
+
+
+        Label runway2 = new Label("27R");
+        runway2.getStyleClass().add("grid-pane-label");
+        gpanething.add(runway2, 0, 3);
+
+        Label tora_new = new Label();
+        tora_new.textProperty().bind(currentRunway2.getOriginalTORA().asString());
+        tora_new.getStyleClass().add("grid-pane-label");
+        gpanething.add(tora_new, 1, 3);
+
+        Label toda_new = new Label();
+        toda_new.textProperty().bind(currentRunway2.getOriginalTODA().asString());
+        toda_new.getStyleClass().add("grid-pane-label");
+        gpanething.add(toda_new, 2, 3);
+
+        Label lda_new = new Label();
+        lda_new.textProperty().bind(currentRunway2.getOriginalLDA().asString());
+        lda_new.getStyleClass().add("grid-pane-label");
+        gpanething.add(lda_new, 3, 3);
+
+        Label asda_new = new Label();
+        asda_new.textProperty().bind(currentRunway2.getOriginalASDA().asString());
+        asda_new.getStyleClass().add("grid-pane-label");
+        gpanething.add(asda_new, 4, 3);
+
+
+
+
+
+
+//        for (int row = 2; row < 4; row++) {
+//            for (int col = 0; col < headers.length; col++) {
+//                Label label = new Label("1000m");
+//                label.getStyleClass().add("grid-pane-label");
+//                GridPane.setHalignment(label, HPos.CENTER); // For horizontal alignment
+//                GridPane.setValignment(label, VPos.CENTER); // For vertical alignment
+//                gpanething.add(label, col, row);
+//            }
+//        }
 
         Label lblRecalculated = new Label("New Values");
         lblRecalculated.setMaxWidth(Double.MAX_VALUE);
@@ -169,7 +226,7 @@ public abstract class BaseScene {
         // Adding two rows of arbitrary values after "Re-Calculated Values"
         for (int row = 5; row < 7; row++) {
             for (int col = 0; col < headers.length; col++) {
-                Label label = new Label("750m");
+                Label label = new Label("xxxx.0");
                 label.getStyleClass().add("grid-pane-label");
                 GridPane.setHalignment(label, HPos.CENTER); // For horizontal alignment
                 GridPane.setValignment(label, VPos.CENTER); // For vertical alignment
@@ -193,7 +250,7 @@ public abstract class BaseScene {
 
         TextArea displayArea = new TextArea();
         displayArea.setEditable(false);
-        displayArea.setPrefHeight(300);
+        displayArea.setPrefHeight(600);
 
         // Create Buttons
         Button buttonTORA = new Button("TORA");
@@ -231,7 +288,7 @@ public abstract class BaseScene {
         for (Button btn : allButtons) {
             btn.getStyleClass().remove("button-selected");
         }
-        //System.out.println(selectedButton.getText());
+
         // If the selected button was not already highlighted, highlight it
 
 
@@ -307,11 +364,11 @@ public abstract class BaseScene {
 
         airportGrid.addRow(0, new Label("Airport:"), airports);
         airportGrid.addRow(1, new Label("Runway:"), runways);
-        airportGrid.addRow(2, new Label("Length:"),  new Text("5555.0m"));
+        airportGrid.addRow(2, new Label("Length:"),  new Text("xxxx.0m"));
 
-        airportGrid.addRow(3, new Label("Threshold:"), new Text("1111.0m"));
-        airportGrid.addRow(4, new Label("Clearway:"), new Text("100.0m"));
-        airportGrid.addRow(5, new Label("Stopway:"), new Text("80.0m"));
+        airportGrid.addRow(3, new Label("Threshold:"), new Text("xxxx.0m"));
+        airportGrid.addRow(4, new Label("Clearway:"), new Text("xxxx.0m"));
+        airportGrid.addRow(5, new Label("Stopway:"), new Text("xxxx.0m"));
 
         airportTPane.setContent(airportGrid);
 

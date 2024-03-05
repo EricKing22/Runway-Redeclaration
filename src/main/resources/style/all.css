@@ -60,25 +60,7 @@
     -fx-font-weight: bold;
 }
 
-/* Style for the Log out button */
-.logout-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: white; /* Text color for the button */
-    -fx-alignment: center-right;
-    -fx-font-family: "Calibri";
-    -fx-alignment: center-right;
-    -fx-font-size: 16px;
-}
 
-.logout-button:hover {
-    -fx-font-weight: bold;
-}
-
-
-/* Push the logout button to the right */
-.logout-button {
-    -fx-max-width: infinity; /* Make button grow to push it to the right */
-}
 
 .empty {
     -fx-background-color: transparent;
@@ -204,6 +186,27 @@
     -fx-border-color: black;
     -fx-border-width: 2;
     -fx-border-style: dashed;
+}
+
+/* Style for the Log out button */
+.logout-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white; /* Text color for the button */
+    -fx-alignment: center-right;
+    -fx-font-family: "Calibri";
+    -fx-alignment: center-right;
+    -fx-font-size: 16px;
+}
+
+.logout-button:hover {
+    -fx-font-weight: bold;
+}
+
+
+/* Push the logout button to the right */
+.logout-button {
+    -fx-max-width: infinity; /* Make button grow to push it to the right */
+    -fx-border-color: transparent; /* Remove border */
 }
 
 

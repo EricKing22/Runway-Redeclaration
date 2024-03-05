@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2211.runwayredeclaration.Component;
 
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -13,10 +14,10 @@ public class Runway {
     private double stopwayLength;
     private double clearwayLength;
     private double blastProtection;
-    private double TORA;
-    private double TODA;
-    private double ASDA;
-    private double LDA;
+    private SimpleDoubleProperty TORA;
+    private SimpleDoubleProperty TODA;
+    private SimpleDoubleProperty ASDA;
+    private SimpleDoubleProperty LDA;
     private double RESA;
     private ArrayList< Pair<Obstacle, Double> > obstacleDistanceList;
 
@@ -27,17 +28,28 @@ public class Runway {
         this.designator = name;
     }
 
-    public Runway (String name, double length, double width, double stopwayLength, double clearwayLength, double blastProtection){
-        this.designator = name;
-        this.length = length;
-        this.width = width;
-        this.displacedThreshold = 0;
-        this.stopwayLength = stopwayLength;
-        this.clearwayLength = clearwayLength;
-        this.TORA = length;
-        this.TODA = TORA + clearwayLength;
-        this.blastProtection = blastProtection;
+//    public Runway (String name, double length, double width, double stopwayLength, double clearwayLength, double blastProtection){
+//        this.designator = name;
+//        this.length = length;
+//        this.width = width;
+//        this.displacedThreshold = 0;
+//        this.stopwayLength = stopwayLength;
+//        this.clearwayLength = clearwayLength;
+//        this.TORA = new SimpleDoubleProperty(length);
+//        this.TODA = new SimpleDoubleProperty(TORA.getValue() + clearwayLength) ;
+//        this.blastProtection = blastProtection;
+//
+//    }
 
+    public Runway (String name, double tora, double toda, double asda, double lda, int heading, double displacedThreshold, String position){
+        this.designator = name;
+        this.TORA = new SimpleDoubleProperty(tora);
+        this.TODA = new SimpleDoubleProperty(toda);
+        this.ASDA = new SimpleDoubleProperty(asda);
+        this.LDA = new SimpleDoubleProperty(lda);
+        this.displacedThreshold = displacedThreshold;
+        this.obstacleDistanceList = new ArrayList<>();
+        this.blastProtection = 300;
     }
 
     /**
@@ -94,16 +106,26 @@ public class Runway {
     }
 
     public void setOriginalTORA(double TORA){
-        this.TORA = TORA;
+        this.TORA.set(TORA);
     }
 
-    public double getOriginalTORA(){
+    public SimpleDoubleProperty getOriginalTORA(){
         return this.TORA;
     }
 
-    public double getOriginalTODA(){
+    public SimpleDoubleProperty getOriginalTODA(){
         return this.TODA;
     }
+
+    public SimpleDoubleProperty getOriginalASDA(){
+        return this.ASDA;
+    }
+
+    public SimpleDoubleProperty getOriginalLDA(){
+        return this.LDA;
+    }
+
+
 
     public void setWidth(double width){
         this.width = width;
