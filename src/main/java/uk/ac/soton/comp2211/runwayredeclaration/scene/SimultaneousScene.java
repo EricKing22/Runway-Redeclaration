@@ -225,7 +225,7 @@ public class SimultaneousScene extends BaseScene{
         // HBox distance between the plane and obstacle
         HBox planeObstacleTopDistance = new HBox();
         planeObstacleTopDistance.getStyleClass().add("empty");
-        planeObstacleTopDistance.setPrefWidth(distBetweenPlaneObstacle.getValue());
+        planeObstacleTopDistance.setPrefWidth(displayPlaneToObstacle.getValue());
         // Obstacle Image
         Image obstacleImageTop = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
         ImageView obstacleImageViewTop = new ImageView(obstacleImageTop);
@@ -270,7 +270,7 @@ public class SimultaneousScene extends BaseScene{
         // HBox distance between the plane and obstacle
         HBox planeObstacleSideDistance = new HBox();
         planeObstacleSideDistance.getStyleClass().add("empty");
-        planeObstacleSideDistance.setPrefWidth(distBetweenPlaneObstacle.getValue());
+        planeObstacleSideDistance.setPrefWidth(displayPlaneToObstacle.getValue());
         // Obstacle Image
         Image obstacleImageSide = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
         ImageView obstacleImageViewSide = new ImageView(obstacleImageSide);

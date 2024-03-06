@@ -40,7 +40,7 @@ public abstract class BaseScene {
     protected DoubleProperty displayRunwayLength = new SimpleDoubleProperty(550); // FIXED 650
 
 
-    protected DoubleProperty distBetweenPlaneObstacle = new SimpleDoubleProperty(10);
+
 
 
     // Take Off Parameters
@@ -50,10 +50,15 @@ public abstract class BaseScene {
     protected DoubleProperty displayTODA = new SimpleDoubleProperty(displayRunwayLength.getValue()  + displayClearWayLength.getValue() - 2);
     protected DoubleProperty ASDA = new SimpleDoubleProperty();
     protected DoubleProperty displayASDA = new SimpleDoubleProperty(displayRunwayLength.getValue()  + displayStopWayLength.getValue() - 2);
-
-
     protected DoubleProperty LDA = new SimpleDoubleProperty();
     protected DoubleProperty displayLDA = new SimpleDoubleProperty(displayRunwayLength.getValue() );
+    protected DoubleProperty blastAllowance = new SimpleDoubleProperty();
+    protected DoubleProperty displayBlastAllowance = new SimpleDoubleProperty(50);
+    protected DoubleProperty RESA = new SimpleDoubleProperty();
+    protected DoubleProperty displayRESA = new SimpleDoubleProperty(100);
+
+    protected DoubleProperty displayRunwayToPlane = new SimpleDoubleProperty(70);
+    protected DoubleProperty displayPlaneToObstacle = new SimpleDoubleProperty(400);
 
     protected DoubleProperty displayBorderToRunway = new SimpleDoubleProperty(75);
 
@@ -63,6 +68,8 @@ public abstract class BaseScene {
     protected HBox todaBox;
     protected HBox ldaBox;
     protected HBox asdaBox;
+    protected HBox blastAllowanceBox;
+    protected HBox resaBox;
 
 
     public double calculateThreshold(){

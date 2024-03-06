@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2211.runwayredeclaration.scene;
 
+import javafx.beans.binding.Bindings;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -179,11 +180,11 @@ public class TopViewScene extends BaseScene{
         Image planeImage = new Image(getClass().getResource("/images/Plane-TopView1.png").toExternalForm());
         ImageView planeImageView = new ImageView(planeImage);
         planeImageView.setPreserveRatio(true);
-        planeImageView.setFitWidth(50);
+        planeImageView.setFitWidth(60);
         // HBox distance between plane and obstacle
         HBox planeObstacleDistance = new HBox();
         planeObstacleDistance.getStyleClass().add("empty");
-        planeObstacleDistance.setPrefWidth(distBetweenPlaneObstacle.getValue());
+        planeObstacleDistance.setPrefWidth(displayPlaneToObstacle.getValue());
         // Obstacle Images
         Image obstacleImage = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
         ImageView obstacleImageView = new ImageView(obstacleImage);
@@ -192,7 +193,7 @@ public class TopViewScene extends BaseScene{
 
         // Plane & Obstacle Pane (Might change)
         HBox planeObstacleBox = new HBox();
-        planeObstacleBox.setAlignment(Pos.CENTER);
+        planeObstacleBox.setAlignment(Pos.CENTER_LEFT);
         HBox frontPlaneEmpty = new HBox();
         frontPlaneEmpty.getStyleClass().add("empty");
         HBox.setHgrow(frontPlaneEmpty, Priority.ALWAYS);
@@ -200,8 +201,13 @@ public class TopViewScene extends BaseScene{
         backPlaneEmpty.getStyleClass().add("empty");
         HBox.setHgrow(backPlaneEmpty, Priority.ALWAYS);
 
+        HBox borderToPlane = new HBox();
+        borderToPlane.getStyleClass().add("empty");
+        // borderToPlane = displayBorderToRunway + displayRunwayToPlane
+        borderToPlane.prefWidthProperty().bind(Bindings.add(displayBorderToRunway,displayRunwayToPlane));
 
-        planeObstacleBox.getChildren().addAll(planeImageView, planeObstacleDistance, obstacleImageView);
+
+        planeObstacleBox.getChildren().addAll(borderToPlane, planeImageView, planeObstacleDistance, obstacleImageView);
 
 
         // Clearways
@@ -340,6 +346,58 @@ public class TopViewScene extends BaseScene{
         borderToLDA.setPrefWidth(displayBorderToRunway.getValue() + displayStopWayLength.getValue() - 1);
 
         ldaBox.getChildren().addAll(borderToLDA, ldaStart, ldaDistanceBox, ldaEnd);
+
+        // RESA HBox
+        resaBox = new HBox();
+        resaBox.getStyleClass().add("empty");
+        resaBox.setAlignment(Pos.CENTER_LEFT);
+        takeOffIndicators.getChildren().add(resaBox);
+
+        DashedLine resaStart = new DashedLine(0.1, 150);
+        DashedLine resaEnd = new DashedLine(0.1, 150);
+
+        VBox resaDistanceBox = new VBox();
+        resaDistanceBox.getStyleClass().add("empty");
+        resaDistanceBox.prefWidthProperty().bindBidirectional(displayRESA);
+        resaDistanceBox.setMaxHeight(500);
+        resaDistanceBox.setAlignment(Pos.BOTTOM_CENTER);
+        DashedLine resaArrow = new DashedLine(displayRESA.get(), 0.1, false);
+        Text resaText = new Text("RESA");
+        resaText.getStyleClass().add("arrow-text");
+        resaText.setStyle("-fx-font-size: 10");
+        resaDistanceBox.getChildren().addAll(resaArrow, resaText, new EmptyVBox(0.1, 200));
+
+        HBox borderToRESA = new HBox();
+        borderToRESA.getStyleClass().add("empty");
+        borderToRESA.prefWidthProperty().bind(Bindings.subtract(Bindings.subtract(Bindings.add(displayBorderToRunway, Bindings.add(displayRunwayToPlane, Bindings.add(planeImageView.getFitWidth(), displayPlaneToObstacle))), displayRESA),1));
+
+        resaBox.getChildren().addAll(borderToRESA, resaStart, resaDistanceBox, resaEnd);
+
+        // Blast Allowance HBox
+        blastAllowanceBox = new HBox();
+        blastAllowanceBox.getStyleClass().add("empty");
+        blastAllowanceBox.setAlignment(Pos.CENTER_LEFT);
+        takeOffIndicators.getChildren().add(blastAllowanceBox);
+
+        DashedLine blastAllowanceStart = new DashedLine(0.1, 150);
+        DashedLine blastAllowanceEnd = new DashedLine(0.1, 150);
+
+        VBox blastAllowanceDistanceBox = new VBox();
+        blastAllowanceDistanceBox.getStyleClass().add("empty");
+        blastAllowanceDistanceBox.prefWidthProperty().bindBidirectional(displayBlastAllowance);
+        blastAllowanceDistanceBox.setMaxHeight(500);
+        blastAllowanceDistanceBox.setAlignment(Pos.BOTTOM_CENTER);
+        DashedLine blastAllowanceArrow = new DashedLine(displayBlastAllowance.get(), 0.1, false);
+        Text blastAllowanceText = new Text("Blast\nAllowance");
+        blastAllowanceText.getStyleClass().add("arrow-text");
+        blastAllowanceText.setStyle("-fx-font-size: 10");
+        blastAllowanceDistanceBox.getChildren().addAll(blastAllowanceArrow, blastAllowanceText, new EmptyVBox(0.1, 200));
+
+        HBox borderToBlastAllowance = new HBox();
+        borderToBlastAllowance.getStyleClass().add("empty");
+        borderToBlastAllowance.prefWidthProperty().bind(Bindings.add(displayBorderToRunway, Bindings.add(displayRunwayToPlane, planeImageView.getFitWidth())));
+        blastAllowanceBox.getChildren().addAll(borderToBlastAllowance, blastAllowanceStart, blastAllowanceDistanceBox, blastAllowanceEnd);
+
 
         return displayStackPane;
     }

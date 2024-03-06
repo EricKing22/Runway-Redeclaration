@@ -9,7 +9,7 @@ public class DashedLine extends Rectangle {
         setFill(null);
         setStroke(Color.web("#4472C4"));
         setStrokeWidth(1);
-        getStrokeDashArray().addAll(10d, 5d);
+        getStrokeDashArray().addAll(2d, 10d);
     }
 
     public DashedLine(double width, double height, boolean isDashed) {
