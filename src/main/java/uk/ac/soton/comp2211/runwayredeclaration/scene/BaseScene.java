@@ -37,7 +37,7 @@ public abstract class BaseScene {
     protected DoubleProperty clearWayLength = new SimpleDoubleProperty();
     protected DoubleProperty displayStopWayLength = new SimpleDoubleProperty(50); // Need to be rescaled
     protected DoubleProperty displayClearWayLength = new SimpleDoubleProperty(80); // Need to be rescaled
-    protected DoubleProperty displayRunwayLength = new SimpleDoubleProperty(650); // FIXED
+    protected DoubleProperty displayRunwayLength = new SimpleDoubleProperty(550); // FIXED 650
 
 
     protected DoubleProperty distBetweenPlaneObstacle = new SimpleDoubleProperty(10);
@@ -45,15 +45,15 @@ public abstract class BaseScene {
 
     // Take Off Parameters
     protected DoubleProperty TORA = new SimpleDoubleProperty();
-    protected DoubleProperty displayTORA = new SimpleDoubleProperty(displayRunwayLength.getValue() - 2 * displayStopWayLength.getValue());
+    protected DoubleProperty displayTORA = new SimpleDoubleProperty(displayRunwayLength.getValue());
     protected DoubleProperty TODA = new SimpleDoubleProperty();
-    protected DoubleProperty displayTODA = new SimpleDoubleProperty(displayRunwayLength.getValue() - 2 * displayStopWayLength.getValue() + displayClearWayLength.getValue() - 2);
+    protected DoubleProperty displayTODA = new SimpleDoubleProperty(displayRunwayLength.getValue()  + displayClearWayLength.getValue() - 2);
     protected DoubleProperty ASDA = new SimpleDoubleProperty();
-    protected DoubleProperty displayASDA = new SimpleDoubleProperty(displayRunwayLength.getValue() - 2 * displayStopWayLength.getValue() + displayStopWayLength.getValue() - 2);
+    protected DoubleProperty displayASDA = new SimpleDoubleProperty(displayRunwayLength.getValue()  + displayStopWayLength.getValue() - 2);
 
 
     protected DoubleProperty LDA = new SimpleDoubleProperty();
-    protected DoubleProperty displayLDA = new SimpleDoubleProperty(displayRunwayLength.getValue() - 2 * displayStopWayLength.getValue());
+    protected DoubleProperty displayLDA = new SimpleDoubleProperty(displayRunwayLength.getValue() );
 
     protected DoubleProperty displayBorderToRunway = new SimpleDoubleProperty(75);
 
@@ -203,19 +203,6 @@ public abstract class BaseScene {
 
 
 
-
-
-
-//        for (int row = 2; row < 4; row++) {
-//            for (int col = 0; col < headers.length; col++) {
-//                Label label = new Label("1000m");
-//                label.getStyleClass().add("grid-pane-label");
-//                GridPane.setHalignment(label, HPos.CENTER); // For horizontal alignment
-//                GridPane.setValignment(label, VPos.CENTER); // For vertical alignment
-//                gpanething.add(label, col, row);
-//            }
-//        }
-
         Label lblRecalculated = new Label("New Values");
         lblRecalculated.setMaxWidth(Double.MAX_VALUE);
         lblRecalculated.getStyleClass().add("center-label");
@@ -273,11 +260,11 @@ public abstract class BaseScene {
                 updateButtonStyles(button, allButtons, displayArea);
             });
         }
-        HBox layout = new HBox(5);
-        layout.setPadding(new Insets(10));
-        layout.getChildren().addAll(buttonTORA, buttonTODA, buttonLDA, buttonASDA);
+        HBox buttonLayout = new HBox(5);
+        buttonLayout.setPadding(new Insets(5));
+        buttonLayout.getChildren().addAll(buttonTORA, buttonTODA, buttonLDA, buttonASDA);
 
-        VBox vbox = new VBox(layout, displayArea);
+        VBox vbox = new VBox(buttonLayout, displayArea);
         tpane2.setContent(vbox);
 
         return tpane2;

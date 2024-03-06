@@ -205,11 +205,13 @@ public class SideViewScene extends BaseScene{
         runwayImageView.setPreserveRatio(true);
         runwayImageView.setFitWidth(displayRunwayLength.getValue());
 
+
         // Runway Pane
-        StackPane runwayPane = new StackPane();
-        runwayPane.getChildren().add(runwayImageView);
-        runwayPane.setPrefWidth(runwayImageView.getFitWidth());
-        runwayPane.setPrefHeight(runwayImageView.getFitHeight());
+        HBox runwayBox = new HBox();
+        runwayBox.getStyleClass().add("empty");
+        runwayBox.setAlignment(Pos.CENTER_LEFT);
+
+
         // Stop Ways
         HBox stopWay1 = new HBox();
         stopWay1.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -218,12 +220,10 @@ public class SideViewScene extends BaseScene{
         HBox stopWay2 = new HBox();
         stopWay2.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
         stopWay2.prefWidthProperty().bind(displayStopWayLength);
-        stopWay2.setAlignment(Pos.CENTER_RIGHT);
-        BorderPane stopWayPane = new BorderPane();
-        stopWayPane.setLeft(stopWay1);
-        stopWayPane.setRight(stopWay2);
+        stopWay2.setAlignment(Pos.CENTER_LEFT);
 
-        runwayPane.getChildren().add(stopWayPane);
+        runwayBox.getChildren().addAll(stopWay1, runwayImageView, stopWay2);
+
 
         // Empty boxes to push the runway to the center
         HBox borderToRunway1 = new HBox();
@@ -232,7 +232,7 @@ public class SideViewScene extends BaseScene{
         HBox borderToRunway2 = new HBox();
         borderToRunway2.getStyleClass().add("empty");
         borderToRunway2.setPrefWidth(displayBorderToRunway.getValue());
-        HBox runwayPaneBox = new HBox(borderToRunway1, runwayPane, borderToRunway2);
+        HBox runwayPaneBox = new HBox(borderToRunway1, runwayBox, borderToRunway2);
         runwayPaneBox.setAlignment(Pos.CENTER_LEFT);
 
 
@@ -252,7 +252,7 @@ public class SideViewScene extends BaseScene{
 
         HBox distanceBetweenStopways = new HBox();
         distanceBetweenStopways.getStyleClass().add("empty");
-        distanceBetweenStopways.setPrefWidth(displayRunwayLength.get() - 2 * displayStopWayLength.getValue());
+        distanceBetweenStopways.setPrefWidth(displayRunwayLength.get());
 
         HBox clearWay2 = new HBox();
         clearWay2.getStyleClass().add("clearway-box");

@@ -120,26 +120,16 @@
 }
 
 
-
-
 /* Adjust the style for the TitledPane title */
 .titled-pane > .title {
     -fx-font-size: 16px;
     -fx-background-color: #D6D6D6;
 }
 
-/* Style for the TitledPane content area */
-.titled-pane > .content {
-    -fx-padding: 10;
-}
-
-
 
 .combo-box {
     -fx-font-size: 12px;
 }
-
-
 
 .header-label {
     -fx-font-weight: bold;

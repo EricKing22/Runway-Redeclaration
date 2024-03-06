@@ -142,12 +142,14 @@ public class TopViewScene extends BaseScene{
         Image gradeArea = new Image(getClass().getResource("/images/GradedArea.png").toExternalForm());
         ImageView gradeAreaImageView = new ImageView(gradeArea);
         gradeAreaImageView.setPreserveRatio(true);
-        gradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 50);
+        gradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
 
 
-        // Runway Pane
-        StackPane runwayPane = new StackPane();
-        runwayPane.getChildren().addAll(runwayImageView);
+        // Runway HBox
+        HBox runwayBox = new HBox();
+        runwayBox.getStyleClass().add("empty");
+        runwayBox.setAlignment(Pos.CENTER_LEFT);
+
 
         // Stop Ways
         HBox stopWay1 = new HBox();
@@ -157,23 +159,21 @@ public class TopViewScene extends BaseScene{
         HBox stopWay2 = new HBox();
         stopWay2.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
         stopWay2.prefWidthProperty().bind(displayStopWayLength);
-        stopWay2.setAlignment(Pos.CENTER_RIGHT);
-        HBox stopWayEmpty = new HBox();
-        stopWayEmpty.getStyleClass().add("empty");
-        HBox.setHgrow(stopWayEmpty, Priority.ALWAYS);
-        HBox stopWayPane = new HBox(stopWay1, stopWayEmpty, stopWay2);
-        stopWayPane.setMaxHeight(70);
+        stopWay2.setAlignment(Pos.CENTER_LEFT);
 
-        runwayPane.getChildren().add(stopWayPane);
+        runwayBox.setMaxHeight(Region.USE_PREF_SIZE);
+        runwayBox.getChildren().addAll(stopWay1, runwayImageView, stopWay2);
 
-        // Empty boxes to push the runwayPane to the center
-        HBox empty1 = new HBox();
-        empty1.getStyleClass().add("empty");
-        HBox.setHgrow(empty1, Priority.ALWAYS);
-        HBox empty2 = new HBox();
-        empty2.getStyleClass().add("empty");
-        HBox.setHgrow(empty2, Priority.ALWAYS);
-        HBox runwayPaneBox = new HBox(empty1, runwayPane ,empty2);
+
+        // Empty boxes to push the runway to the center
+        HBox borderToRunway1 = new HBox();
+        borderToRunway1.getStyleClass().add("empty");
+        borderToRunway1.setPrefWidth(displayBorderToRunway.getValue());
+        HBox borderToRunway2 = new HBox();
+        borderToRunway2.getStyleClass().add("empty");
+        borderToRunway2.setPrefWidth(displayBorderToRunway.getValue());
+        HBox runwayPaneBox = new HBox(borderToRunway1, runwayBox, borderToRunway2);
+        runwayPaneBox.setAlignment(Pos.CENTER_LEFT);
 
         // Plane Images
         Image planeImage = new Image(getClass().getResource("/images/Plane-TopView1.png").toExternalForm());
@@ -215,7 +215,7 @@ public class TopViewScene extends BaseScene{
 
         HBox distanceBetweenStopways = new HBox();
         distanceBetweenStopways.getStyleClass().add("empty");
-        distanceBetweenStopways.setPrefWidth(displayRunwayLength.get() - 2 * displayStopWayLength.getValue());
+        distanceBetweenStopways.setPrefWidth(displayRunwayLength.get());
 
         HBox clearWay2 = new HBox();
         clearWay2.getStyleClass().add("clearway-box");
