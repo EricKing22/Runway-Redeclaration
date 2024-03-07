@@ -17,6 +17,9 @@ import uk.ac.soton.comp2211.runwayredeclaration.ui.HomeWindow;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.Runway;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.Obstacle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * A Base Scene used in the game. Handles common functionality between all scenes.
@@ -38,8 +41,6 @@ public abstract class BaseScene {
     protected DoubleProperty displayStopWayLength = new SimpleDoubleProperty(50); // Need to be rescaled
     protected DoubleProperty displayClearWayLength = new SimpleDoubleProperty(80); // Need to be rescaled
     protected DoubleProperty displayRunwayLength = new SimpleDoubleProperty(550); // FIXED 650
-
-
 
 
 
@@ -70,6 +71,9 @@ public abstract class BaseScene {
     protected HBox asdaBox;
     protected HBox blastAllowanceBox;
     protected HBox resaBox;
+
+    // Obstacles
+    protected ArrayList<Obstacle> obstacles = new ArrayList<>();
 
 
     public double calculateThreshold(){
@@ -104,6 +108,13 @@ public abstract class BaseScene {
         // For demo
         this.currentRunway1 = new Runway("09L27R", 3902.0, 3902.0, 3902.0, 3595.0, 9, 0.0, "L");
         this.currentRunway2 = new Runway("09L27R", 3884.0, 3862.0, 3884.0, 3884.0, 27, 0.0, "R");
+
+        Obstacle Boeing_777 = new Obstacle("Boeing 777", 18.6, 64.8, 63.7, 2973);
+        Obstacle Boeing_737 = new Obstacle("Boeing 737", 12.42, 35.91, 39.52, 2973);
+        Obstacle Luggage_Car = new Obstacle("Luggage Car", 1.7, 5.1, 4.6, 2973);
+        obstacles.addAll(new ArrayList<Obstacle>(List.of(Boeing_777, Boeing_737, Luggage_Car)));
+
+
     }
 
     /**
@@ -284,8 +295,6 @@ public abstract class BaseScene {
         }
 
         // If the selected button was not already highlighted, highlight it
-
-
         if (!isSelected) {
             selectedButton.getStyleClass().add("button-selected");
             displayArea.setText("Content for " + selectedButton.getText());
@@ -323,6 +332,8 @@ public abstract class BaseScene {
             takeOffIndicators.getChildren().add(asdaBox);
             takeOffIndicators.getChildren().add(todaBox);
             takeOffIndicators.getChildren().add(toraBox);
+            takeOffIndicators.getChildren().add(blastAllowanceBox);
+            takeOffIndicators.getChildren().add(resaBox);
 
         }
 
@@ -383,23 +394,43 @@ public abstract class BaseScene {
         obstacleTPane.setText("Obstacle:");
         obstacleTPane.setCollapsible(true);
 
-        ComboBox<String> obstacle = new ComboBox<>();
-        obstacle.getItems().addAll("XXXX Plane", "Car", "Boxes");
-        obstacle.setValue("XXXX Plane");
+        ComboBox<Obstacle> obstacle = new ComboBox<>();
+        for (Obstacle o : obstacles){
+            obstacle.getItems().add(o);
+        }
+
+
 
         VBox obstacleBox = new VBox(5);
 
+        TextField obstacleHeight = new TextField();
+        obstacleBox.getChildren().addAll(new Label("Height (metres):"), obstacleHeight);
 
-        //obstacleBox.getChildren().add((new Label("Obstacle:"), obstacle);
-        //obstacleBox.getChildren().add(obstacle);
-        obstacleBox.getChildren().addAll(new Label("Height (metres):"), new TextField());
-        obstacleBox.getChildren().addAll(new Label("Width (metres):"), new TextField());
-        obstacleBox.getChildren().addAll(new Label("Distance from left stopway (metres):"), new TextField());
-        //obstacleBox.getChildren().addAll(new Label("Distance from centerline (metres):"), new TextField());
+        TextField obstacleWidth = new TextField();
+        obstacleBox.getChildren().addAll(new Label("Width (metres):"),obstacleWidth);
+
+        TextField distanceFromStopway = new TextField();
+        obstacleBox.getChildren().addAll(new Label("Distance from left stopway (metres):"), distanceFromStopway);
+
+        obstacle.setOnAction(e -> {
+            currentObstacle = obstacle.getValue();
+            obstacleHeight.setText(String.valueOf(currentObstacle.getHeight()));
+            obstacleWidth.setText(String.valueOf(currentObstacle.getWidth()));
+            distanceFromStopway.setText(String.valueOf(currentObstacle.getPositionOnRunway()));
+
+        });
 
         HBox buttons = new HBox(5);
-        buttons.getChildren().add(new Button("Edit"));
-        buttons.getChildren().add(new Button("Add"));
+        Button editButton = new Button("Edit");
+        editButton.setOnAction(e -> {});
+
+        Button addButton = new Button("Add");
+        addButton.setOnAction(e -> {
+        });
+
+        buttons.getChildren().add(editButton);
+
+        buttons.getChildren().add(addButton);
         obstacleBox.getChildren().add(buttons);
 
 

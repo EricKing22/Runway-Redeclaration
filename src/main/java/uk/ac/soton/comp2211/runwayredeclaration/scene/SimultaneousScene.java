@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import uk.ac.soton.comp2211.runwayredeclaration.Component.EmptyVBox;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomePane;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomeWindow;
 import org.apache.logging.log4j.LogManager;
@@ -189,9 +190,12 @@ public class SimultaneousScene extends BaseScene{
 
         // Top-View Part
         StackPane topViewPane = new StackPane();
+
+
         topViewPane.getStyleClass().add("topView-background");
         displayBorderPane.setTop(topViewPane);
         topViewPane.prefHeightProperty().bind(displayBorderPane.heightProperty().divide(2));
+
 
         // Top-View Runway Image
         Image toprunwayImage = new Image(getClass().getResource("/images/Runway1.png").toExternalForm());
@@ -244,9 +248,23 @@ public class SimultaneousScene extends BaseScene{
         // Border for the views
         topViewPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 2, 0))));
 
+        VBox topViewLabelBox = new VBox();
+        topViewLabelBox.setAlignment(Pos.BOTTOM_CENTER);
+        VBox topViewEmpty = new VBox();
+        topViewEmpty.getStyleClass().add("empty");
+        VBox.setVgrow(topViewEmpty, Priority.ALWAYS);
+        Label topViewLabel = new Label("Top View");
+        topViewLabel.getStyleClass().add("view-label");
+        topViewLabelBox.getChildren().addAll(topViewLabel, topViewEmpty);
+
+
+
+
+
+
 
         // Add the runway, plane, obstacle and graded area to the top view pane
-        topViewPane.getChildren().addAll(gradeAreaImageView, runwayTopBox, planeObstacleTopBox);
+        topViewPane.getChildren().addAll(gradeAreaImageView, runwayTopBox, planeObstacleTopBox, topViewLabelBox);
 
 
 
@@ -261,6 +279,24 @@ public class SimultaneousScene extends BaseScene{
         bluePane.getStyleClass().add("sideView-background");
         bluePane.prefHeightProperty().bind(displayBorderPane.heightProperty().divide(4));
         sideViewPane.setTop(bluePane);
+
+
+
+        HBox sideViewEmpty1 = new HBox();
+        sideViewEmpty1.getStyleClass().add("empty");
+        HBox.setHgrow(sideViewEmpty1, Priority.ALWAYS);
+        HBox sideViewEmpty2 = new HBox();
+        sideViewEmpty2.getStyleClass().add("empty");
+        HBox.setHgrow(sideViewEmpty2, Priority.ALWAYS);
+
+        Label sideViewLabel = new Label("Side View");
+        sideViewLabel.setAlignment(Pos.CENTER);
+        sideViewLabel.getStyleClass().add("view-label");
+
+
+        bluePane.setTop(new HBox(sideViewEmpty1, sideViewLabel, sideViewEmpty2));
+
+
 
         // Plane Image
         Image planeImageSide = new Image(getClass().getResource("/images/Plane1.png").toExternalForm());

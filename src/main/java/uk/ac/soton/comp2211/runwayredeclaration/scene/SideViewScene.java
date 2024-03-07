@@ -101,10 +101,6 @@ public class SideViewScene extends BaseScene{
 
 
 
-
-
-
-
         this.initialise();
     }
 
@@ -395,9 +391,6 @@ public class SideViewScene extends BaseScene{
 
 
 
-
-
-
         // Landing Indicators: LDA
         StackPane landingIndicators = new StackPane();
         landingIndicators.getStyleClass().add("empty");
@@ -429,10 +422,6 @@ public class SideViewScene extends BaseScene{
         borderToLDA.setPrefWidth(displayBorderToRunway.getValue() + displayStopWayLength.getValue() - 1);
 
         ldaBox.getChildren().addAll(borderToLDA, ldaStart, ldaDistanceBox, ldaEnd);
-
-
-
-
 
 
 

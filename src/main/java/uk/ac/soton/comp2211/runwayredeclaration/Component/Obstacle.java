@@ -60,6 +60,10 @@ public class Obstacle {
         return length;
     }
 
+    public String toString(){
+        return name;
+    }
+
 
 
 
