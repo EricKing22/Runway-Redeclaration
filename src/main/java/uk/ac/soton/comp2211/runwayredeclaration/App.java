@@ -1,6 +1,7 @@
 package uk.ac.soton.comp2211.runwayredeclaration;
 
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import org.apache.logging.log4j.LogManager;
@@ -24,6 +25,7 @@ public class App extends Application{
     public void start(Stage stage) throws Exception {
         instance = this;
         this.stage = stage;
+
         //Open home window
         openHome();
     }
@@ -36,6 +38,7 @@ public class App extends Application{
 
         var homeWindow = new HomeWindow(stage,width,height);
 
+        this.stage.getIcons().add(new Image(getClass().getResource("/images/planeIcon.png").toExternalForm()));
         //Show the home window
         stage.show();
     }
