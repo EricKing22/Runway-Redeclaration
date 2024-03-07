@@ -3,10 +3,13 @@ package uk.ac.soton.comp2211.runwayredeclaration;
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
+import java.awt.Taskbar;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomeWindow;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 
 public class App extends Application{
@@ -37,8 +40,17 @@ public class App extends Application{
         logger.info("Opening home window");
 
         var homeWindow = new HomeWindow(stage,width,height);
-
+        //set the windows taskbar icon
         this.stage.getIcons().add(new Image(getClass().getResource("/images/planeIcon.png").toExternalForm()));
+        //set the mac taskbar icon
+        if (Taskbar.isTaskbarSupported() && Taskbar.getTaskbar().isSupported(Taskbar.Feature.ICON_IMAGE)) {
+            try {
+                java.awt.Image awtImage = ImageIO.read(getClass().getResourceAsStream("/images/planeIcon.png")); // Adjust path as needed
+                Taskbar.getTaskbar().setIconImage(awtImage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         //Show the home window
         stage.show();
     }
