@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2211.runwayredeclaration.scene;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.HPos;
@@ -28,6 +29,7 @@ public class SimultaneousScene extends BaseScene{
     private StackPane middleDisplayBox;
 
     private DoubleProperty topRunwayHeight = new SimpleDoubleProperty(50);
+
 
 
 
@@ -214,11 +216,27 @@ public class SimultaneousScene extends BaseScene{
         stopWayTop2.prefWidthProperty().bind(displayStopWayLength);
         stopWayTop2.setAlignment(Pos.CENTER_LEFT);
 
+        if (displayStopWayLength.getValue() == 0){
+            stopWayTop1.setVisible(false);
+            stopWayTop2.setVisible(false);
+        }
+
         HBox runwayTopBox = new HBox();
         runwayTopBox.getStyleClass().add("empty");
-        runwayTopBox.setAlignment(Pos.CENTER);
+        runwayTopBox.setAlignment(Pos.CENTER_LEFT);
         runwayTopBox.setMaxHeight(Region.USE_PREF_SIZE);
         runwayTopBox.getChildren().addAll(stopWayTop1, toprunwayImageView, stopWayTop2);
+
+        // Empty boxes to push the runway to the center
+        HBox borderToTopRunway1 = new HBox();
+        borderToTopRunway1.getStyleClass().add("empty");
+        borderToTopRunway1.setPrefWidth(displayBorderToRunway.getValue());
+        HBox borderToTopRunway2 = new HBox();
+        borderToTopRunway2.getStyleClass().add("empty");
+        borderToTopRunway2.setPrefWidth(displayBorderToRunway.getValue());
+
+        HBox runwayTopPaneBox = new HBox(borderToTopRunway1, runwayTopBox, borderToTopRunway2);
+        runwayTopPaneBox.setAlignment(Pos.CENTER_LEFT);
 
 
         // Plane Image
@@ -226,19 +244,31 @@ public class SimultaneousScene extends BaseScene{
         ImageView planeImageViewTop = new ImageView(planeImageTop);
         planeImageViewTop.setFitWidth(50);
         planeImageViewTop.setPreserveRatio(true);
+
+
+        // Empty boxes to push the plane to the center
+        HBox frontPlaneTopEmpty = new HBox();
+        frontPlaneTopEmpty.getStyleClass().add("empty");
+        frontPlaneTopEmpty.prefWidthProperty().bind(Bindings.add(displayBorderToRunway,displayRunwayToPlane));
+
+
         // HBox distance between the plane and obstacle
-        HBox planeObstacleTopDistance = new HBox();
-        planeObstacleTopDistance.getStyleClass().add("empty");
-        planeObstacleTopDistance.setPrefWidth(displayPlaneToObstacle.getValue());
+        HBox planeObstacleTopDistanceBox = new HBox();
+        planeObstacleTopDistanceBox.getStyleClass().add("empty");
+        planeObstacleTopDistanceBox.setPrefWidth(displayPlaneToObstacle.getValue());
+
         // Obstacle Image
         Image obstacleImageTop = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
         ImageView obstacleImageViewTop = new ImageView(obstacleImageTop);
         obstacleImageViewTop.setFitWidth(30);
         obstacleImageViewTop.setPreserveRatio(true);
-        // Plane & Obstacle Pane
-        HBox planeObstacleTopBox = new HBox(planeImageViewTop, planeObstacleTopDistance, obstacleImageViewTop);
-        planeObstacleTopBox.setAlignment(Pos.CENTER);
-        planeObstacleTopBox.setMaxWidth(displayRunwayLength.getValue());
+
+        // Plane & Obstacle HBox
+        HBox planeObstacleTopBox = new HBox(frontPlaneTopEmpty ,planeImageViewTop, planeObstacleTopDistanceBox, obstacleImageViewTop);
+        planeObstacleTopBox.setAlignment(Pos.CENTER_LEFT);
+
+
+
 
         // Graded Area
         Image gradeArea = new Image(getClass().getResource("/images/GradedArea.png").toExternalForm());
@@ -264,7 +294,7 @@ public class SimultaneousScene extends BaseScene{
 
 
         // Add the runway, plane, obstacle and graded area to the top view pane
-        topViewPane.getChildren().addAll(gradeAreaImageView, runwayTopBox, planeObstacleTopBox, topViewLabelBox);
+        topViewPane.getChildren().addAll(gradeAreaImageView, runwayTopPaneBox, planeObstacleTopBox, topViewLabelBox);
 
 
 
@@ -321,15 +351,12 @@ public class SimultaneousScene extends BaseScene{
         planeObstacleSideBox.setAlignment(Pos.BOTTOM_LEFT);
         HBox frontPlaneEmpty = new HBox();
         frontPlaneEmpty.getStyleClass().add("empty");
-        HBox.setHgrow(frontPlaneEmpty, Priority.ALWAYS);
-        HBox backPlaneEmpty = new HBox();
-        backPlaneEmpty.getStyleClass().add("empty");
-        HBox.setHgrow(backPlaneEmpty, Priority.ALWAYS);
+        frontPlaneEmpty.prefWidthProperty().bind(Bindings.add(displayBorderToRunway,displayRunwayToPlane));
 
         // Plane & Obstacle Pane
 
         //planeObstacleSideBox.setMaxWidth(displayRunwayLength.getValue());
-        planeObstacleSideBox.getChildren().addAll(frontPlaneEmpty, planeImageViewSide, planeObstacleSideDistance, obstacleImageViewSide, backPlaneEmpty);
+        planeObstacleSideBox.getChildren().addAll(frontPlaneEmpty, planeImageViewSide, planeObstacleSideDistance, obstacleImageViewSide);
 
         bluePane.setBottom(planeObstacleSideBox);
 

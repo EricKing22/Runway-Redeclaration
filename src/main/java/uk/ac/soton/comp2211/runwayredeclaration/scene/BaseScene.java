@@ -38,9 +38,9 @@ public abstract class BaseScene {
     protected DoubleProperty runwayLength = new SimpleDoubleProperty();
     protected DoubleProperty stopWayLength = new SimpleDoubleProperty();
     protected DoubleProperty clearWayLength = new SimpleDoubleProperty();
-    protected DoubleProperty displayStopWayLength = new SimpleDoubleProperty(50); // Need to be rescaled
-    protected DoubleProperty displayClearWayLength = new SimpleDoubleProperty(80); // Need to be rescaled
-    protected DoubleProperty displayRunwayLength = new SimpleDoubleProperty(550); // FIXED 650
+    protected DoubleProperty displayStopWayLength = new SimpleDoubleProperty(0); // Need to be rescaled
+    protected DoubleProperty displayClearWayLength = new SimpleDoubleProperty(0); // Need to be rescaled
+    protected DoubleProperty displayRunwayLength = new SimpleDoubleProperty(550); // FIXED 550
 
 
 
@@ -48,20 +48,21 @@ public abstract class BaseScene {
     protected DoubleProperty TORA = new SimpleDoubleProperty();
     protected DoubleProperty displayTORA = new SimpleDoubleProperty(displayRunwayLength.getValue());
     protected DoubleProperty TODA = new SimpleDoubleProperty();
-    protected DoubleProperty displayTODA = new SimpleDoubleProperty(displayRunwayLength.getValue()  + displayClearWayLength.getValue() - 2);
+    protected DoubleProperty displayTODA = new SimpleDoubleProperty(displayRunwayLength.getValue()  + displayClearWayLength.getValue() );
     protected DoubleProperty ASDA = new SimpleDoubleProperty();
-    protected DoubleProperty displayASDA = new SimpleDoubleProperty(displayRunwayLength.getValue()  + displayStopWayLength.getValue() - 2);
+    protected DoubleProperty displayASDA = new SimpleDoubleProperty(displayRunwayLength.getValue()  + displayStopWayLength.getValue() );
     protected DoubleProperty LDA = new SimpleDoubleProperty();
     protected DoubleProperty displayLDA = new SimpleDoubleProperty(displayRunwayLength.getValue() );
-    protected DoubleProperty blastAllowance = new SimpleDoubleProperty();
+    // The blast protection is fixed to be 60m
+    protected DoubleProperty blastAllowance = new SimpleDoubleProperty(60);
     protected DoubleProperty displayBlastAllowance = new SimpleDoubleProperty(50);
     protected DoubleProperty RESA = new SimpleDoubleProperty();
     protected DoubleProperty displayRESA = new SimpleDoubleProperty(100);
 
-    protected DoubleProperty displayRunwayToPlane = new SimpleDoubleProperty(70);
+    protected DoubleProperty displayRunwayToPlane = new SimpleDoubleProperty(0);
     protected DoubleProperty displayPlaneToObstacle = new SimpleDoubleProperty(400);
 
-    protected DoubleProperty displayBorderToRunway = new SimpleDoubleProperty(75);
+    protected DoubleProperty displayBorderToRunway = new SimpleDoubleProperty();
 
 
     protected StackPane takeOffIndicators;
@@ -108,6 +109,10 @@ public abstract class BaseScene {
         // For demo
         this.currentRunway1 = new Runway("09L27R", 3902.0, 3902.0, 3902.0, 3595.0, 9, 0.0, "L");
         this.currentRunway2 = new Runway("09L27R", 3884.0, 3862.0, 3884.0, 3884.0, 27, 0.0, "R");
+
+        displayBorderToRunway.setValue((homeWindow.getWidth() - 600 - displayRunwayLength.getValue()) / 2);
+
+
 
         Obstacle Boeing_777 = new Obstacle("Boeing 777", 18.6, 64.8, 63.7, 2973);
         Obstacle Boeing_737 = new Obstacle("Boeing 737", 12.42, 35.91, 39.52, 2973);

@@ -217,6 +217,10 @@ public class SideViewScene extends BaseScene{
         stopWay2.prefWidthProperty().bind(displayStopWayLength);
         stopWay2.setAlignment(Pos.CENTER_LEFT);
 
+        if (displayStopWayLength.getValue() == 0){
+            stopWay1.setVisible(false);
+            stopWay2.setVisible(false);
+        }
         runwayBox.getChildren().addAll(stopWay1, runwayImageView, stopWay2);
 
 
@@ -251,6 +255,10 @@ public class SideViewScene extends BaseScene{
         clearWay2.getStyleClass().add("clearway-box");
         clearWay2.prefWidthProperty().bind(displayClearWayLength);
 
+        if (displayClearWayLength.getValue() == 0){
+            clearWay1.setVisible(false);
+            clearWay2.setVisible(false);
+        }
         clearWayBox.getChildren().addAll(clearWay1, distanceBetweenStopways, clearWay2);
         displayStackPane.getChildren().add(clearWayBox);
 
