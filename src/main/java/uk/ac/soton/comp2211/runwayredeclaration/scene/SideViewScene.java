@@ -276,7 +276,7 @@ public class SideViewScene extends BaseScene{
         takeOffIndicators.getChildren().add(toraBox);
         HBox borderToTORA = new HBox();
         borderToTORA.getStyleClass().add("empty");
-        borderToTORA.setPrefWidth(displayBorderToRunway.getValue() + displayStopWayLength.getValue() - 1);
+        borderToTORA.setPrefWidth(displayBorderToRunway.getValue() + displayStopWayLength.getValue());
         DashedLine toraStart = new DashedLine(0.1, 500);
         DashedLine toraEnd = new DashedLine(0.1, 500);
         // TORA Distance Box (Line + Text)
@@ -427,7 +427,7 @@ public class SideViewScene extends BaseScene{
 
         HBox borderToLDA = new HBox();
         borderToLDA.getStyleClass().add("empty");
-        borderToLDA.setPrefWidth(displayBorderToRunway.getValue() + displayStopWayLength.getValue() - 1);
+        borderToLDA.setPrefWidth(displayBorderToRunway.getValue() + displayStopWayLength.getValue());
 
         ldaBox.getChildren().addAll(borderToLDA, ldaStart, ldaDistanceBox, ldaEnd);
 
