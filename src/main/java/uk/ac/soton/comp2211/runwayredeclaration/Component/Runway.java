@@ -8,9 +8,7 @@ import java.util.ArrayList;
 public class Runway {
 
     private String name;
-    private double length;
-    private double width;
-
+    
     private ArrayList< Pair<Obstacle, Double> > obstacleDistanceList;
     private ArrayList<SubRunway> subRunways;
 
@@ -61,24 +59,6 @@ public class Runway {
     public String getName(){
         return name;
     }
-
-    public void setLength(double length){
-        this.length = length;
-    }
-
-    public double getLength(){
-        return length;
-    }
-
-
-    public void setWidth(double width){
-        this.width = width;
-    }
-
-    public double getWidth(){
-        return width;
-    }
-
 
 
 }

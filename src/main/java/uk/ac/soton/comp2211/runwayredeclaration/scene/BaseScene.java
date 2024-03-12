@@ -6,6 +6,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -18,6 +19,7 @@ import uk.ac.soton.comp2211.runwayredeclaration.ui.HomeWindow;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.Runway;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.Obstacle;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -431,7 +433,7 @@ public abstract class BaseScene {
         obstacleGrid.setHgap(10);
 
         TitledPane obstacleTPane = new TitledPane();
-        obstacleTPane.setText("Obstacle:");
+        obstacleTPane.setText("Add Obstacles:");
         obstacleTPane.setCollapsible(true);
 
         ComboBox<Obstacle> obstacle = new ComboBox<>();
@@ -489,6 +491,55 @@ public abstract class BaseScene {
 
         return obstacleTPane;
     }
+    /*
+    public TitledPane makeAirplaneTPane(){
+
+
+        VBox airplaneStuff = new VBox();
+        airplaneStuff.add(new JLabel("Operation:"));
+
+        JRadioButton takeOffRadioButton = new JRadioButton("Taking Off");
+        JRadioButton landingRadioButton = new JRadioButton("Landing");
+        ButtonGroup operationGroup1 = new ButtonGroup();
+        operationGroup1.add(takeOffRadioButton);
+        operationGroup1.add(landingRadioButton);
+
+        airplaneStuff.add(takeOffRadioButton);
+        airplaneStuff.add(landingRadioButton);
+
+        airplaneStuff.add(Box.createVerticalStrut(10));
+
+        airplaneStuff.add(new JLabel("Direction: "));
+        JRadioButton firstDirectionButton = new JRadioButton("Left");
+        JRadioButton secondDirectionButton = new JRadioButton("Right");
+        ButtonGroup operationGroup2 = new ButtonGroup();
+        operationGroup2.add(firstDirectionButton);
+        operationGroup2.add(secondDirectionButton);
+
+        airplaneStuff.add(firstDirectionButton);
+        airplaneStuff.add(secondDirectionButton);
+
+        landingRadioButton.addActionListener(e -> {});
+        takeOffRadioButton.addActionListener(e -> {});
+
+        firstDirectionButton.addActionListener((e -> {}));
+        secondDirectionButton.addActionListener((e -> {}));
+
+
+        TitledPane airplaneTPane = new TitledPane();
+        airplaneTPane.setText("Add Airplane:");
+        airplaneTPane.setCollapsible(true);
+        airplaneTPane.setContent(airplaneStuff);
+        airplaneTPane.add(airplaneStuff);
+
+        return airplaneTPane;
+    }
+
+*/
+
+
+
+
 
     /**
      * Create a new JavaFX scene using the root contained within this scene
