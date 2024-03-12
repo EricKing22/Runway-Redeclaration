@@ -1,15 +1,13 @@
 package uk.ac.soton.comp2211.runwayredeclaration.Component;
 
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
 
 public class Runway {
 
     private String name;
-    
-    private ArrayList< Pair<Obstacle, Double> > obstacleDistanceList;
+
+    private Obstacle obstacle;
     private ArrayList<SubRunway> subRunways;
 
 
@@ -18,31 +16,25 @@ public class Runway {
     }
 
 
-
     /**
-     * Add an obstacle to the runway
-     * @param obstacle The Obstacle object
-     * @param distance The distance from the left start of the runway (not include stop way) to the obstacle
+     * Add a sub runway to the runway
+     * @param obstacle the obstacle to be added
+     * @param distance the distance from the start of the runway to the obstacle
      */
-    public void addObstacle(Obstacle obstacle, Double distance){
-        obstacleDistanceList.add((new Pair<>(obstacle, distance)));
-    }
-
-    /**
-     * Get an obstacle from the runway
-     * @param obstacleName the name of the obstacle
-     * @return the obstacle and the distance from the left start of the runway (not include stop way) to the obstacle
-     */
-    public Pair<Obstacle, Double> getObstacles(String obstacleName){
-        for (Pair<Obstacle, Double> pair : obstacleDistanceList){
-            if (pair.getKey().getName().equals(obstacleName)){
-                return pair;
-            }
+    public void addObstacle(Obstacle obstacle, double distance){
+        this.obstacle = obstacle;
+        for (SubRunway subRunway : subRunways) {
+            subRunway.setObstacle(obstacle, distance);
         }
-
-        return null;
     }
 
+    /**
+     * Get the obstacle of the runway
+     * @return the obstacle on the runway
+     */
+    public Obstacle getObstacle(){
+        return obstacle;
+    }
 
     /**
      * Set the designator of the runway
