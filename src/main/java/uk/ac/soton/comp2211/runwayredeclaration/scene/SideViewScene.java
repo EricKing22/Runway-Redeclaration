@@ -177,7 +177,7 @@ public class SideViewScene extends BaseScene{
         HBox borderToPlane = new HBox();
         borderToPlane.getStyleClass().add("empty");
         // borderToPlane = displayBorderToRunway + displayRunwayToPlane
-        borderToPlane.prefWidthProperty().bind(Bindings.add(displayBorderToRunway,displayRunwayToPlane));
+        borderToPlane.prefWidthProperty().bind(Bindings.subtract ( Bindings.add(displayBorderToRunway, displayRunwayToPlane)  , planeImageView.fitWidthProperty()));
 
 
 

@@ -77,23 +77,23 @@ public abstract class BaseScene {
     protected HBox resaBox;
 
     // Obstacles
-    protected ArrayList<Obstacle> obstacles = new ArrayList<>();
+    protected ArrayList<Obstacle> predefinedObstacles = new ArrayList<>();
 
 
     public double calculateThreshold(){
-        return currentObstacle.getPositionOnRunway() - subRunway1.getDisplacedThreshold();
+        return subRunway1.getObstacleDistance() - subRunway1.getDisplacedThreshold().get();
     }
 
     public double calculateTORA(){
-        return subRunway1.getOriginalTORA() - subRunway1.getBlastProtection() - calculateThreshold() - subRunway1.getDisplacedThreshold();
+        return subRunway1.getOriginalTORA().get() - subRunway1.getBlastProtection().get() - calculateThreshold() - subRunway1.getDisplacedThreshold().get();
     }
 
     public double calculateASDA(){
-       return calculateTORA() + subRunway1.getStopwayLength();
+       return calculateTORA() + subRunway1.getStopwayLength().get();
     }
 
     public double calculateTODA(){
-       return calculateTORA() + subRunway1.getClearwayLength();
+       return calculateTORA() + subRunway1.getClearwayLength().get();
     }
 
 
@@ -116,7 +116,7 @@ public abstract class BaseScene {
         Obstacle Boeing_777 = new Obstacle("Boeing 777", 18.6, 64.8, 63.7, 2973);
         Obstacle Boeing_737 = new Obstacle("Boeing 737", 12.42, 35.91, 39.52, 2973);
         Obstacle Luggage_Car = new Obstacle("Luggage Car", 1.7, 5.1, 4.6, 2973);
-        obstacles.addAll(new ArrayList<Obstacle>(List.of(Boeing_777, Boeing_737, Luggage_Car)));
+        predefinedObstacles.addAll(new ArrayList<Obstacle>(List.of(Boeing_777, Boeing_737, Luggage_Car)));
 
 
     }
@@ -179,47 +179,47 @@ public abstract class BaseScene {
         gpanething.add(runway1, 0, 2);
 
         Label tora_original1 = new Label();
-        tora_original1.textProperty().set(String.valueOf(subRunway1.getOriginalTORA()));
+        tora_original1.textProperty().bind(subRunway1.getOriginalTORA().asString());
         tora_original1.getStyleClass().add("grid-pane-label");
         gpanething.add(tora_original1, 1, 2);
 
         Label toda_original1 = new Label();
-        toda_original1.textProperty().set(String.valueOf(subRunway1.getOriginalTODA()));
+        toda_original1.textProperty().bind(subRunway1.getOriginalTODA().asString());
         toda_original1.getStyleClass().add("grid-pane-label");
         gpanething.add(toda_original1, 2, 2);
 
         Label lda_original1 = new Label();
-        lda_original1.textProperty().set(String.valueOf(subRunway1.getOriginalLDA()));
+        lda_original1.textProperty().bind(subRunway1.getOriginalLDA().asString());
         lda_original1.getStyleClass().add("grid-pane-label");
         gpanething.add(lda_original1, 3, 2);
 
         Label asda_original1 = new Label();
-        asda_original1.textProperty().set(String.valueOf(subRunway1.getOriginalASDA()));
+        asda_original1.textProperty().bind(subRunway1.getOriginalASDA().asString());
         asda_original1.getStyleClass().add("grid-pane-label");
         gpanething.add(asda_original1, 4, 2);
 
 
-        Label runway2 = new Label("27R");
+        Label runway2 = new Label(subRunway2.getDesignator());
         runway2.getStyleClass().add("grid-pane-label");
         gpanething.add(runway2, 0, 3);
 
         Label tora_original2 = new Label();
-        tora_original2.textProperty().set(String.valueOf(subRunway2.getOriginalTORA()));
+        tora_original2.textProperty().bind(subRunway2.getOriginalTORA().asString());
         tora_original2.getStyleClass().add("grid-pane-label");
         gpanething.add(tora_original2, 1, 3);
 
         Label toda_original2 = new Label();
-        toda_original2.textProperty().set(String.valueOf(subRunway2.getOriginalTODA()));
+        toda_original2.textProperty().bind(subRunway2.getOriginalTODA().asString());
         toda_original2.getStyleClass().add("grid-pane-label");
         gpanething.add(toda_original2, 2, 3);
 
         Label lda_original2= new Label();
-        lda_original2.textProperty().set(String.valueOf(subRunway2.getOriginalLDA()));
+        lda_original2.textProperty().bind(subRunway2.getOriginalLDA().asString());
         lda_original2.getStyleClass().add("grid-pane-label");
         gpanething.add(lda_original2, 3, 3);
 
         Label asda_original2 = new Label();
-        asda_original2.textProperty().set(String.valueOf(subRunway2.getOriginalASDA()));
+        asda_original2.textProperty().bind(subRunway2.getOriginalASDA().asString());
         asda_original2.getStyleClass().add("grid-pane-label");
         gpanething.add(asda_original2, 4, 3);
 
@@ -237,22 +237,22 @@ public abstract class BaseScene {
         gpanething.add(runway1_recalculated, 0, 5);
 
         Label tora_recalculated1 = new Label();
-        tora_recalculated1.textProperty().set(String.valueOf(subRunway1.TORA));
+        tora_recalculated1.textProperty().bind(subRunway1.getTORA().asString());
         tora_recalculated1.getStyleClass().add("grid-pane-label");
         gpanething.add(tora_recalculated1, 1, 5);
 
         Label toda_recalculated1 = new Label();
-        toda_recalculated1.textProperty().set(String.valueOf(subRunway1.TODA));
+        toda_recalculated1.textProperty().bind(subRunway1.getTODA().asString());
         toda_recalculated1.getStyleClass().add("grid-pane-label");
         gpanething.add(toda_recalculated1, 2, 5);
 
         Label lda_recalculated1 = new Label();
-        lda_recalculated1.textProperty().set(String.valueOf(subRunway1.LDA));
+        lda_recalculated1.textProperty().bind(subRunway1.getLDA().asString());
         lda_recalculated1.getStyleClass().add("grid-pane-label");
         gpanething.add(lda_recalculated1, 3, 5);
 
         Label asda_recalculated1 = new Label();
-        asda_recalculated1.textProperty().set(String.valueOf(subRunway1.ASDA));
+        asda_recalculated1.textProperty().bind(subRunway1.getASDA().asString());
         asda_recalculated1.getStyleClass().add("grid-pane-label");
         gpanething.add(asda_recalculated1, 4, 5);
 
@@ -261,22 +261,22 @@ public abstract class BaseScene {
         gpanething.add(runway2_recalculated, 0, 6);
 
         Label tora_recalculated2 = new Label();
-        tora_recalculated2.textProperty().set(String.valueOf(subRunway2.TORA));
+        tora_recalculated2.textProperty().bind(subRunway2.getTORA().asString());
         tora_recalculated2.getStyleClass().add("grid-pane-label");
         gpanething.add(tora_recalculated2, 1, 6);
 
         Label toda_recalculated2 = new Label();
-        toda_recalculated2.textProperty().set(String.valueOf(subRunway2.TODA));
+        toda_recalculated2.textProperty().bind(subRunway2.getTODA().asString());
         toda_recalculated2.getStyleClass().add("grid-pane-label");
         gpanething.add(toda_recalculated2, 2, 6);
 
         Label lda_recalculated2 = new Label();
-        lda_recalculated2.textProperty().set(String.valueOf(subRunway2.LDA));
+        lda_recalculated2.textProperty().bind(subRunway2.getLDA().asString());
         lda_recalculated2.getStyleClass().add("grid-pane-label");
         gpanething.add(lda_recalculated2, 3, 6);
 
         Label asda_recalculated2 = new Label();
-        asda_recalculated2.textProperty().set(String.valueOf(subRunway2.ASDA));
+        asda_recalculated2.textProperty().bind(subRunway2.getASDA().asString());
         asda_recalculated2.getStyleClass().add("grid-pane-label");
         gpanething.add(asda_recalculated2, 4, 6);
 
@@ -437,7 +437,7 @@ public abstract class BaseScene {
         obstacleTPane.setCollapsible(true);
 
         ComboBox<Obstacle> obstacle = new ComboBox<>();
-        for (Obstacle o : obstacles){
+        for (Obstacle o : predefinedObstacles){
             obstacle.getItems().add(o);
         }
 

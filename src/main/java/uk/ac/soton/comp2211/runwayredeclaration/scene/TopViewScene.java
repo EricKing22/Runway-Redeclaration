@@ -213,8 +213,8 @@ public class TopViewScene extends BaseScene{
 
         HBox borderToPlane = new HBox();
         borderToPlane.getStyleClass().add("empty");
-        // borderToPlane = displayBorderToRunway + displayRunwayToPlane
-        borderToPlane.prefWidthProperty().bind(Bindings.add(displayBorderToRunway,displayRunwayToPlane));
+        borderToPlane.prefWidthProperty().bind(Bindings.subtract ( Bindings.add(displayBorderToRunway, displayRunwayToPlane)  , planeImageView.fitWidthProperty()));
+//        borderToPlane.prefWidthProperty().bind(Bindings.add(displayBorderToRunway,displayRunwayToPlane));
 
 
         planeObstacleBox.getChildren().addAll(borderToPlane, planeImageView, planeObstacleDistance, obstacleImageView);
