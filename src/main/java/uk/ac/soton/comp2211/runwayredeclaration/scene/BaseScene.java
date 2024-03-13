@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import org.w3c.dom.Document;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.Airport;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.SubRunway;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomePane;
@@ -20,6 +21,9 @@ import uk.ac.soton.comp2211.runwayredeclaration.Component.Runway;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.Obstacle;
 
 import javax.swing.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,21 +84,6 @@ public abstract class BaseScene {
     protected ArrayList<Obstacle> predefinedObstacles = new ArrayList<>();
 
 
-    public double calculateThreshold(){
-        return subRunway1.getObstacleDistance() - subRunway1.getDisplacedThreshold().get();
-    }
-
-    public double calculateTORA(){
-        return subRunway1.getOriginalTORA().get() - subRunway1.getBlastProtection().get() - calculateThreshold() - subRunway1.getDisplacedThreshold().get();
-    }
-
-    public double calculateASDA(){
-       return calculateTORA() + subRunway1.getStopwayLength().get();
-    }
-
-    public double calculateTODA(){
-       return calculateTORA() + subRunway1.getClearwayLength().get();
-    }
 
 
     /**
@@ -103,6 +92,8 @@ public abstract class BaseScene {
      */
     public BaseScene(HomeWindow homeWindow) {
         this.homeWindow = homeWindow;
+
+
 
 
         // For demo
@@ -130,6 +121,23 @@ public abstract class BaseScene {
      * Build the layout of the scene
      */
     public abstract void build();
+
+    public double calculateThreshold(){
+        return subRunway1.getObstacleDistance() - subRunway1.getDisplacedThreshold().get();
+    }
+
+    public double calculateTORA(){
+        return subRunway1.getOriginalTORA().get() - subRunway1.getBlastProtection().get() - calculateThreshold() - subRunway1.getDisplacedThreshold().get();
+    }
+
+    public double calculateASDA(){
+        return calculateTORA() + subRunway1.getStopwayLength().get();
+    }
+
+    public double calculateTODA(){
+        return calculateTORA() + subRunway1.getClearwayLength().get();
+    }
+
 
 
     /**

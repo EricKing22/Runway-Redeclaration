@@ -18,6 +18,14 @@ public class Runway {
 
     /**
      * Add a sub runway to the runway
+     * @param subRunway the subRunway to be added
+     */
+    public void addSubRunway(SubRunway subRunway){
+        subRunways.add(subRunway);
+    }
+
+    /**
+     * Add a sub runway to the runway
      * @param obstacle the obstacle to be added
      * @param distance the distance from the start of the runway to the obstacle
      */

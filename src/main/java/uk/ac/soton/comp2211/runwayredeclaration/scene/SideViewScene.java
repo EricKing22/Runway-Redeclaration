@@ -314,7 +314,7 @@ public class SideViewScene extends BaseScene{
 
         HBox borderToTODA = new HBox();
         borderToTODA.getStyleClass().add("empty");
-        borderToTODA.setPrefWidth(displayBorderToRunway.getValue() + displayStopWayLength.getValue() - 1);
+        borderToTODA.setPrefWidth(displayBorderToRunway.getValue() + displayStopWayLength.getValue());
 
         todaBox.getChildren().addAll(borderToTODA, todaStart, todaDistanceBox, todaEnd);
 
@@ -341,7 +341,7 @@ public class SideViewScene extends BaseScene{
 
         HBox borderToASDA = new HBox();
         borderToASDA.getStyleClass().add("empty");
-        borderToASDA.setPrefWidth(displayBorderToRunway.getValue() + displayStopWayLength.getValue() - 1);
+        borderToASDA.setPrefWidth(displayBorderToRunway.getValue() + displayStopWayLength.getValue());
 
         asdaBox.getChildren().addAll(borderToASDA, asdaStart, asdaDistanceBox, asdaEnd);
 
