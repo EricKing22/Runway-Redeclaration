@@ -1,4 +1,6 @@
 package uk.ac.soton.comp2211.runwayredeclaration.Component;
+import javafx.scene.control.Alert;
+import java.sql.SQLException;
 
 public class Obstacle {
 
@@ -63,7 +65,6 @@ public class Obstacle {
     public String toString(){
         return name;
     }
-
 
 
 }

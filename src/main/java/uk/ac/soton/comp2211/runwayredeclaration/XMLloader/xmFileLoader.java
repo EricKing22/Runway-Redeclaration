@@ -16,10 +16,10 @@ import java.util.List;
 
 public abstract class xmFileLoader {
 
-    File file = new File("src/main/resources/uk/ac/soton/comp2211/runwayredeclaration/airports.xml");
+    static File file = new File("src/main/resources/predefined/Airport.xml");
 
-    public List<Airport> loadAirports() {
-        List<Airport> airports = new ArrayList<>();
+    public static ArrayList<Airport> loadAirports() {
+        ArrayList<Airport> airports = new ArrayList<>();
         try {
 
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -55,6 +55,7 @@ public abstract class xmFileLoader {
                                 Node current_subRunway = subRunwayList.item(n);
                                 if (current_subRunway.getNodeType() == Node.ELEMENT_NODE){
                                     Element subRunwayElement = (Element) current_subRunway;
+                                    String designator = subRunwayElement.getElementsByTagName("designator").item(0).getTextContent();
                                     double tora = Double.parseDouble(subRunwayElement.getElementsByTagName("tora").item(0).getTextContent());
                                     double toda = Double.parseDouble(subRunwayElement.getElementsByTagName("toda").item(0).getTextContent());
                                     double asda = Double.parseDouble(subRunwayElement.getElementsByTagName("asda").item(0).getTextContent());
@@ -65,7 +66,7 @@ public abstract class xmFileLoader {
                                     double stripEndLength = Double.parseDouble(subRunwayElement.getElementsByTagName("stripEndLength").item(0).getTextContent());
                                     double blastProtection = Double.parseDouble(subRunwayElement.getElementsByTagName("blastProtection").item(0).getTextContent());
 
-                                    SubRunway subRunway = new SubRunway(subRunwayElement.getElementsByTagName("designator").item(0).getTextContent(), tora, toda, asda, lda, displacedThreshold, clearwayLength, stopwayLength, stripEndLength, blastProtection);
+                                    SubRunway subRunway = new SubRunway(designator, tora, toda, asda, lda, displacedThreshold, clearwayLength, stopwayLength, stripEndLength, blastProtection);
                                     runway.addSubRunway(subRunway);
                                 }
                             }
@@ -74,6 +75,8 @@ public abstract class xmFileLoader {
                         }
 
                     }
+
+                    airports.add(airport);
 
                 }
 

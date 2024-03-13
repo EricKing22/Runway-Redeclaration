@@ -13,11 +13,23 @@ public class Checkers {
     }
 
 
-    public boolean obstacleChecker(double height, double width, double length){
-        if (height < 0 || width < 0 || length < 0){
-            return false;
+    public String obstacleChecker(double height, double width, double distance) {
+        if (height <= 0 && width <= 0 && distance < 0) {
+            return "Invalid height, width and distance(values are negative)";
+        } else if (height <= 0 && distance < 0){
+            return "Invalid height and distance(values are negative)";
+        } else if (height <= 0 && width <= 0){
+            return "Invalid height and width(values are negative)";
+        } else if (width <= 0 && distance < 0){
+            return "Invalid width and distance(values are negative)";
+        } else if (height <= 0) {
+            return "Invalid height(values are negative)";
+        } else if (width <= 0) {
+            return "Invalid width(values are negative)";
+        } else if (distance < 0) {
+            return "Invalid distance(values are negative)";
         }
-        return true;
+        return null; // No error
     }
 }
 

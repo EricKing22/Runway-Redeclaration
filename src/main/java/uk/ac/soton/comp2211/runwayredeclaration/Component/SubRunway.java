@@ -3,12 +3,13 @@ package uk.ac.soton.comp2211.runwayredeclaration.Component;
 
 
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
 
 import javax.print.SimpleDoc;
 import java.util.ArrayList;
 
 public class SubRunway {
-    public final String designator;
+    public SimpleStringProperty designator = new SimpleStringProperty();
 
 
 
@@ -39,7 +40,7 @@ public class SubRunway {
 
 
     public SubRunway(String designator, double tora, double toda, double asda, double lda, double displacedThreshold, double clearwayLength, double stopwayLength, double stripEndLength, double blastProtection) {
-        this.designator = designator;
+        this.designator.set(designator);
 
         this.oldParameters = new ArrayList<>();
         this.newParameters = new ArrayList<>();
@@ -64,14 +65,60 @@ public class SubRunway {
 
     }
 
+    public SubRunway (SubRunway new_subRunway){
+        this.designator.set(new_subRunway.getDesignator().get());
+        this.oldParameters = new ArrayList<>();
+        this.newParameters = new ArrayList<>();
+
+        this.originalTORA.set(new_subRunway.getOriginalTORA().get());
+        this.originalTODA.set(new_subRunway.getOriginalTODA().get());
+        this.originalASDA.set(new_subRunway.getOriginalASDA().get());
+        this.originalLDA.set(new_subRunway.getOriginalLDA().get());
+
+        this.TORA.set(new_subRunway.getTORA().get());
+        this.TODA.set(new_subRunway.getTODA().get());
+        this.ASDA.set(new_subRunway.getASDA().get());
+        this.LDA.set(new_subRunway.getLDA().get());
+        this.clearwayLength.set(new_subRunway.getClearwayLength().get());
+        this.stopwayLength.set(new_subRunway.getStopwayLength().get());
+        this.displacedThreshold.set(new_subRunway.getDisplacedThreshold().get());
+        this.stripEndLength.set(new_subRunway.getStripEndLength().get());
+        this.blastProtection.set(new_subRunway.getBlastProtection().get());
+    }
+
+
+    public void update (SubRunway new_subRunway){
+        this.designator.set(new_subRunway.getDesignator().get());
+        this.oldParameters = new ArrayList<>();
+        this.newParameters = new ArrayList<>();
+
+        this.originalTORA.set(new_subRunway.getOriginalTORA().get());
+        this.originalTODA.set(new_subRunway.getOriginalTODA().get());
+        this.originalASDA.set(new_subRunway.getOriginalASDA().get());
+        this.originalLDA.set(new_subRunway.getOriginalLDA().get());
+
+        this.TORA.set(new_subRunway.getTORA().get());
+        this.TODA.set(new_subRunway.getTODA().get());
+        this.ASDA.set(new_subRunway.getASDA().get());
+        this.LDA.set(new_subRunway.getLDA().get());
+        this.clearwayLength.set(new_subRunway.getClearwayLength().get());
+        this.stopwayLength.set(new_subRunway.getStopwayLength().get());
+        this.displacedThreshold.set(new_subRunway.getDisplacedThreshold().get());
+        this.stripEndLength.set(new_subRunway.getStripEndLength().get());
+        this.blastProtection.set(new_subRunway.getBlastProtection().get());
+    }
 
 
     /**
      * Get the designator of the runway
      * @return the name of the runway
      */
-    public String getDesignator(){
+    public SimpleStringProperty getDesignator(){
         return designator;
+    }
+
+    public String returnDesignator() {
+        return designator.getValue();
     }
 
     public SimpleDoubleProperty getOriginalTORA(){

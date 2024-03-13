@@ -1,7 +1,11 @@
 package uk.ac.soton.comp2211.runwayredeclaration.scene;
 
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,13 +16,14 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.control.Alert;
+import java.sql.SQLException;
 import org.w3c.dom.Document;
-import uk.ac.soton.comp2211.runwayredeclaration.Component.Airport;
-import uk.ac.soton.comp2211.runwayredeclaration.Component.SubRunway;
+import uk.ac.soton.comp2211.runwayredeclaration.Component.*;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomePane;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomeWindow;
-import uk.ac.soton.comp2211.runwayredeclaration.Component.Runway;
-import uk.ac.soton.comp2211.runwayredeclaration.Component.Obstacle;
+import uk.ac.soton.comp2211.runwayredeclaration.XMLloader.xmFileLoader;
+
 
 import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
@@ -38,6 +43,9 @@ public abstract class BaseScene {
     protected HomePane root;
     protected Scene scene;
 
+    protected ArrayList<Airport> airportList;
+    protected Airport currentAirport;
+    protected Runway currentRunway;
     protected SubRunway subRunway1;
     protected SubRunway subRunway2;
     protected Obstacle currentObstacle;
@@ -83,6 +91,16 @@ public abstract class BaseScene {
     // Obstacles
     protected ArrayList<Obstacle> predefinedObstacles = new ArrayList<>();
 
+    public double obstacleHeightD;
+    public double obstacleWidthD;
+    public double distanceD;
+
+    public String operationSelected = null;
+    public String directionSelected = null;
+
+    public ToggleGroup operationButtons = new ToggleGroup();
+    public ToggleGroup directionButtons = new ToggleGroup();
+
 
 
 
@@ -95,10 +113,33 @@ public abstract class BaseScene {
 
 
 
+        // Load Airports
+        this.airportList = xmFileLoader.loadAirports();
 
-        // For demo
-        this.subRunway1 = new SubRunway("09L", 3902.0, 3902.0, 3902.0, 3595.0, 0, 0, 0, 60, 300);
-        this.subRunway2 = new SubRunway("27R", 3884.0, 3862.0, 3884.0, 3884.0, 0, 0, 0, 60, 300);
+        // Check xml loader
+        for (Airport airport : airportList){
+            System.out.println(airport.getName() + " has runways: ");
+
+            for (Runway runway : airport.getRunways()){
+                System.out.println("    " + runway.getName() + " has sub runways: ");
+                for (SubRunway subRunway : runway.getSubRunways()){
+                    System.out.println("        " + subRunway.getDesignator().get());
+                }
+            }
+        }
+
+
+        currentAirport = airportList.get(0);
+        currentRunway = currentAirport.getRunways().get(0);
+
+
+        subRunway1 = new SubRunway(currentRunway.getSubRunways().get(0));
+        subRunway2 = new SubRunway(currentRunway.getSubRunways().get(1));
+
+
+//        // For demo
+//        this.subRunway1 = new SubRunway("09L", 3902.0, 3902.0, 3902.0, 3595.0, 0, 0, 0, 60, 300);
+//        this.subRunway2 = new SubRunway("27R", 3884.0, 3862.0, 3884.0, 3884.0, 0, 0, 0, 60, 300);
 
         displayBorderToRunway.setValue((homeWindow.getWidth() - 600 - displayRunwayLength.getValue() - displayStopWayLength.getValue() * 2) / 2);
 
@@ -182,7 +223,8 @@ public abstract class BaseScene {
         gpanething.add(lblOriginal, 0, 1);
 
         // Original Values:
-        Label runway1 = new Label(subRunway1.getDesignator());
+        Label runway1 = new Label();
+        runway1.textProperty().bind(subRunway1.getDesignator());
         runway1.getStyleClass().add("grid-pane-label");
         gpanething.add(runway1, 0, 2);
 
@@ -207,7 +249,8 @@ public abstract class BaseScene {
         gpanething.add(asda_original1, 4, 2);
 
 
-        Label runway2 = new Label(subRunway2.getDesignator());
+        Label runway2 = new Label();
+        runway2.textProperty().bind(subRunway2.getDesignator());
         runway2.getStyleClass().add("grid-pane-label");
         gpanething.add(runway2, 0, 3);
 
@@ -240,7 +283,8 @@ public abstract class BaseScene {
         gpanething.add(lblRecalculated, 0, 4);
 
         // Recalculated Values:
-        Label runway1_recalculated = new Label(subRunway1.getDesignator());
+        Label runway1_recalculated = new Label();
+        runway1_recalculated.textProperty().bind(subRunway1.getDesignator());
         runway1_recalculated.getStyleClass().add("grid-pane-label");
         gpanething.add(runway1_recalculated, 0, 5);
 
@@ -264,7 +308,8 @@ public abstract class BaseScene {
         asda_recalculated1.getStyleClass().add("grid-pane-label");
         gpanething.add(asda_recalculated1, 4, 5);
 
-        Label runway2_recalculated = new Label(subRunway2.getDesignator());
+        Label runway2_recalculated = new Label();
+        runway2_recalculated.textProperty().bind(subRunway2.getDesignator());
         runway2_recalculated.getStyleClass().add("grid-pane-label");
         gpanething.add(runway2_recalculated, 0, 6);
 
@@ -407,23 +452,80 @@ public abstract class BaseScene {
         airportTPane.setText("Airport:");
         airportTPane.setCollapsible(true);
 
+        ComboBox<String> comboRunways = new ComboBox<>();
+        for (Runway runway : currentAirport.getRunways()){
+            comboRunways.getItems().add(runway.getName());
+        }
+        comboRunways.setValue(currentRunway.getName());
+        comboRunways.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+                for (Runway runway : currentAirport.getRunways()){
+                    System.out.println("Runway: " + runway.getName());
+                    System.out.println("It has subrunways: " + runway.getSubRunways().get(0).getDesignator().get() + " and " + runway.getSubRunways().get(1).getDesignator().get());
+                    if (runway.getName().equals(newValue)){
 
-        ComboBox<String> airports = new ComboBox<>();
-        airports.getItems().addAll("Heathrow (LHR)", "Gatwick (LGW)", "Luton (LTN)", "Stansted (STN)", "City (LCY)");
-        airports.setValue("Heathrow (LHR)");
 
-        ComboBox<String> runways = new ComboBox<>();
-        runways.getItems().addAll("27R/09L");
-        runways.setValue("27R/09L");
+                        clearAllButtons();
+                        currentRunway = runway;
+
+                        SubRunway new_subRunway1 = new SubRunway(currentRunway.getSubRunways().get(0));
+                        SubRunway new_subRunway2 = new SubRunway(currentRunway.getSubRunways().get(1));
 
 
-        airportGrid.addRow(0, new Label("Airport:"), airports);
-        airportGrid.addRow(1, new Label("Runway:"), runways);
+                        subRunway1.update(new_subRunway1);
+                        subRunway2.update(new_subRunway2);
+
+
+                    }
+                }
+            }
+        });
+
+        ComboBox<String> comboAirports = new ComboBox<>();
+        for (Airport airport : airportList){
+            comboAirports.getItems().add(airport.getName());
+        }
+        comboAirports.getItems().addAll("Gatwick (LGW)", "Luton (LTN)", "Stansted (STN)", "City (LCY)");
+        comboAirports.setValue("Heathrow (LHR)");
+        comboAirports.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+                for (Airport airport : airportList){
+                    if (airport.getName().equals(newValue)){
+                        clearAllButtons();
+                        System.out.println("Airport changed to " + newValue);
+                        currentAirport = airport;
+                        currentRunway = currentAirport.getRunways().get(0);
+                        subRunway1 = currentRunway.getSubRunways().get(0);
+                        subRunway2 = currentRunway.getSubRunways().get(1);
+
+                    }
+                }
+
+
+
+
+
+
+
+
+            }
+        });
+
+
+
+
+        airportGrid.addRow(0, new Label("Airport:"), comboAirports);
+        airportGrid.addRow(1, new Label("Runway:"), comboRunways);
         airportGrid.addRow(2, new Label("Length:"),  new Text("xxxx.0m"));
-
         airportGrid.addRow(3, new Label("Threshold:"), new Text("xxxx.0m"));
-        airportGrid.addRow(4, new Label("Clearway:"), new Text("xxxx.0m"));
-        airportGrid.addRow(5, new Label("Stopway:"), new Text("xxxx.0m"));
+        Text clearwayLength = new Text();
+        clearwayLength.textProperty().bind(Bindings.concat(subRunway1.getClearwayLength().asString(), "m"));
+        airportGrid.addRow(4, new Label("Clearway:"), clearwayLength);
+        Text stopwayLength = new Text();
+        stopwayLength.textProperty().bind(Bindings.concat(subRunway1.getStopwayLength().asString(), "m"));
+        airportGrid.addRow(5, new Label("Stopway:"), stopwayLength);
 
         airportTPane.setContent(airportGrid);
 
@@ -456,6 +558,7 @@ public abstract class BaseScene {
         TextField obstacleHeight = new TextField();
         obstacleBox.getChildren().addAll(new Label("Height (metres):"), obstacleHeight);
 
+
         TextField obstacleWidth = new TextField();
         obstacleBox.getChildren().addAll(new Label("Width (metres):"),obstacleWidth);
 
@@ -474,8 +577,72 @@ public abstract class BaseScene {
         Button editButton = new Button("Edit");
         editButton.setOnAction(e -> {});
 
+
         Button addButton = new Button("Add");
         addButton.setOnAction(e -> {
+            String heightText = obstacleHeight.getText();
+            String widthText = obstacleWidth.getText();
+            String distanceTextD = distanceFromStopway.getText();
+
+            try {
+                // Parse values to doubles
+                double height = Double.parseDouble(heightText);
+                double width = Double.parseDouble(widthText);
+                double distance = Double.parseDouble(distanceTextD);
+
+                // Check if the obstacle values are valid
+                String errorMessage = handleObstacle(height, width, distance);
+
+                // If there is an error, display the appropriate error message(s) and clear the corresponding input field(s)
+                if (errorMessage != null) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Invalid Input");
+                    alert.setContentText(errorMessage);
+                    alert.showAndWait();
+
+                    if (errorMessage.contains("Invalid height")) {
+                        obstacleHeight.clear();
+                    }
+                    if (errorMessage.contains("Invalid width")) {
+                        obstacleWidth.clear();
+                    }
+                    if (errorMessage.contains("Invalid distance")) {
+                        distanceFromStopway.clear();
+                    }
+
+                }
+
+            } catch (NumberFormatException ex) {
+                // If parsing fails (e.g., input is not a valid double), show an error message
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Invalid Input");
+                alert.setContentText("Please enter only numeric values in all sections");
+                alert.showAndWait();
+
+                // Clear all fields if parsing fails
+                try {
+                    double height = Double.parseDouble(heightText);
+                } catch (NumberFormatException f) {
+                    obstacleHeight.clear();
+                }
+
+                try {
+                    double width = Double.parseDouble(widthText);
+                } catch (NumberFormatException f) {
+                    obstacleWidth.clear();
+                }
+
+                try {
+                    double distance = Double.parseDouble(distanceTextD);
+                } catch (NumberFormatException f) {
+                    distanceFromStopway.clear();
+                }
+
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         buttons.getChildren().add(editButton);
@@ -499,51 +666,90 @@ public abstract class BaseScene {
 
         return obstacleTPane;
     }
-    /*
     public TitledPane makeAirplaneTPane(){
 
 
-        VBox airplaneStuff = new VBox();
-        airplaneStuff.add(new JLabel("Operation:"));
+        VBox airplaneStuff = new VBox(3);
 
-        JRadioButton takeOffRadioButton = new JRadioButton("Taking Off");
-        JRadioButton landingRadioButton = new JRadioButton("Landing");
-        ButtonGroup operationGroup1 = new ButtonGroup();
-        operationGroup1.add(takeOffRadioButton);
-        operationGroup1.add(landingRadioButton);
 
-        airplaneStuff.add(takeOffRadioButton);
-        airplaneStuff.add(landingRadioButton);
 
-        airplaneStuff.add(Box.createVerticalStrut(10));
 
-        airplaneStuff.add(new JLabel("Direction: "));
-        JRadioButton firstDirectionButton = new JRadioButton("Left");
-        JRadioButton secondDirectionButton = new JRadioButton("Right");
-        ButtonGroup operationGroup2 = new ButtonGroup();
-        operationGroup2.add(firstDirectionButton);
-        operationGroup2.add(secondDirectionButton);
+        RadioButton takeOffRadioButton = new RadioButton("Taking Off");
+        takeOffRadioButton.setUserData("takeoff");
 
-        airplaneStuff.add(firstDirectionButton);
-        airplaneStuff.add(secondDirectionButton);
+        RadioButton landingRadioButton = new RadioButton("Landing");
+        landingRadioButton.setUserData("landing");
 
-        landingRadioButton.addActionListener(e -> {});
-        takeOffRadioButton.addActionListener(e -> {});
+        //ToggleGroup operationButtons = new ToggleGroup();
+        takeOffRadioButton.setToggleGroup(operationButtons);
+        landingRadioButton.setToggleGroup(operationButtons);
+        operationButtons.selectToggle(null);
 
-        firstDirectionButton.addActionListener((e -> {}));
-        secondDirectionButton.addActionListener((e -> {}));
+        RadioButton firstDirectionButton = new RadioButton();
+        firstDirectionButton.textProperty().bind(subRunway1.getDesignator());
+        firstDirectionButton.setUserData(subRunway1.getDesignator());
+
+
+
+        RadioButton secondDirectionButton = new RadioButton();
+        secondDirectionButton.textProperty().bind(subRunway2.getDesignator());
+        secondDirectionButton.setUserData(subRunway2.getDesignator());
+
+        //ToggleGroup directionButtons = new ToggleGroup();
+        firstDirectionButton.setToggleGroup(directionButtons);
+        secondDirectionButton.setToggleGroup(directionButtons);
+        directionButtons.selectToggle(null);
+
+
+
+        operationButtons.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            // Update the global variable based on the new selection
+            if (newValue != null) {
+                operationSelected = newValue.getUserData().toString();
+            } else {
+                // If no RadioButton is selected (e.g., initial state or all selections are cleared)
+                operationSelected = null;
+            }
+            //System.out.println("Current operation: " + operationSelected);
+        });
+
+        directionButtons.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            // Update the global variable based on the new selection
+            if (newValue != null) {
+                directionSelected = newValue.getUserData().toString();
+            } else {
+                // If no RadioButton is selected (e.g., initial state or all selections are cleared)
+                directionSelected = null;
+            }
+            //System.out.println("Current direction: " + directionSelected);
+        });
+
+
+
+
+        airplaneStuff.getChildren().add(new Label("Operation:"));
+        airplaneStuff.getChildren().add(takeOffRadioButton);
+        airplaneStuff.getChildren().add(landingRadioButton);
+
+        airplaneStuff.getChildren().add(new Label("Designator: "));
+        airplaneStuff.getChildren().add(firstDirectionButton);
+        airplaneStuff.getChildren().add(secondDirectionButton);
 
 
         TitledPane airplaneTPane = new TitledPane();
         airplaneTPane.setText("Add Airplane:");
         airplaneTPane.setCollapsible(true);
         airplaneTPane.setContent(airplaneStuff);
-        airplaneTPane.add(airplaneStuff);
+
 
         return airplaneTPane;
     }
 
-*/
+    public void clearAllButtons(){
+        operationButtons.selectToggle(null);
+        directionButtons.selectToggle(null);
+    }
+
 
 
 
@@ -567,6 +773,11 @@ public abstract class BaseScene {
      */
     public Scene getScene() {
         return this.scene;
+    }
+
+    Checkers checker = new Checkers(obstacleHeightD, obstacleWidthD, distanceD);
+    public String handleObstacle(double h, double w, double d) throws SQLException {
+        return checker.obstacleChecker(h, w, d);
     }
 
 }

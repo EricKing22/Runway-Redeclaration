@@ -69,7 +69,7 @@ public class TopViewScene extends BaseScene{
 
 
         // Right Box Set-up
-        right_box = new VBox(2, makeAirportTPane(), makeObstacleTPane());
+        right_box = new VBox(2, makeAirportTPane(), makeAirplaneTPane(), makeObstacleTPane());
         right_box.getStyleClass().add("right-box");
         mainPane.setRight(right_box);
         BorderPane.setAlignment(right_box, Pos.CENTER);

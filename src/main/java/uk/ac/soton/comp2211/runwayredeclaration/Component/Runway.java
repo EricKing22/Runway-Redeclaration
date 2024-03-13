@@ -13,6 +13,7 @@ public class Runway {
 
     public Runway (String name){
         this.name = name;
+        this.subRunways = new ArrayList<>();
     }
 
 
@@ -22,6 +23,14 @@ public class Runway {
      */
     public void addSubRunway(SubRunway subRunway){
         subRunways.add(subRunway);
+    }
+
+    /**
+     * Get the sub runways of the runway
+     * @return subRunways the list of stored subRunways
+     */
+    public ArrayList<SubRunway> getSubRunways(){
+        return subRunways;
     }
 
     /**
