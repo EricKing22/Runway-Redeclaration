@@ -140,6 +140,87 @@ public class SideViewScene extends BaseScene{
     }
 
     /**
+     * Create the menu box
+     * @return HBox the Menu Bar
+     */
+
+    private HBox makeMenuBox(){
+        // Create Menus
+        MenuBar menuBar = new MenuBar();
+
+        // File Menu
+        Menu fileMenu = new Menu("File");
+        fileMenu.getItems().addAll(new MenuItem("Import XML"), new MenuItem("Export XML"), new MenuItem("Export Report"));
+
+        // View Menu
+        Menu viewMenu = new Menu("View");
+
+        // Switch to Side View
+        MenuItem sideView = new MenuItem("Side View");
+
+
+        // Switch to Top view
+        MenuItem topView = new MenuItem("Top View");
+
+        // Switch to simultaneous view
+        MenuItem simultaneous = new MenuItem("Simultaneous");
+
+
+        sideView.setOnAction(e -> {
+            middleDisplayBox.getChildren().clear();
+            middleDisplayBox.getChildren().addAll(makeSideViewMiddleDisplayBox(), makeDirectionPane());
+            viewMenu.getItems().clear();
+            viewMenu.getItems().addAll(topView, simultaneous);
+        });
+
+        topView.setOnAction(e -> {
+            middleDisplayBox.getChildren().clear();
+            middleDisplayBox.getChildren().addAll(makeTopViewMiddleDisplayBox(), makeDirectionPane());
+            viewMenu.getItems().clear();
+            viewMenu.getItems().addAll(sideView, simultaneous);
+        });
+
+        simultaneous.setOnAction(e -> {
+            middleDisplayBox.getChildren().clear();
+            middleDisplayBox.getChildren().addAll(makeSimultaneousMiddleDisplayBox(), makeDirectionPane());
+            viewMenu.getItems().clear();
+            viewMenu.getItems().addAll(sideView, topView);
+        });
+
+        // Add menu items
+        viewMenu.getItems().addAll(topView, simultaneous);
+
+
+        // Help Menu
+        Menu helpMenu = new Menu("Help");
+        MenuItem colourSettings = new MenuItem("Colour Schemes");
+        colourSettings.setOnAction(e -> makeColourSettingPage());
+        helpMenu.getItems().addAll(new MenuItem("About"), new MenuItem("Contact"), colourSettings);
+
+        // Add Menus to the MenuBar
+        menuBar.getMenus().addAll(fileMenu, viewMenu, helpMenu);
+
+        // Create Log out button
+        Button logoutButton = new Button("Log out");
+        //logoutButton.setOnAction(e -> homeWindow.startLogin());
+        logoutButton.getStyleClass().add("logout-button");
+
+
+        // Empty box to push the logout button to the right
+        HBox empty = new HBox();
+        empty.getStyleClass().add("empty");
+
+
+        HBox.setHgrow(empty, Priority.ALWAYS); // This will push the logout button to the right
+
+        HBox everything = new HBox(menuBar, empty, logoutButton);
+        HBox.setHgrow(everything, Priority.ALWAYS);
+        return (everything);
+    }
+
+
+
+    /**
      * Create the middle display box
      * @return StackPane Middle display box
      */
@@ -231,7 +312,6 @@ public class SideViewScene extends BaseScene{
         stopWayBox.setAlignment(Pos.CENTER);
 
         runwayBox.getChildren().add(runwayImageView);
-//        runwayBox.getChildren().addAll(stopWay1, runwayImageView, stopWay2);
 
 
         // Empty boxes to push the runway to the center
@@ -451,85 +531,9 @@ public class SideViewScene extends BaseScene{
     }
 
     /**
-     * Create the menu box
-     * @return HBox the Menu Bar
+     * Create the top view middle display box
+     * @return StackPane Middle display box
      */
-
-    private HBox makeMenuBox(){
-        // Create Menus
-        MenuBar menuBar = new MenuBar();
-
-        // File Menu
-        Menu fileMenu = new Menu("File");
-        fileMenu.getItems().addAll(new MenuItem("Import XML"), new MenuItem("Export XML"), new MenuItem("Export Report"));
-
-        // View Menu
-        Menu viewMenu = new Menu("View");
-
-        // Switch to Side View
-        MenuItem sideView = new MenuItem("Side View");
-
-
-        // Switch to Top view
-        MenuItem topView = new MenuItem("Top View");
-
-        // Switch to simultaneous view
-        MenuItem simultaneous = new MenuItem("Simultaneous");
-
-
-        sideView.setOnAction(e -> {
-            middleDisplayBox.getChildren().clear();
-            middleDisplayBox.getChildren().addAll(makeSideViewMiddleDisplayBox(), makeDirectionPane());
-            viewMenu.getItems().clear();
-            viewMenu.getItems().addAll(topView, simultaneous);
-        });
-
-        topView.setOnAction(e -> {
-            middleDisplayBox.getChildren().clear();
-            middleDisplayBox.getChildren().addAll(makeTopViewMiddleDisplayBox(), makeDirectionPane());
-            viewMenu.getItems().clear();
-            viewMenu.getItems().addAll(sideView, simultaneous);
-        });
-
-        simultaneous.setOnAction(e -> {
-            middleDisplayBox.getChildren().clear();
-            middleDisplayBox.getChildren().addAll(makeSimultaneousMiddleDisplayBox(), makeDirectionPane());
-            viewMenu.getItems().clear();
-            viewMenu.getItems().addAll(sideView, topView);
-        });
-
-        // Add menu items
-        viewMenu.getItems().addAll(topView, simultaneous);
-
-
-        // Help Menu
-        Menu helpMenu = new Menu("Help");
-        MenuItem colourSettings = new MenuItem("Colour Schemes");
-        colourSettings.setOnAction(e -> makeColourSettingPage());
-        helpMenu.getItems().addAll(new MenuItem("About"), new MenuItem("Contact"), colourSettings);
-
-        // Add Menus to the MenuBar
-        menuBar.getMenus().addAll(fileMenu, viewMenu, helpMenu);
-
-        // Create Log out button
-        Button logoutButton = new Button("Log out");
-        //logoutButton.setOnAction(e -> homeWindow.startLogin());
-        logoutButton.getStyleClass().add("logout-button");
-
-
-        // Empty box to push the logout button to the right
-        HBox empty = new HBox();
-        empty.getStyleClass().add("empty");
-
-
-        HBox.setHgrow(empty, Priority.ALWAYS); // This will push the logout button to the right
-
-        HBox everything = new HBox(menuBar, empty, logoutButton);
-        HBox.setHgrow(everything, Priority.ALWAYS);
-        return (everything);
-    }
-
-
     public StackPane makeTopViewMiddleDisplayBox(){
 
         StackPane displayStackPane = new StackPane();
@@ -831,6 +835,10 @@ public class SideViewScene extends BaseScene{
 
     }
 
+    /**
+     * Create the simultaneous middle display box
+     * @return StackPane Middle display box
+     */
     public StackPane makeSimultaneousMiddleDisplayBox(){
         StackPane displayStackPane = new StackPane();
         BorderPane displayBorderPane = new BorderPane();
