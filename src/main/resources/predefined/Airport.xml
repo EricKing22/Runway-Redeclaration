@@ -11,8 +11,6 @@
                 <lda>3595</lda>
                 <designator>09L</designator>
                 <displacedThreshold>306</displacedThreshold>
-                <clearwayLength>0</clearwayLength>
-                <stopwayLength>0</stopwayLength>
                 <stripEndLength>60</stripEndLength>
                 <blastProtection>300</blastProtection>
             </subRunway>
@@ -23,8 +21,6 @@
                 <lda>3884</lda>
                 <designator>27R</designator>
                 <displacedThreshold>0</displacedThreshold>
-                <clearwayLength>0</clearwayLength>
-                <stopwayLength>0</stopwayLength>
                 <stripEndLength>60</stripEndLength>
                 <blastProtection>300</blastProtection>
             </subRunway>
@@ -38,8 +34,6 @@
                 <lda>3353</lda>
                 <designator>09R</designator>
                 <displacedThreshold>307</displacedThreshold>
-                <clearwayLength>0</clearwayLength>
-                <stopwayLength>0</stopwayLength>
                 <stripEndLength>60</stripEndLength>
                 <blastProtection>300</blastProtection>
             </subRunway>
@@ -50,8 +44,6 @@
                 <lda>3660</lda>
                 <designator>27L</designator>
                 <displacedThreshold>0</displacedThreshold>
-                <clearwayLength>0</clearwayLength>
-                <stopwayLength>0</stopwayLength>
                 <stripEndLength>60</stripEndLength>
                 <blastProtection>300</blastProtection>
             </subRunway>
@@ -71,8 +63,6 @@
                 <lda>2241</lda>
                 <designator>08L</designator>
                 <displacedThreshold>0</displacedThreshold>
-                <clearwayLength>0</clearwayLength>
-                <stopwayLength>0</stopwayLength>
                 <stripEndLength>60</stripEndLength>
                 <blastProtection>300</blastProtection>
             </subRunway>
@@ -83,8 +73,6 @@
                 <lda>2146</lda>
                 <designator>26R</designator>
                 <displacedThreshold>0</displacedThreshold>
-                <clearwayLength>0</clearwayLength>
-                <stopwayLength>0</stopwayLength>
                 <stripEndLength>60</stripEndLength>
                 <blastProtection>300</blastProtection>
             </subRunway>
@@ -98,8 +86,6 @@
                 <lda>2765</lda>
                 <designator>08R</designator>
                 <displacedThreshold>0</displacedThreshold>
-                <clearwayLength>0</clearwayLength>
-                <stopwayLength>0</stopwayLength>
                 <stripEndLength>60</stripEndLength>
                 <blastProtection>300</blastProtection>
             </subRunway>
@@ -110,8 +96,6 @@
                 <lda>2830</lda>
                 <designator>26L</designator>
                 <displacedThreshold>0</displacedThreshold>
-                <clearwayLength>0</clearwayLength>
-                <stopwayLength>0</stopwayLength>
                 <stripEndLength>60</stripEndLength>
                 <blastProtection>300</blastProtection>
             </subRunway>
@@ -129,8 +113,6 @@
                 <lda>2162</lda>
                 <designator>07</designator>
                 <displacedThreshold>0</displacedThreshold>
-                <clearwayLength>0</clearwayLength>
-                <stopwayLength>0</stopwayLength>
                 <stripEndLength>60</stripEndLength>
                 <blastProtection>300</blastProtection>
             </subRunway>
@@ -141,8 +123,6 @@
                 <lda>2080</lda>
                 <designator>25</designator>
                 <displacedThreshold>0</displacedThreshold>
-                <clearwayLength>0</clearwayLength>
-                <stopwayLength>0</stopwayLength>
                 <stripEndLength>60</stripEndLength>
                 <blastProtection>300</blastProtection>
             </subRunway>

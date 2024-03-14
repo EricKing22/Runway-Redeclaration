@@ -129,7 +129,7 @@ public class SideViewScene extends BaseScene{
         VBox.setVgrow(arrowEmpty1, Priority.ALWAYS);
         Text landingText = new Text("Landing");
         landingText.getStyleClass().add("arrow-text");
-        landingArrowBox.getChildren().addAll(landingArrow, landingText, arrowEmpty1);
+        landingArrowBox.getChildren().addAll(landingArrow, arrowEmpty1);
         directionPane.setRight(landingArrowBox);
 
         // Takeoff Direction
@@ -144,7 +144,7 @@ public class SideViewScene extends BaseScene{
         VBox.setVgrow(arrowEmpty2, Priority.ALWAYS);
         Text takeoffText = new Text("Take off");
         takeoffText.getStyleClass().add("arrow-text");
-        takeoffArrowBox.getChildren().addAll(takeoffArrow, takeoffText, arrowEmpty2);
+        takeoffArrowBox.getChildren().addAll(takeoffArrow, arrowEmpty2);
         directionPane.setLeft(takeoffArrowBox);
 
 

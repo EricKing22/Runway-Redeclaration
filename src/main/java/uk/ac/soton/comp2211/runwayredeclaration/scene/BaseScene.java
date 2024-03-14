@@ -53,8 +53,8 @@ public abstract class BaseScene {
     protected DoubleProperty runwayLength = new SimpleDoubleProperty();
     protected DoubleProperty stopWayLength = new SimpleDoubleProperty();
     protected DoubleProperty clearWayLength = new SimpleDoubleProperty();
-    protected DoubleProperty displayStopWayLength = new SimpleDoubleProperty(0); // Need to be rescaled
-    protected DoubleProperty displayClearWayLength = new SimpleDoubleProperty(0); // Need to be rescaled
+    protected DoubleProperty displayStopWayLength = new SimpleDoubleProperty(60); // Need to be rescaled
+    protected DoubleProperty displayClearWayLength = new SimpleDoubleProperty(80); // Need to be rescaled
     protected DoubleProperty displayRunwayLength = new SimpleDoubleProperty(550); // FIXED 550
 
 
@@ -137,9 +137,6 @@ public abstract class BaseScene {
         subRunway2 = new SubRunway(currentRunway.getSubRunways().get(1));
 
 
-//        // For demo
-//        this.subRunway1 = new SubRunway("09L", 3902.0, 3902.0, 3902.0, 3595.0, 0, 0, 0, 60, 300);
-//        this.subRunway2 = new SubRunway("27R", 3884.0, 3862.0, 3884.0, 3884.0, 0, 0, 0, 60, 300);
 
         displayBorderToRunway.setValue((homeWindow.getWidth() - 600 - displayRunwayLength.getValue() - displayStopWayLength.getValue() * 2) / 2);
 
@@ -469,12 +466,9 @@ public abstract class BaseScene {
                         clearAllButtons();
                         currentRunway = runway;
 
-                        SubRunway new_subRunway1 = new SubRunway(currentRunway.getSubRunways().get(0));
-                        SubRunway new_subRunway2 = new SubRunway(currentRunway.getSubRunways().get(1));
 
-
-                        subRunway1.update(new_subRunway1);
-                        subRunway2.update(new_subRunway2);
+                        subRunway1.update(currentRunway.getSubRunways().get(0));
+                        subRunway2.update(currentRunway.getSubRunways().get(1));
 
 
                     }
@@ -486,8 +480,8 @@ public abstract class BaseScene {
         for (Airport airport : airportList){
             comboAirports.getItems().add(airport.getName());
         }
-        comboAirports.getItems().addAll("Gatwick (LGW)", "Luton (LTN)", "Stansted (STN)", "City (LCY)");
-        comboAirports.setValue("Heathrow (LHR)");
+
+        comboAirports.setValue(currentAirport.getName());
         comboAirports.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
@@ -497,8 +491,16 @@ public abstract class BaseScene {
                         System.out.println("Airport changed to " + newValue);
                         currentAirport = airport;
                         currentRunway = currentAirport.getRunways().get(0);
-                        subRunway1 = currentRunway.getSubRunways().get(0);
-                        subRunway2 = currentRunway.getSubRunways().get(1);
+
+                        comboRunways.getItems().clear();
+                        for (Runway runway : currentAirport.getRunways()){
+                            comboRunways.getItems().add(runway.getName());
+                        }
+                        comboRunways.setValue(currentRunway.getName());
+
+                        subRunway1.update(currentRunway.getSubRunways().get(0));
+                        subRunway2.update(currentRunway.getSubRunways().get(1));
+
 
                     }
                 }

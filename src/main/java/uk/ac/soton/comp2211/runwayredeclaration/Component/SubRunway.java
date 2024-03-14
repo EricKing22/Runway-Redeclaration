@@ -39,7 +39,7 @@ public class SubRunway {
 
 
 
-    public SubRunway(String designator, double tora, double toda, double asda, double lda, double displacedThreshold, double clearwayLength, double stopwayLength, double stripEndLength, double blastProtection) {
+    public SubRunway(String designator, double tora, double toda, double asda, double lda, double displacedThreshold, double stripEndLength, double blastProtection) {
         this.designator.set(designator);
 
         this.oldParameters = new ArrayList<>();
@@ -54,8 +54,8 @@ public class SubRunway {
         this.TODA.set(toda);
         this.ASDA.set(asda);
         this.LDA.set(lda);
-        this.clearwayLength.set(clearwayLength);
-        this.stopwayLength.set(stopwayLength);
+        this.clearwayLength.set(toda - tora);
+        this.stopwayLength.set(asda - tora);
 
 
         this.displacedThreshold.set(displacedThreshold);
@@ -79,8 +79,11 @@ public class SubRunway {
         this.TODA.set(new_subRunway.getTODA().get());
         this.ASDA.set(new_subRunway.getASDA().get());
         this.LDA.set(new_subRunway.getLDA().get());
-        this.clearwayLength.set(new_subRunway.getClearwayLength().get());
-        this.stopwayLength.set(new_subRunway.getStopwayLength().get());
+
+        this.clearwayLength.set(originalTODA.get() - originalTORA.get());
+        this.stopwayLength.set(originalASDA.get() - originalTORA.get());
+
+
         this.displacedThreshold.set(new_subRunway.getDisplacedThreshold().get());
         this.stripEndLength.set(new_subRunway.getStripEndLength().get());
         this.blastProtection.set(new_subRunway.getBlastProtection().get());
@@ -101,8 +104,10 @@ public class SubRunway {
         this.TODA.set(new_subRunway.getTODA().get());
         this.ASDA.set(new_subRunway.getASDA().get());
         this.LDA.set(new_subRunway.getLDA().get());
-        this.clearwayLength.set(new_subRunway.getClearwayLength().get());
-        this.stopwayLength.set(new_subRunway.getStopwayLength().get());
+
+        this.clearwayLength.set(originalTODA.get() - originalTORA.get());
+        this.stopwayLength.set(originalASDA.get() - originalTORA.get());
+
         this.displacedThreshold.set(new_subRunway.getDisplacedThreshold().get());
         this.stripEndLength.set(new_subRunway.getStripEndLength().get());
         this.blastProtection.set(new_subRunway.getBlastProtection().get());
