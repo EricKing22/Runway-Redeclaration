@@ -99,6 +99,7 @@ public class SimultaneousScene extends BaseScene{
      * Create the menu box
      * @return HBox the Menu Bar
      */
+
     private HBox makeMenuBox(){
         // Create Menus
         MenuBar menuBar = new MenuBar();
@@ -121,7 +122,9 @@ public class SimultaneousScene extends BaseScene{
 
         // Help Menu
         Menu helpMenu = new Menu("Help");
-        helpMenu.getItems().addAll(new MenuItem("About"), new MenuItem("Contact"));
+        MenuItem colourSettings = new MenuItem("Colour Schemes");
+        colourSettings.setOnAction(e -> makeColourSettingPage());
+        helpMenu.getItems().addAll(new MenuItem("About"), new MenuItem("Contact"), colourSettings);
 
         // Add Menus to the MenuBar
         menuBar.getMenus().addAll(fileMenu, viewMenu, helpMenu);
@@ -143,6 +146,8 @@ public class SimultaneousScene extends BaseScene{
         HBox.setHgrow(everything, Priority.ALWAYS);
         return (everything);
     }
+
+
 
     /**
      * Create the middle display box
@@ -171,7 +176,7 @@ public class SimultaneousScene extends BaseScene{
         VBox.setVgrow(arrowEmpty1, Priority.ALWAYS);
         Text landingText = new Text("Landing");
         landingText.getStyleClass().add("arrow-text");
-        landingArrowBox.getChildren().addAll(landingArrow, landingText, arrowEmpty1);
+        landingArrowBox.getChildren().addAll(landingArrow, arrowEmpty1);
         directionPane.setRight(landingArrowBox);
 
         // Takeoff Direction
@@ -186,7 +191,7 @@ public class SimultaneousScene extends BaseScene{
         VBox.setVgrow(arrowEmpty2, Priority.ALWAYS);
         Text takeoffText = new Text("Take off");
         takeoffText.getStyleClass().add("arrow-text");
-        takeoffArrowBox.getChildren().addAll(takeoffArrow, takeoffText, arrowEmpty2);
+        takeoffArrowBox.getChildren().addAll(takeoffArrow, arrowEmpty2);
         directionPane.setLeft(takeoffArrowBox);
 
 

@@ -8,6 +8,8 @@ import javafx.stage.Stage;
 import uk.ac.soton.comp2211.runwayredeclaration.App;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp2211.runwayredeclaration.Component.Airport;
+import uk.ac.soton.comp2211.runwayredeclaration.Component.Runway;
 import uk.ac.soton.comp2211.runwayredeclaration.scene.BaseScene;
 import uk.ac.soton.comp2211.runwayredeclaration.scene.SideViewScene;
 import uk.ac.soton.comp2211.runwayredeclaration.scene.SimultaneousScene;
@@ -52,6 +54,7 @@ public class HomeWindow {
     public void startSideView() {
         loadScene(new SideViewScene(this));
     }
+
 
     /**
      * Start the top view

@@ -115,7 +115,7 @@ public class TopViewScene extends BaseScene{
         VBox.setVgrow(arrowEmpty1, Priority.ALWAYS);
         Text landingText = new Text("Landing");
         landingText.getStyleClass().add("arrow-text");
-        landingArrowBox.getChildren().addAll(landingArrow, landingText, arrowEmpty1);
+        landingArrowBox.getChildren().addAll(landingArrow, arrowEmpty1);
         directionPane.setRight(landingArrowBox);
 
         // Takeoff Direction
@@ -130,7 +130,7 @@ public class TopViewScene extends BaseScene{
         VBox.setVgrow(arrowEmpty2, Priority.ALWAYS);
         Text takeoffText = new Text("Take off");
         takeoffText.getStyleClass().add("arrow-text");
-        takeoffArrowBox.getChildren().addAll(takeoffArrow, takeoffText, arrowEmpty2);
+        takeoffArrowBox.getChildren().addAll(takeoffArrow, arrowEmpty2);
         directionPane.setLeft(takeoffArrowBox);
 
 
@@ -156,19 +156,31 @@ public class TopViewScene extends BaseScene{
         HBox stopWay1 = new HBox();
         stopWay1.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
         stopWay1.prefWidthProperty().bind(displayStopWayLength);
-        stopWay1.setAlignment(Pos.CENTER_LEFT);
+        stopWay1.prefHeightProperty().bind(runwayImageView.fitHeightProperty());
+        stopWay1.visibleProperty().bind(stopWayLength2.greaterThan(0));
         HBox stopWay2 = new HBox();
         stopWay2.setBackground(new Background(new BackgroundFill(Color.web("#4472C4"), CornerRadii.EMPTY, Insets.EMPTY)));
         stopWay2.prefWidthProperty().bind(displayStopWayLength);
-        stopWay2.setAlignment(Pos.CENTER_LEFT);
+        stopWay1.prefHeightProperty().bind(runwayImageView.fitHeightProperty());
+        stopWay2.visibleProperty().bind(stopWayLength1.greaterThan(0));
 
-        if (displayStopWayLength.getValue() == 0) {
-            stopWay1.setVisible(false);
-            stopWay2.setVisible(false);
-        }
 
-        runwayBox.setMaxHeight(Region.USE_PREF_SIZE);
-        runwayBox.getChildren().addAll(stopWay1, runwayImageView, stopWay2);
+        stopWay1.setMaxHeight(runwayImageView.getFitWidth() / runwayImage.getWidth() * runwayImage.getHeight());
+        stopWay2.setMaxHeight(runwayImageView.getFitWidth() / runwayImage.getWidth() * runwayImage.getHeight());
+
+        HBox stopWayBox = new HBox();
+        HBox emptyBoxBetweenStopWays = new HBox();
+        emptyBoxBetweenStopWays.getStyleClass().add("empty");
+        emptyBoxBetweenStopWays.setPrefHeight(displayStackPane.getHeight());
+        emptyBoxBetweenStopWays.setPrefWidth(displayRunwayLength.get());
+        stopWayBox.getChildren().addAll(stopWay1, emptyBoxBetweenStopWays, stopWay2);
+        stopWayBox.setAlignment(Pos.CENTER);
+
+        stopWayBox.setPrefHeight(100);
+
+
+
+        runwayBox.getChildren().add(runwayImageView);
 
 
         // Empty boxes to push the runway to the center
@@ -227,6 +239,7 @@ public class TopViewScene extends BaseScene{
 
         HBox clearWay1 = new HBox();
         clearWay1.getStyleClass().add("clearway-box");
+        clearWay1.visibleProperty().bind(clearWayLength2.greaterThan(0));
         clearWay1.prefWidthProperty().bind(displayClearWayLength);
 
         HBox distanceBetweenStopways = new HBox();
@@ -235,17 +248,15 @@ public class TopViewScene extends BaseScene{
 
         HBox clearWay2 = new HBox();
         clearWay2.getStyleClass().add("clearway-box");
+        clearWay2.visibleProperty().bind(clearWayLength1.greaterThan(0));
         clearWay2.prefWidthProperty().bind(displayClearWayLength);
 
-        if (displayStopWayLength.getValue() == 0) {
-            clearWay1.setVisible(false);
-            clearWay2.setVisible(false);
-        }
+
         clearWayBox.getChildren().addAll(clearWay1, distanceBetweenStopways, clearWay2);
 
 
 
-        displayStackPane.getChildren().addAll(gradeAreaImageView, runwayPaneBox, clearWayBox, planeObstacleBox);
+        displayStackPane.getChildren().addAll(gradeAreaImageView, runwayPaneBox, stopWayBox, clearWayBox, planeObstacleBox);
 
         // Take Off Indicators: TORA, TODA, ASDA
         takeOffIndicators = new StackPane();
@@ -420,6 +431,7 @@ public class TopViewScene extends BaseScene{
      * Create the menu box
      * @return the menu box
      */
+
     private HBox makeMenuBox() {
         // Create Menus
         MenuBar menuBar = new MenuBar();
@@ -441,7 +453,9 @@ public class TopViewScene extends BaseScene{
 
         // Help Menu
         Menu helpMenu = new Menu("Help");
-        helpMenu.getItems().addAll(new MenuItem("About"), new MenuItem("Contact"));
+        MenuItem colourSettings = new MenuItem("Colour Schemes");
+        colourSettings.setOnAction(e -> makeColourSettingPage());
+        helpMenu.getItems().addAll(new MenuItem("About"), new MenuItem("Contact"), colourSettings);
 
         menuBar.getMenus().addAll(fileMenu, viewMenu, helpMenu);
 
