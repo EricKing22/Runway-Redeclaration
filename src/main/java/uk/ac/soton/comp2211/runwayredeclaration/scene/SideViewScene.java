@@ -4,6 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.*;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -23,6 +24,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
 import java.lang.reflect.Array;
+import java.util.Collections;
+import java.util.List;
 
 
 public class SideViewScene extends BaseScene{

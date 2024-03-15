@@ -34,6 +34,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -741,6 +742,19 @@ public abstract class BaseScene {
             clearwayLengthDisplay.setText(subRunway2.getClearwayLength().get() + "m");
             stopwayLengthDisplay.setText(subRunway2.getStopwayLength().get() + "m");
             thresholdLengthDisplay.setText(subRunway2.getDisplacedThreshold().get() + "m");
+
+
+
+
+//            Collections.reverse(todaBox.getChildren());
+//            Collections.reverse(todaBox.getChildren());
+//            Collections.reverse(ldaBox.getChildren());
+//            Collections.reverse(asdaBox.getChildren());
+//            Collections.reverse(blastAllowanceBox.getChildren());
+//            Collections.reverse(resaBox.getChildren());
+
+
+
         });
 
         //ToggleGroup directionButtons = new ToggleGroup();
