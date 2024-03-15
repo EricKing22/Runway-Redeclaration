@@ -94,9 +94,11 @@ public abstract class BaseScene {
 
     protected DoubleProperty displayBorderToRunway = new SimpleDoubleProperty();
     protected DoubleProperty displayBorderToStopway = new SimpleDoubleProperty();
+    protected DoubleProperty displayPlaneWidth = new SimpleDoubleProperty(60);
 
 
     protected StackPane takeOffIndicators;
+    protected StackPane landingIndicators;
     protected HBox toraBox;
     protected HBox todaBox;
     protected HBox ldaBox;
