@@ -123,7 +123,7 @@ public class SimultaneousScene extends BaseScene{
         // Help Menu
         Menu helpMenu = new Menu("Help");
         MenuItem colourSettings = new MenuItem("Colour Schemes");
-        colourSettings.setOnAction(e -> makeColourSettingPage());
+
         helpMenu.getItems().addAll(new MenuItem("About"), new MenuItem("Contact"), colourSettings);
 
         // Add Menus to the MenuBar
