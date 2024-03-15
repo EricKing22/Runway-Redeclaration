@@ -109,6 +109,7 @@ public class SideViewScene extends BaseScene{
      */
     public BorderPane makeDirectionPane(){
         BorderPane directionPane = new BorderPane();
+
         // Landing Direction
         Image arrow1 = new Image(getClass().getResource("/images/Arrow2.png").toExternalForm());
         ImageView landingArrow = new ImageView(arrow1);
@@ -123,6 +124,7 @@ public class SideViewScene extends BaseScene{
         Text landingText = new Text("Landing");
         landingText.getStyleClass().add("arrow-text");
         landingArrowBox.getChildren().addAll(landingArrow, arrowEmpty1);
+        landingArrowBox.setAlignment(Pos.CENTER_RIGHT);
         directionPane.setRight(landingArrowBox);
 
         // Takeoff Direction
@@ -131,7 +133,7 @@ public class SideViewScene extends BaseScene{
         takeoffArrow.setPreserveRatio(true);
         takeoffArrow.setFitWidth(100);
         VBox takeoffArrowBox = new VBox();
-        takeoffArrowBox.setAlignment(Pos.CENTER);
+        takeoffArrowBox.setAlignment(Pos.CENTER_LEFT);
         VBox arrowEmpty2 = new VBox();
         arrowEmpty2.getStyleClass().add("empty");
         VBox.setVgrow(arrowEmpty2, Priority.ALWAYS);
@@ -232,7 +234,7 @@ public class SideViewScene extends BaseScene{
         indicators = new StackPane();
 
         // Take Off Indicators: TORA, TODA, ASDA
-        StackPane takeOffIndicators = new StackPane();
+        takeOffIndicators = new StackPane();
         takeOffIndicators.getStyleClass().add("empty");
         takeOffIndicators.setAlignment(Pos.CENTER);
 
@@ -543,6 +545,26 @@ public class SideViewScene extends BaseScene{
         clearWayBox.getChildren().addAll(clearWay1, emptyBoxBetweenClearWay, clearWay2);
         displayStackPane.getChildren().add(clearWayBox);
 
+        // Designator Display
+        Text designator1 = new Text();
+        designator1.getStyleClass().add("display-designator-text");
+        designator1.textProperty().bind(subRunway1.getDesignator());
+        Text designator2 = new Text();
+        designator2.getStyleClass().add("display-designator-text");
+        designator2.textProperty().bind(subRunway2.getDesignator());
+
+        HBox emptyHbox = new HBox();
+        emptyHbox.getStyleClass().add("empty");
+        HBox.setHgrow(emptyHbox, Priority.ALWAYS);
+
+
+        HBox designatorBox = new HBox();
+        designatorBox.getStyleClass().add("empty");
+        designatorBox.setAlignment(Pos.CENTER);
+        designatorBox.getChildren().addAll(designator1, emptyHbox, designator2);
+
+       displayStackPane.getChildren().add(designatorBox);
+
 
         return displayStackPane;
     }
@@ -680,6 +702,25 @@ public class SideViewScene extends BaseScene{
 
         displayStackPane.getChildren().addAll(gradeAreaImageView, runwayPaneBox, stopWayBox, clearWayBox, planeObstacleBox);
 
+        // Designator Display
+        Text designator1 = new Text();
+        designator1.getStyleClass().add("display-designator-text");
+        designator1.textProperty().bind(subRunway1.getDesignator());
+        Text designator2 = new Text();
+        designator2.getStyleClass().add("display-designator-text");
+        designator2.textProperty().bind(subRunway2.getDesignator());
+
+        HBox emptyHbox = new HBox();
+        emptyHbox.getStyleClass().add("empty");
+        HBox.setHgrow(emptyHbox, Priority.ALWAYS);
+
+
+        HBox designatorBox = new HBox();
+        designatorBox.getStyleClass().add("empty");
+        designatorBox.setAlignment(Pos.CENTER);
+        designatorBox.getChildren().addAll(designator1, emptyHbox, designator2);
+
+        displayStackPane.getChildren().add(designatorBox);
 
 
 
@@ -800,10 +841,32 @@ public class SideViewScene extends BaseScene{
         // Add the runway, plane, obstacle and graded area to the top view pane
         topViewPane.getChildren().addAll(gradeAreaImageView, runwayTopPaneBox, planeObstacleTopBox, topViewLabelBox);
 
+        // Designator Display
+        Text designator1 = new Text();
+        designator1.getStyleClass().add("display-designator-text");
+        designator1.textProperty().bind(subRunway1.getDesignator());
+        Text designator2 = new Text();
+        designator2.getStyleClass().add("display-designator-text");
+        designator2.textProperty().bind(subRunway2.getDesignator());
+
+        HBox emptyHbox = new HBox();
+        emptyHbox.getStyleClass().add("empty");
+        HBox.setHgrow(emptyHbox, Priority.ALWAYS);
+
+
+        HBox designatorBox = new HBox();
+        designatorBox.getStyleClass().add("empty");
+        designatorBox.setAlignment(Pos.CENTER);
+        designatorBox.getChildren().addAll(designator1, emptyHbox, designator2);
+
+        topViewPane.getChildren().add(designatorBox);
+
 
         // Side-View Part
+        StackPane sideViewStackPane = new StackPane();
         BorderPane sideViewPane = new BorderPane();
-        displayBorderPane.setBottom(sideViewPane);
+        sideViewStackPane.getChildren().add(sideViewPane);
+        displayBorderPane.setBottom(sideViewStackPane);
 
         // Sky Part
         BorderPane bluePane = new BorderPane();
@@ -916,6 +979,27 @@ public class SideViewScene extends BaseScene{
 
 
         groundPane.setTop(runwayPaneBox);
+
+
+        // Designator Display
+        Text designator3 = new Text();
+        designator3.getStyleClass().add("display-designator-text");
+        designator3.textProperty().bind(subRunway1.getDesignator());
+        Text designator4 = new Text();
+        designator4.getStyleClass().add("display-designator-text");
+        designator4.textProperty().bind(subRunway2.getDesignator());
+
+        HBox emptyHbox2 = new HBox();
+        emptyHbox2.getStyleClass().add("empty");
+        HBox.setHgrow(emptyHbox2, Priority.ALWAYS);
+
+
+        HBox designatorBox2 = new HBox();
+        designatorBox2.getStyleClass().add("empty");
+        designatorBox2.setAlignment(Pos.CENTER);
+        designatorBox2.getChildren().addAll(designator3, emptyHbox2, designator4);
+
+        sideViewStackPane.getChildren().add(designatorBox2);
 
 
         return displayStackPane;
