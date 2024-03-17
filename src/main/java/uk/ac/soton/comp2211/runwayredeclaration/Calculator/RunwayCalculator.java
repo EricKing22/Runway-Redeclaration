@@ -17,13 +17,12 @@ public class RunwayCalculator {
      * @return tora the new TORA
      */
     public static double calculateTORA(SubRunway subRunway, Obstacle obstacle, double distance) {
-        double originalTORA = subRunway.getOriginalTORA().get();
+        double originalTORA = subRunway.getOriginalTORA().getValue();
         double blastProtection = subRunway.getBlastProtection().get();
         double displacedThreshold = subRunway.getDisplacedThreshold().get();
         double stripEnd = subRunway.getStripEndLength().get();
         double RESA = subRunway.getRESA().get();
         double obstacleHeight = obstacle.getHeight();
-
 
         double tora;
         // Take off away

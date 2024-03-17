@@ -1,6 +1,40 @@
+
+/*below is for the sky*/
 .sideView-background, .topView-background, .simultaneous-background {
     -fx-background-color: #BDD7EE; /* Light blue background */
 }
+
+.sideView-background-Deuteranopia, .topView-background-Deuteranopia, .simultaneous-background-Deuteranopia {
+    -fx-background-color: #BDD7EE; /*same as default*/
+}
+
+.sideView-background-Tritanopia, .topView-background-Tritanopia, .simultaneous-background-Tritanopia {
+    -fx-background-color: #FF00FF;
+}
+
+.sideView-background-Protanopia, .topView-background-Protanopia, .simultaneous-background-Protanopia {
+    -fx-background-color: #00FFFF;
+}
+
+
+/*below is for the ground*/
+.sideView-ground, .topView-ground, .simultaneous-ground {
+    -fx-background-color: #A9D18E; /* Light blue background */
+}
+
+.sideView-ground-Deuteranopia, .topView-ground-Deuteranopia, .simultaneous-ground-Deuteranopia {
+    -fx-background-color: #FFFF00; /*same as default*/
+}
+
+.sideView-ground-Tritanopia, .topView-ground-Tritanopia, .simultaneous-ground-Tritanopia {
+    -fx-background-color: #32CD32;
+}
+
+.sideView-ground-Protanopia, .topView-ground-Protanopia, .simultaneous-ground-Protanopia {
+    -fx-background-color: #800080;
+}
+
+
 
 .left-box {
     -fx-background-color: #F8FCEC;
@@ -29,7 +63,24 @@
     -fx-background-color: #4472C4;
     -fx-padding: 5px;
     -fx-alignment: center-left;
+}
 
+.menu-box-yellow {
+    -fx-background-color: #FFFF00;
+    -fx-padding: 5px;
+    -fx-alignment: center-left;
+}
+
+.menu-box-limegreen {
+    -fx-background-color: #32CD32;
+    -fx-padding: 5px;
+    -fx-alignment: center-left;
+}
+
+.menu-box-purple {
+    -fx-background-color: #800080;
+    -fx-padding: 5px;
+    -fx-alignment: center-left;
 }
 
 

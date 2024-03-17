@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
@@ -22,6 +23,7 @@ import java.sql.SQLException;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.w3c.dom.Document;
+import uk.ac.soton.comp2211.runwayredeclaration.Calculator.RunwayCalculator;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.*;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomePane;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomeWindow;
@@ -115,7 +117,7 @@ public abstract class BaseScene {
     public double distanceD;
 
     public String operationSelected = null;
-    public String directionSelected = null;
+    public SimpleStringProperty directionSelected = new SimpleStringProperty("(...)");
 
     public ToggleGroup operationButtons = new ToggleGroup();
     public ToggleGroup directionButtons = new ToggleGroup();
@@ -125,12 +127,13 @@ public abstract class BaseScene {
 
 
     ToggleGroup group = new ToggleGroup();
-    RadioButton defaultOption = new RadioButton("Default");
-    RadioButton option1 = new RadioButton("Option 1");
-    RadioButton option2 = new RadioButton("Option 2");
-    RadioButton option3 = new RadioButton("Option 3");
+    RadioButton defaultOption = new RadioButton("Default (Blue/Green)");
+    RadioButton option1 = new RadioButton("Blue/Yellow");
+    RadioButton option2 = new RadioButton("Magenta/Lime Green");
+    RadioButton option3 = new RadioButton("Cyan/Deep Purple");
 
-    RadioButton currentlySelected = defaultOption;
+    protected CurrentState currentState = new CurrentState();
+
 
     /**
      * Create a new scene, passing in the GameWindow the scene will be displayed in
@@ -188,22 +191,6 @@ public abstract class BaseScene {
      * Build the layout of the scene
      */
     public abstract void build();
-
-    public double calculateThreshold(){
-        return subRunway1.getObstacleDistance() - subRunway1.getDisplacedThreshold().get();
-    }
-
-    public double calculateTORA(){
-        return subRunway1.getOriginalTORA().get() - subRunway1.getBlastProtection().get() - calculateThreshold() - subRunway1.getDisplacedThreshold().get();
-    }
-
-    public double calculateASDA(){
-        return calculateTORA() + subRunway1.getStopwayLength().get();
-    }
-
-    public double calculateTODA(){
-        return calculateTORA() + subRunway1.getClearwayLength().get();
-    }
 
 
 
@@ -487,8 +474,7 @@ public abstract class BaseScene {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
                 for (Runway runway : currentAirport.getRunways()){
-                    System.out.println("Runway: " + runway.getName());
-                    System.out.println("It has subrunways: " + runway.getSubRunways().get(0).getDesignator().get() + " and " + runway.getSubRunways().get(1).getDesignator().get());
+
                     if (runway.getName().equals(newValue)){
 
                         clearAllButtons();
@@ -498,9 +484,9 @@ public abstract class BaseScene {
                         subRunway1.update(currentRunway.getSubRunways().get(0));
                         subRunway2.update(currentRunway.getSubRunways().get(1));
 
-                        stopwayLengthDisplay.setText("");
-                        clearwayLengthDisplay.setText("");
-                        thresholdLengthDisplay.setText("");
+                        stopwayLengthDisplay.setText("Select designator to show");
+                        clearwayLengthDisplay.setText("Select designator to show");
+                        thresholdLengthDisplay.setText("Select designator to show");
 
 
                     }
@@ -533,19 +519,16 @@ public abstract class BaseScene {
                         subRunway1.update(currentRunway.getSubRunways().get(0));
                         subRunway2.update(currentRunway.getSubRunways().get(1));
 
-                        stopwayLengthDisplay.setText("");
-                        clearwayLengthDisplay.setText("");
-                        thresholdLengthDisplay.setText("");
+                        stopwayLengthDisplay.setText("(Select designator to show)");
+                        clearwayLengthDisplay.setText("(Select designator to show)");
+                        thresholdLengthDisplay.setText("(Select designator to show)");
+
+
+
 
 
                     }
                 }
-
-
-
-
-
-
 
 
             }
@@ -557,11 +540,11 @@ public abstract class BaseScene {
         airportGrid.addRow(0, new Label("Airport:"), comboAirports);
         airportGrid.addRow(1, new Label("Runway:"), comboRunways);
 
-        thresholdLengthDisplay = new Text();
+        thresholdLengthDisplay = new Text("Select designator to show");
         airportGrid.addRow(2, new Label("Threshold:"), thresholdLengthDisplay);
-        clearwayLengthDisplay = new Text();
+        clearwayLengthDisplay = new Text("Select designator to show");
         airportGrid.addRow(3, new Label("Clearway:"), clearwayLengthDisplay);
-        stopwayLengthDisplay = new Text();
+        stopwayLengthDisplay = new Text("Select designator to show");
         airportGrid.addRow(4, new Label("Stopway:"), stopwayLengthDisplay);
 
         airportTPane.setContent(airportGrid);
@@ -579,6 +562,7 @@ public abstract class BaseScene {
         obstacleGrid.setVgap(5);
         obstacleGrid.setHgap(10);
 
+        obstacleGrid.setPrefWidth(300);
         TitledPane obstacleTPane = new TitledPane();
         obstacleTPane.setText("Add Obstacles:");
         obstacleTPane.setCollapsible(true);
@@ -596,39 +580,60 @@ public abstract class BaseScene {
         obstacleBox.getChildren().addAll(new Label("Height (metres):"), obstacleHeight);
 
 
-        TextField obstacleWidth = new TextField();
-        obstacleBox.getChildren().addAll(new Label("Width (metres):"),obstacleWidth);
+        TextField obstacleToCentreLine = new TextField();
+        obstacleBox.getChildren().addAll(new Label("Distance from centreline (metres):"), obstacleToCentreLine);
 
-        TextField distanceFromStopway = new TextField();
-        obstacleBox.getChildren().addAll(new Label("Distance from left stopway (metres):"), distanceFromStopway);
+        TextField distanceFromThreshold1 = new TextField();
+        TextField distanceFromThreshold2 = new TextField();
+
+        Label distanceFromLabel1 = new Label();
+        distanceFromLabel1.textProperty().bind(Bindings.concat("Distance from ", subRunway1.getDesignator() , " threshold (meters):"));
+
+        Label distanceFromLabel2 = new Label();
+        distanceFromLabel2.textProperty().bind(Bindings.concat("Distance from ", subRunway2.getDesignator() , " threshold (meters):"));
+
+        obstacleBox.getChildren().addAll(distanceFromLabel1, distanceFromThreshold1, distanceFromLabel2, distanceFromThreshold2);
 
         obstacle.setOnAction(e -> {
             currentObstacle = obstacle.getValue();
             obstacleHeight.setText(String.valueOf(currentObstacle.getHeight()));
-            obstacleWidth.setText(String.valueOf(currentObstacle.getWidth()));
+
+            subRunway1.setTORA(subRunway1.getOriginalTORA().get());
+            subRunway1.setTODA(subRunway1.getOriginalTODA().get());
+            subRunway1.setASDA(subRunway1.getOriginalASDA().get());
+            subRunway1.setLDA(subRunway1.getOriginalLDA().get());
+
+            subRunway2.setTORA(subRunway2.getOriginalTORA().get());
+            subRunway2.setTODA(subRunway2.getOriginalTODA().get());
+            subRunway2.setASDA(subRunway2.getOriginalASDA().get());
+            subRunway2.setLDA(subRunway2.getOriginalLDA().get());
 
 
         });
 
-        HBox buttons = new HBox(5);
-        Button editButton = new Button("Edit");
-        editButton.setOnAction(e -> {});
 
-
-        Button addButton = new Button("Add");
-        addButton.setOnAction(e -> {
+        Button recalculateB = new Button("Recalculate");
+        recalculateB.setMaxWidth(Double.MAX_VALUE);
+        recalculateB.setOnAction(e -> {
             String heightText = obstacleHeight.getText();
-            String widthText = obstacleWidth.getText();
-            String distanceTextD = distanceFromStopway.getText();
+            String distanceToCentreline = obstacleToCentreLine.getText();
+            String distanceTextD1 = distanceFromThreshold1.getText();
+            String distanceTextD2 = distanceFromThreshold2.getText();
+
+            double height;
+            double distanceToCentrelineD;
+            double distance1;
+            double distance2;
 
             try {
                 // Parse values to doubles
-                double height = Double.parseDouble(heightText);
-                double width = Double.parseDouble(widthText);
-                double distance = Double.parseDouble(distanceTextD);
+                height = Double.parseDouble(heightText);
+                distanceToCentrelineD = Double.parseDouble(distanceToCentreline);
+                distance1 = Double.parseDouble(distanceTextD1);
+                distance2 = Double.parseDouble(distanceTextD2);
 
                 // Check if the obstacle values are valid
-                String errorMessage = handleObstacle(height, width, distance);
+                String errorMessage = handleObstacle(height, distanceToCentrelineD, distance1, distance2);
 
                 // If there is an error, display the appropriate error message(s) and clear the corresponding input field(s)
                 if (errorMessage != null) {
@@ -642,13 +647,30 @@ public abstract class BaseScene {
                         obstacleHeight.clear();
                     }
                     if (errorMessage.contains("Invalid width")) {
-                        obstacleWidth.clear();
+                        obstacleToCentreLine.clear();
                     }
                     if (errorMessage.contains("Invalid distance")) {
-                        distanceFromStopway.clear();
+                        distanceFromThreshold1.clear();
+                    }
+                    if (errorMessage.contains("Invalid distance")) {
+                        distanceFromThreshold2.clear();
                     }
 
                 }
+
+                currentObstacle.setHeight(height);
+
+
+                subRunway1.setTORA(RunwayCalculator.calculateTORA(subRunway1, currentObstacle, distance1));
+                subRunway1.setTODA(RunwayCalculator.calculateTODA(subRunway1, currentObstacle, distance1));
+                subRunway1.setASDA(RunwayCalculator.calculateASDA(subRunway1, currentObstacle, distance1));
+                subRunway1.setLDA(RunwayCalculator.calculateLDA(subRunway1, currentObstacle, distance1));
+
+
+                subRunway2.setTORA(RunwayCalculator.calculateTORA(subRunway2, currentObstacle, distance2));
+                subRunway2.setTODA(RunwayCalculator.calculateTODA(subRunway2, currentObstacle, distance2));
+                subRunway2.setASDA(RunwayCalculator.calculateASDA(subRunway2, currentObstacle, distance2));
+                subRunway2.setLDA(RunwayCalculator.calculateLDA(subRunway2, currentObstacle, distance2));
 
             } catch (NumberFormatException ex) {
                 // If parsing fails (e.g., input is not a valid double), show an error message
@@ -660,49 +682,61 @@ public abstract class BaseScene {
 
                 // Clear all fields if parsing fails
                 try {
-                    double height = Double.parseDouble(heightText);
+                    height = Double.parseDouble(heightText);
                 } catch (NumberFormatException f) {
                     obstacleHeight.clear();
                 }
 
                 try {
-                    double width = Double.parseDouble(widthText);
+                    distanceToCentrelineD = Double.parseDouble(distanceToCentreline);
                 } catch (NumberFormatException f) {
-                    obstacleWidth.clear();
+                    obstacleToCentreLine.clear();
                 }
 
                 try {
-                    double distance = Double.parseDouble(distanceTextD);
+                    distance1 = Double.parseDouble(distanceTextD1);
                 } catch (NumberFormatException f) {
-                    distanceFromStopway.clear();
+                    distanceFromThreshold1.clear();
+                }
+
+                try {
+                    distance2 = Double.parseDouble(distanceTextD2);
+                } catch (NumberFormatException f) {
+                    distanceFromThreshold2.clear();
                 }
 
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
+
+
+
+
+
+
+
         });
 
-        buttons.getChildren().add(editButton);
 
-        buttons.getChildren().add(addButton);
-        obstacleBox.getChildren().add(buttons);
+        HBox obstacleLabel = new HBox(30, new Label("Obstacle: "), obstacle);
 
-
-
-        Button recalculateB = new Button("Recalculate");
-        recalculateB.setMaxWidth(Double.MAX_VALUE);
-
-        HBox something = new HBox(30, new Label("Obstacle: "), obstacle);
-
-        obstacleGrid.addRow(0, something);
+        obstacleGrid.addRow(0, obstacleLabel);
         obstacleGrid.addRow(1, obstacleBox);
-        obstacleGrid.addRow(2, buttons);
-        obstacleGrid.addRow(3, recalculateB);
+        obstacleGrid.addRow(2, recalculateB);
 
+
+        obstacleGrid.prefWidthProperty().bind(obstacleTPane.widthProperty());
         obstacleTPane.setContent(obstacleGrid);
 
         return obstacleTPane;
     }
+
+
+
+
+
+
+
     public TitledPane makeAirplaneTPane(){
 
 
@@ -760,6 +794,7 @@ public abstract class BaseScene {
         //ToggleGroup directionButtons = new ToggleGroup();
         firstDirectionButton.setToggleGroup(directionButtons);
         secondDirectionButton.setToggleGroup(directionButtons);
+
         directionButtons.selectToggle(null);
 
 
@@ -778,12 +813,12 @@ public abstract class BaseScene {
         directionButtons.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             // Update the global variable based on the new selection
             if (newValue != null) {
-                directionSelected = newValue.getUserData().toString();
+                directionSelected.set( ((RadioButton) newValue).getText());
             } else {
                 // If no RadioButton is selected (e.g., initial state or all selections are cleared)
-                directionSelected = null;
+                directionSelected.set("(...)");
             }
-            //System.out.println("Current direction: " + directionSelected);
+
         });
 
 
@@ -838,55 +873,11 @@ public abstract class BaseScene {
     }
 
     Checkers checker = new Checkers(obstacleHeightD, obstacleWidthD, distanceD);
-    public String handleObstacle(double h, double w, double d) throws SQLException {
-        return checker.obstacleChecker(h, w, d);
+    public String handleObstacle(double h, double w, double d1, double d2) throws SQLException {
+        return checker.obstacleChecker(h, w, d1, d2);
     }
 
 
 
-    public void makeColourSettingPage(){
-        Stage colourSetting = new Stage();
-        colourSetting.initModality(Modality.WINDOW_MODAL);
-
-
-//        ToggleGroup group = new ToggleGroup();
-//        RadioButton defaultOption = new RadioButton("Default");
-        defaultOption.setToggleGroup(group);
-//        RadioButton option1 = new RadioButton("Option 1");
-        option1.setToggleGroup(group);
-//        RadioButton option2 = new RadioButton("Option 2");
-        option2.setToggleGroup(group);
-//        RadioButton option3 = new RadioButton("Option 3");
-        option3.setToggleGroup(group);
-
-        currentlySelected.setSelected(true);
-
-        Button applyButton = new Button("Exit");
-        applyButton.setOnAction(e -> colourSetting.close());
-
-//        applyButton.setOnAction(e -> {
-//            colourSetting.close();
-//            currentlySelected =
-//            }
-//
-//
-//        );
-
-        // Listen for changes in selection
-        group.selectedToggleProperty().addListener((observable, oldVal, newVal) -> {
-            if (newVal != defaultOption) {
-                applyButton.setText("Apply");
-            } else {
-                applyButton.setText("Exit");
-            }
-        });
-
-        VBox layout = new VBox(10, new Label("Please select the colour scheme you would like:"), defaultOption, option1, option2, option3, applyButton);
-        layout.setAlignment(Pos.CENTER);
-
-        Scene scene = new Scene(layout, 300, 200);
-        colourSetting.setScene(scene);
-        colourSetting.show();
-    }
 
 }

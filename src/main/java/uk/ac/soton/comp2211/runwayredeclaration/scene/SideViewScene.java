@@ -6,10 +6,13 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.*;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.Airport;
@@ -41,6 +44,15 @@ public class SideViewScene extends BaseScene{
     private StackPane indicators;
 
 
+    private BorderPane mainPane = new BorderPane();
+
+    private BorderPane bluePane = new BorderPane();
+
+    private BorderPane groundPane = new BorderPane();
+
+    private StackPane displayStackPaneTop = new StackPane();
+
+
     /**
      * Create a new side view scene
      * @param homeWindow the home Window this will be displayed in
@@ -69,7 +81,7 @@ public class SideViewScene extends BaseScene{
 
         root.getChildren().add(sideViewPane);
 
-        var mainPane = new BorderPane();
+
         mainPane.getStyleClass().add("sideView-background");
         sideViewPane.getChildren().add(mainPane);
 
@@ -420,7 +432,7 @@ public class SideViewScene extends BaseScene{
 
 
         // Sky Part
-        BorderPane bluePane = new BorderPane();
+
         bluePane.getStyleClass().add("sideView-background");
         bluePane.prefHeightProperty().bind(displayStackPane.heightProperty().divide(2));
         displayBorderPane.setTop(bluePane);
@@ -457,7 +469,7 @@ public class SideViewScene extends BaseScene{
 
 
         // Ground Part
-        BorderPane groundPane = new BorderPane();
+
         groundPane.setBackground(new Background(new BackgroundFill(Color.web("#A9D18E"), CornerRadii.EMPTY, Insets.EMPTY)));
         groundPane.prefHeightProperty().bind(displayStackPane.heightProperty().divide(2));
 
@@ -576,11 +588,12 @@ public class SideViewScene extends BaseScene{
      */
     public StackPane makeTopViewMiddleDisplayBox(){
 
-        StackPane displayStackPane = new StackPane();
+//        StackPane displayStackPane = new StackPane();
 
 
         BorderPane displayBorderPane = new BorderPane();
-        displayStackPane.getChildren().add(displayBorderPane);
+        displayStackPaneTop.getChildren().add(displayBorderPane);
+        changeColourSchemeTop();
 
         // Top-View Runway
         Image runwayImage = new Image(getClass().getResource("/images/Runway1.png").toExternalForm());
@@ -618,7 +631,7 @@ public class SideViewScene extends BaseScene{
         HBox stopWayBox = new HBox();
         HBox emptyBoxBetweenStopWays = new HBox();
         emptyBoxBetweenStopWays.getStyleClass().add("empty");
-        emptyBoxBetweenStopWays.setPrefHeight(displayStackPane.getHeight());
+        emptyBoxBetweenStopWays.setPrefHeight(displayStackPaneTop.getHeight());
         emptyBoxBetweenStopWays.setPrefWidth(displayRunwayLength.get());
         stopWayBox.getChildren().addAll(stopWay1, emptyBoxBetweenStopWays, stopWay2);
         stopWayBox.setAlignment(Pos.CENTER);
@@ -701,7 +714,7 @@ public class SideViewScene extends BaseScene{
 
 
 
-        displayStackPane.getChildren().addAll(gradeAreaImageView, runwayPaneBox, stopWayBox, clearWayBox, planeObstacleBox);
+        displayStackPaneTop.getChildren().addAll(gradeAreaImageView, runwayPaneBox, stopWayBox, clearWayBox, planeObstacleBox);
 
         // Designator Display
         Text designator1 = new Text();
@@ -721,11 +734,11 @@ public class SideViewScene extends BaseScene{
         designatorBox.setAlignment(Pos.CENTER);
         designatorBox.getChildren().addAll(designator1, emptyHbox, designator2);
 
-        displayStackPane.getChildren().add(designatorBox);
+        displayStackPaneTop.getChildren().add(designatorBox);
 
 
 
-        return displayStackPane;
+        return displayStackPaneTop;
 
 
 
@@ -1058,6 +1071,155 @@ public class SideViewScene extends BaseScene{
 
         return displayStackPane;
     }
+
+    public void changeColourScheme(){
+        //System.out.println(currentState.getColourSettting());
+        if (currentState.getColourSettting() == "Default (Blue/Green)"){
+            Platform.runLater( () -> {
+                menuBox.getStyleClass().clear();
+                menuBox.getStyleClass().add("menu-box");
+                bluePane.getStyleClass().clear();
+                bluePane.getStyleClass().add("sideView-background");
+                groundPane.getStyleClass().clear();
+                groundPane.getStyleClass().add("sideView-ground");
+            });
+
+
+
+        }else if (currentState.getColourSettting() == "Blue/Yellow"){
+            Platform.runLater( () -> {
+                menuBox.getStyleClass().clear();
+                menuBox.getStyleClass().add("menu-box");
+                bluePane.getStyleClass().clear();
+                bluePane.getStyleClass().add("sideView-background-Deuteranopia");
+                groundPane.getStyleClass().clear();
+                groundPane.getStyleClass().add("sideView-ground-Deuteranopia");
+            });
+        }else if (currentState.getColourSettting() == "Magenta/Lime Green"){
+            Platform.runLater( () -> {
+                menuBox.getStyleClass().clear();
+                menuBox.getStyleClass().add("menu-box-limegreen");
+                bluePane.getStyleClass().clear();
+                bluePane.getStyleClass().add("sideView-background-Tritanopia");
+                groundPane.getStyleClass().clear();
+                groundPane.getStyleClass().add("sideView-ground-Tritanopia");
+            });
+
+        }else if (currentState.getColourSettting() == "Cyan/Deep Purple"){
+            Platform.runLater( () -> {
+                menuBox.getStyleClass().clear();
+                menuBox.getStyleClass().add("menu-box-purple");
+                bluePane.getStyleClass().clear();
+                bluePane.getStyleClass().add("sideView-background-Protanopia");
+                groundPane.getStyleClass().clear();
+                groundPane.getStyleClass().add("sideView-ground-Protanopia");
+            });
+        }
+    }
+
+    public void makeColourSettingPage(){
+        Stage colourSetting = new Stage();
+        colourSetting.initModality(Modality.WINDOW_MODAL);
+
+
+//        ToggleGroup group = new ToggleGroup();
+//        RadioButton defaultOption = new RadioButton("Default");
+        defaultOption.setToggleGroup(group);
+//        RadioButton option1 = new RadioButton("Option 1");
+        option1.setToggleGroup(group);
+//        RadioButton option2 = new RadioButton("Option 2");
+        option2.setToggleGroup(group);
+//        RadioButton option3 = new RadioButton("Option 3");
+        option3.setToggleGroup(group);
+
+        if (currentState.getColourSettting() == "Default (Blue/Green)"){
+            defaultOption.setSelected(true);
+        } else if (currentState.getColourSettting() == "Blue/Yellow"){
+            option1.setSelected(true);
+        } else if (currentState.getColourSettting() == "Magenta/Lime Green"){
+            option2.setSelected(true);
+        } else if (currentState.getColourSettting() == "Cyan/Deep Purple"){
+            option3.setSelected(true);
+        }
+
+        RadioButton initiallySelected = (RadioButton) group.getSelectedToggle();
+
+        Button applyButton = new Button("Exit");
+        applyButton.setOnAction(e -> colourSetting.close());
+
+        applyButton.setOnAction(e -> {
+                    currentState.setColourSettting(((RadioButton) group.getSelectedToggle()).getText());
+                    colourSetting.close();
+                    changeColourScheme();
+                    changeColourSchemeTop();
+
+                    //here there needs to be an update style section. not really sure how to do it
+
+                }
+
+
+        );
+
+        // Listen for changes in selection
+        group.selectedToggleProperty().addListener((observable, oldVal, newVal) -> {
+            if (newVal != initiallySelected) {
+                applyButton.setText("Apply");
+            } else {
+                applyButton.setText("Exit");
+            }
+        });
+
+        VBox layout = new VBox(10, new Label("Please select the colour scheme you would like:"), defaultOption, option1, option2, option3, applyButton);
+        layout.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(layout, 300, 200);
+        colourSetting.setScene(scene);
+        colourSetting.show();
+    }
+
+
+    public void changeColourSchemeTop(){
+        //System.out.println(currentState.getColourSettting());
+        if (currentState.getColourSettting() == "Default (Blue/Green)"){
+            Platform.runLater( () -> {
+                menuBox.getStyleClass().clear();
+                menuBox.getStyleClass().add("menu-box");
+
+                displayStackPaneTop.getStyleClass().clear();
+                displayStackPaneTop.getStyleClass().add("topView-background");
+            });
+
+
+
+        }else if (currentState.getColourSettting() == "Blue/Yellow"){
+            Platform.runLater( () -> {
+                menuBox.getStyleClass().clear();
+                menuBox.getStyleClass().add("menu-box");
+
+                displayStackPaneTop.getStyleClass().clear();
+                displayStackPaneTop.getStyleClass().add("topView-background-Deuteranopia");
+            });
+        }else if (currentState.getColourSettting() == "Magenta/Lime Green"){
+            Platform.runLater( () -> {
+                menuBox.getStyleClass().clear();
+                menuBox.getStyleClass().add("menu-box-limegreen");
+
+                displayStackPaneTop.getStyleClass().clear();
+                displayStackPaneTop.getStyleClass().add("topView-background-Tritanopia");
+            });
+
+        }else if (currentState.getColourSettting() == "Cyan/Deep Purple"){
+            Platform.runLater( () -> {
+                menuBox.getStyleClass().clear();
+                menuBox.getStyleClass().add("menu-box-purple");
+
+                displayStackPaneTop.getStyleClass().clear();
+                displayStackPaneTop.getStyleClass().add("topView-background-Protanopia");
+            });
+        }
+    }
+
+
 
 
 
