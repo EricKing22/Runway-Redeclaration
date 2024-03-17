@@ -42,10 +42,10 @@ public class RunwayCalculator {
             double slopCalculation = 50 * obstacleHeight;
             // Check if the RESA is greater than the slop calculation
             if (RESA < slopCalculation){ // if the RESA is smaller than the slop calculation
-                tora = distance - slopCalculation - stripEnd;
+                tora = distance + displacedThreshold - slopCalculation - stripEnd;
             }
             else{ // if the RESA is greater than the slop calculation
-                tora = distance - RESA - stripEnd;
+                tora = distance + displacedThreshold - RESA - stripEnd;
             }
 
         }
