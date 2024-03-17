@@ -22,6 +22,7 @@
                 <lda>3884</lda>
                 <designator>27R</designator>
                 <displacedThreshold>0</displacedThreshold>
+                <RESA>240</RESA>
                 <stripEndLength>60</stripEndLength>
                 <blastProtection>300</blastProtection>
             </subRunway>
