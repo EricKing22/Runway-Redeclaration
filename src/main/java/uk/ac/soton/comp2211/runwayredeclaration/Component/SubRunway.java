@@ -33,13 +33,15 @@ public class SubRunway {
     public SimpleDoubleProperty stripEndLength = new SimpleDoubleProperty();
     public SimpleDoubleProperty blastProtection = new SimpleDoubleProperty();
     public SimpleDoubleProperty displacedThreshold = new SimpleDoubleProperty();
+
     public Obstacle obstacle;
+
     // Distance from the left start of the runway (not include stop way) to the obstacle
     public double obstacleDistance;
 
 
 
-    public SubRunway(String designator, double tora, double toda, double asda, double lda, double displacedThreshold, double stripEndLength, double blastProtection) {
+    public SubRunway(String designator, double tora, double toda, double asda, double lda, double displacedThreshold, double stripEndLength, double blastProtection, double RESA) {
         this.designator.set(designator);
 
         this.oldParameters = new ArrayList<>();
@@ -59,9 +61,10 @@ public class SubRunway {
 
 
         this.displacedThreshold.set(displacedThreshold);
-
         this.stripEndLength.set(stripEndLength);
         this.blastProtection.set(blastProtection);
+
+        this.RESA.set(RESA);
 
     }
 

@@ -767,11 +767,35 @@ public class SideViewScene extends BaseScene{
         stopWayTop2.prefWidthProperty().bind(displayStopWayLength);
         stopWayTop2.setAlignment(Pos.CENTER_LEFT);
 
-        if (displayStopWayLength.getValue() == 0){
-            stopWayTop1.setVisible(false);
-            stopWayTop2.setVisible(false);
-        }
+        stopWayTop2.visibleProperty().bind(stopWayLength1.greaterThan(0));
+        stopWayTop1.visibleProperty().bind(stopWayLength2.greaterThan(0));
 
+        // Clearways
+        HBox topClearWayBox = new HBox();
+        topClearWayBox.getStyleClass().add("empty");
+        topClearWayBox.setAlignment(Pos.CENTER);
+
+        HBox topclearWay1 = new HBox();
+        topclearWay1.getStyleClass().add("clearway-box");
+        topclearWay1.visibleProperty().bind(clearWayLength2.greaterThan(0));
+        topclearWay1.prefWidthProperty().bind(displayClearWayLength);
+
+        HBox distanceBetweenStopways1 = new HBox();
+        distanceBetweenStopways1.getStyleClass().add("empty");
+        distanceBetweenStopways1.setPrefWidth(displayRunwayLength.get());
+
+        HBox topclearWay2 = new HBox();
+        topclearWay2.getStyleClass().add("clearway-box");
+        topclearWay2.visibleProperty().bind(clearWayLength1.greaterThan(0));
+        topclearWay2.prefWidthProperty().bind(displayClearWayLength);
+
+
+        topClearWayBox.getChildren().addAll(topclearWay1, distanceBetweenStopways1, topclearWay2);
+
+
+
+
+        // Add stopways and runway to the top view pane
         HBox runwayTopBox = new HBox();
         runwayTopBox.getStyleClass().add("empty");
         runwayTopBox.setAlignment(Pos.CENTER_LEFT);
@@ -829,6 +853,7 @@ public class SideViewScene extends BaseScene{
         // Border for the views
         topViewPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 2, 0))));
 
+        //Top view label
         VBox topViewLabelBox = new VBox();
         topViewLabelBox.setAlignment(Pos.BOTTOM_CENTER);
         VBox topViewEmpty = new VBox();
@@ -840,7 +865,7 @@ public class SideViewScene extends BaseScene{
 
 
         // Add the runway, plane, obstacle and graded area to the top view pane
-        topViewPane.getChildren().addAll(gradeAreaImageView, runwayTopPaneBox, planeObstacleTopBox, topViewLabelBox);
+        topViewPane.getChildren().addAll(gradeAreaImageView, runwayTopPaneBox, planeObstacleTopBox, topViewLabelBox, topClearWayBox);
 
         // Designator Display
         Text designator1 = new Text();
@@ -918,7 +943,6 @@ public class SideViewScene extends BaseScene{
         frontPlaneEmpty.getStyleClass().add("empty");
         frontPlaneEmpty.prefWidthProperty().bind(Bindings.add(displayBorderToRunway,displayRunwayToPlane));
 
-        // Plane & Obstacle Pane
 
         //planeObstacleSideBox.setMaxWidth(displayRunwayLength.getValue());
         planeObstacleSideBox.getChildren().addAll(frontPlaneEmpty, planeImageViewSide, planeObstacleSideDistance, obstacleImageViewSide);
@@ -964,6 +988,9 @@ public class SideViewScene extends BaseScene{
         stopWay2.setAlignment(Pos.CENTER_RIGHT);
         stopWay2.setMaxHeight(Region.USE_COMPUTED_SIZE);
 
+        stopWay2.visibleProperty().bind(stopWayLength1.greaterThan(0));
+        stopWay1.visibleProperty().bind(stopWayLength2.greaterThan(0));
+
 
         runwayBox.getChildren().addAll(stopWay1, siderunwayImageView, stopWay2);
 
@@ -976,6 +1003,32 @@ public class SideViewScene extends BaseScene{
         borderToRunway2.setPrefWidth(displayBorderToRunway.getValue());
         HBox runwayPaneBox = new HBox(borderToRunway1, runwayBox, borderToRunway2);
         runwayPaneBox.setAlignment(Pos.CENTER_LEFT);
+
+
+
+        // Clearways
+        HBox clearWayBox = new HBox();
+        clearWayBox.getStyleClass().add("empty");
+        clearWayBox.setAlignment(Pos.CENTER);
+
+        HBox clearWay1 = new HBox();
+        clearWay1.getStyleClass().add("clearway-box");
+        clearWay1.visibleProperty().bind(clearWayLength2.greaterThan(0));
+        clearWay1.prefWidthProperty().bind(displayClearWayLength);
+
+        HBox distanceBetweenStopways = new HBox();
+        distanceBetweenStopways.getStyleClass().add("empty");
+        distanceBetweenStopways.setPrefWidth(displayRunwayLength.get());
+
+        HBox clearWay2 = new HBox();
+        clearWay2.getStyleClass().add("clearway-box");
+        clearWay2.visibleProperty().bind(clearWayLength1.greaterThan(0));
+        clearWay2.prefWidthProperty().bind(displayClearWayLength);
+
+
+        clearWayBox.getChildren().addAll(clearWay1, distanceBetweenStopways, clearWay2);
+
+        sideViewStackPane.getChildren().add(clearWayBox);
 
 
 

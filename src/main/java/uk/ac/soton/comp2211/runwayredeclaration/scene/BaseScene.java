@@ -171,9 +171,9 @@ public abstract class BaseScene {
 
 
 
-        Obstacle Boeing_777 = new Obstacle("Boeing 777", 18.6, 64.8, 63.7, 2973);
-        Obstacle Boeing_737 = new Obstacle("Boeing 737", 12.42, 35.91, 39.52, 2973);
-        Obstacle Luggage_Car = new Obstacle("Luggage Car", 1.7, 5.1, 4.6, 2973);
+        Obstacle Boeing_777 = new Obstacle("Boeing 777", 18.6, 64.8, 63.7);
+        Obstacle Boeing_737 = new Obstacle("Boeing 737", 12.42, 35.91, 39.52);
+        Obstacle Luggage_Car = new Obstacle("Luggage Car", 1.7, 5.1, 4.6);
         predefinedObstacles.addAll(new ArrayList<Obstacle>(List.of(Boeing_777, Boeing_737, Luggage_Car)));
 
 
@@ -606,7 +606,7 @@ public abstract class BaseScene {
             currentObstacle = obstacle.getValue();
             obstacleHeight.setText(String.valueOf(currentObstacle.getHeight()));
             obstacleWidth.setText(String.valueOf(currentObstacle.getWidth()));
-            distanceFromStopway.setText(String.valueOf(currentObstacle.getPositionOnRunway()));
+
 
         });
 

@@ -9,17 +9,17 @@ public class Obstacle {
     private double height;
     private double width;
     private double length;
-    private double positionOnRunway;
+
 
     public Obstacle(String name){
         this.name = name;
     }
-    public Obstacle(String name, double height, double width, double length, double position){
+    public Obstacle(String name, double height, double width, double length){
         this.name = name;
         this.height = height;
         this.width = width;
         this.length = length;
-        this.positionOnRunway = position;
+
     }
 
     public void setName(String name){
@@ -29,13 +29,6 @@ public class Obstacle {
         return name;
     }
 
-    public void setPositionOnRunway(double position){
-        this.positionOnRunway = position;
-    }
-
-    public double getPositionOnRunway(){
-        return this.positionOnRunway;
-    }
 
 
     public void setHeight(double height){

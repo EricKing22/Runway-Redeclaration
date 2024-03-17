@@ -63,8 +63,8 @@ public abstract class xmFileLoader {
                                     double displacedThreshold = Double.parseDouble(subRunwayElement.getElementsByTagName("displacedThreshold").item(0).getTextContent());
                                     double stripEndLength = Double.parseDouble(subRunwayElement.getElementsByTagName("stripEndLength").item(0).getTextContent());
                                     double blastProtection = Double.parseDouble(subRunwayElement.getElementsByTagName("blastProtection").item(0).getTextContent());
-
-                                    SubRunway subRunway = new SubRunway(designator, tora, toda, asda, lda, displacedThreshold, stripEndLength, blastProtection);
+                                    double RESA = Double.parseDouble(subRunwayElement.getElementsByTagName("RESA").item(0).getTextContent());
+                                    SubRunway subRunway = new SubRunway(designator, tora, toda, asda, lda, displacedThreshold, stripEndLength, blastProtection, RESA);
                                     runway.addSubRunway(subRunway);
                                 }
                             }
