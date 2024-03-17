@@ -8,4 +8,6 @@ module uk.ac.soton.comp2211.runwayredeclaration {
 
     opens uk.ac.soton.comp2211.runwayredeclaration to javafx.fxml;
     exports uk.ac.soton.comp2211.runwayredeclaration;
+    exports uk.ac.soton.comp2211.runwayredeclaration.Component;
+    exports uk.ac.soton.comp2211.runwayredeclaration.Calculator;
 }

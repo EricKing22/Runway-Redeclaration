@@ -6,8 +6,7 @@ import uk.ac.soton.comp2211.runwayredeclaration.Component.SubRunway;
 import java.util.concurrent.TimeUnit;
 
 public class RunwayCalculator {
-    private SubRunway runway;
-    private Obstacle obstacle;
+
 
 
     /**
@@ -87,8 +86,8 @@ public class RunwayCalculator {
 
     /**
      * Calculate the new ASDA (TORA + Stopway)
-     * @param subRunway
-     * @param obstacle
+     * @param subRunway the subRunway that is focused
+     * @param obstacle the obstacle on the runway
      * @param distance distance between the obstacle to the starting threshold
      * @return asda the new ASDA
      */
@@ -111,7 +110,13 @@ public class RunwayCalculator {
         return asda;
     }
 
-
+    /**
+     * Calculate the new LDA
+     * @param subRunway the subRunway that is focused
+     * @param obstacle the obstacle on the runway
+     * @param distance distance between the obstacle to the starting threshold
+     * @return lda the new LDA
+     */
     public static double calculateLDA (SubRunway subRunway, Obstacle obstacle, double distance){
         double original_LDA = subRunway.getOriginalLDA().get();
         double stripEnd = subRunway.getStripEndLength().get();
