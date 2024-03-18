@@ -23,4 +23,13 @@ public class DashedLine extends Rectangle {
 
     }
 
+    public DashedLine(double width, double height, String color) {
+        super(width, height);
+        setFill(null);
+        setStrokeWidth(1);
+        setStroke(Color.web(color));
+        getStrokeDashArray().addAll(10d, 5d);
+
+    }
+
 }

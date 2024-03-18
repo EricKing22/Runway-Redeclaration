@@ -27,6 +27,7 @@ import javafx.scene.layout.HBox;
 import java.lang.reflect.Array;
 import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
 
 
 public class SideViewScene extends BaseScene{
@@ -38,7 +39,7 @@ public class SideViewScene extends BaseScene{
 
     private StackPane middleDisplayBox;
 
-    private StackPane indicators;
+
 
 
     private BorderPane mainPane = new BorderPane();
@@ -111,6 +112,33 @@ public class SideViewScene extends BaseScene{
         mainPane.setCenter(middleDisplayBox);
 
 
+        displacedThresholdBox.getChildren().clear();
+        displacedThresholdBox.setAlignment(Pos.CENTER_LEFT);
+        double ratio1 = (subRunway1.getDisplacedThreshold().get() / subRunway1.getOriginalTORA().get());
+        double displayDisplacedThreshold1 = displayRunwayLength.getValue() * ratio1;
+
+        double ratio2 = (subRunway2.getDisplacedThreshold().get() / subRunway2.getOriginalTORA().get());
+        double displayDisplacedThreshold2 = displayRunwayLength.getValue() * ratio2;
+
+        HBox borderToDisplacedThreshold1 = new HBox();
+        borderToDisplacedThreshold1.getStyleClass().add("empty");
+        borderToDisplacedThreshold1.prefWidthProperty().bind(Bindings.add(displayBorderToRunway, displayDisplacedThreshold1));
+
+        DashedLine thresholdLine1 = new DashedLine(0.1, 500, "red");
+        thresholdLine1.visibleProperty().set(ratio1 != 0);
+
+        HBox emptyBox1 = new HBox();
+        emptyBox1.getStyleClass().add("empty");
+        HBox.setHgrow(emptyBox1, Priority.ALWAYS);
+
+        DashedLine thresholdLine2 = new DashedLine(0.1, 500);
+        thresholdLine2.visibleProperty().set(ratio2 != 0);
+
+        HBox borderToDisplacedThreshold2 = new HBox();
+        borderToDisplacedThreshold2.getStyleClass().add("empty");
+        borderToDisplacedThreshold2.prefWidthProperty().bind(Bindings.add(displayBorderToRunway, displayDisplacedThreshold2));
+
+        displacedThresholdBox.getChildren().addAll(borderToDisplacedThreshold1, thresholdLine1, emptyBox1, thresholdLine2, borderToDisplacedThreshold2);
 
         this.initialise();
     }
@@ -237,13 +265,27 @@ public class SideViewScene extends BaseScene{
         return (everything);
     }
 
+
+    public StackPane makeDisplacedThreshold (){
+        StackPane displacedThresholdStackPane = new StackPane();
+        displacedThresholdStackPane.getStyleClass().add("empty");
+        displacedThresholdStackPane.setAlignment(Pos.CENTER_LEFT);
+
+        // Displaced Threshold HBox
+        //displacedThresholdBox
+
+
+        displacedThresholdStackPane.getChildren().add(displacedThresholdBox);
+
+        return displacedThresholdStackPane;
+
+    }
+
     /**
      * StackPane for all the indicators
      * @return StackPane the indicators
      */
     public StackPane makeIndicators(SubRunway subRunway, String direction){
-
-        indicators = new StackPane();
 
         // Take Off Indicators: TORA, TODA, ASDA
         takeOffIndicators = new StackPane();
@@ -452,37 +494,19 @@ public class SideViewScene extends BaseScene{
         // Plane and Obstacle Pane
         StackPane planeObstaclePane = new StackPane();
 
+        obstacleBox.setAlignment(Pos.BOTTOM_LEFT);
+        planeBox.setAlignment(Pos.BOTTOM_LEFT);
+
         // Plane Image
         Image planeImage = new Image(getClass().getResource("/images/Plane1.png").toExternalForm());
         ImageView planeImageView = new ImageView(planeImage);
         planeImageView.setPreserveRatio(true);
         planeImageView.setFitWidth(displayPlaneWidth.getValue());
 
-        HBox borderToPlane = new HBox();
-        borderToPlane.getStyleClass().add("empty");
-
-        SimpleDoubleProperty displayBorderToPlaneTail = new SimpleDoubleProperty();
-        SimpleDoubleProperty displayBorderToPlaneNose = new SimpleDoubleProperty();
-
-        displayBorderToPlaneTail.bind(Bindings.subtract( (Bindings.add(displayBorderToRunway, displayRunwayToPlane) ), displayPlaneWidth));
-        displayBorderToPlaneNose.bind(Bindings.add(displayBorderToRunway, displayRunwayToPlane));
-        borderToPlane.prefWidthProperty().bind(displayBorderToPlaneTail);
-
-
-        planeBox = new HBox();
-        planeBox.getStyleClass().add("empty");
-        planeBox.setAlignment(Pos.CENTER_LEFT);
-        planeBox.getChildren().addAll(borderToPlane, planeImageView);
-
-
-        // Obstacle Image
-        Image obstacleImage = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
-        ImageView obstacleImageView = new ImageView(obstacleImage);
-        obstacleImageView.setPreserveRatio(true);
-        obstacleImageView.setFitWidth(30);
-
-
-
+        if (planeBox.getChildren().size() != 0){
+            planeBox.getChildren().remove(1);
+            planeBox.getChildren().add(planeImageView);
+        }
 
 
 
@@ -601,6 +625,8 @@ public class SideViewScene extends BaseScene{
 
        displayStackPane.getChildren().add(designatorBox);
 
+       displayStackPane.getChildren().add(makeDisplacedThreshold());
+
 
         return displayStackPane;
     }
@@ -682,33 +708,15 @@ public class SideViewScene extends BaseScene{
         ImageView planeImageView = new ImageView(planeImage);
         planeImageView.setPreserveRatio(true);
         planeImageView.setFitWidth(60);
-        // HBox distance between plane and obstacle
-        HBox planeObstacleDistance = new HBox();
-        planeObstacleDistance.getStyleClass().add("empty");
-        planeObstacleDistance.setPrefWidth(displayPlaneToObstacle.getValue());
-        // Obstacle Images
-        Image obstacleImage = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
-        ImageView obstacleImageView = new ImageView(obstacleImage);
-        obstacleImageView.setPreserveRatio(true);
-        obstacleImageView.setFitWidth(30);
-
-        // Plane & Obstacle Pane (Might change)
-        HBox planeObstacleBox = new HBox();
-        planeObstacleBox.setAlignment(Pos.CENTER_LEFT);
-        HBox frontPlaneEmpty = new HBox();
-        frontPlaneEmpty.getStyleClass().add("empty");
-        HBox.setHgrow(frontPlaneEmpty, Priority.ALWAYS);
-        HBox backPlaneEmpty = new HBox();
-        backPlaneEmpty.getStyleClass().add("empty");
-        HBox.setHgrow(backPlaneEmpty, Priority.ALWAYS);
-
-        HBox borderToPlane = new HBox();
-        borderToPlane.getStyleClass().add("empty");
-        borderToPlane.prefWidthProperty().bind(Bindings.subtract ( Bindings.add(displayBorderToRunway, displayRunwayToPlane)  , planeImageView.fitWidthProperty()));
-//        borderToPlane.prefWidthProperty().bind(Bindings.add(displayBorderToRunway,displayRunwayToPlane));
 
 
-        planeObstacleBox.getChildren().addAll(borderToPlane, planeImageView, planeObstacleDistance, obstacleImageView);
+
+
+        if (planeBox.getChildren().size() != 0){
+            planeBox.getChildren().remove(1);
+            planeBox.getChildren().add(planeImageView);
+        }
+
 
 
         // Clearways
@@ -734,8 +742,11 @@ public class SideViewScene extends BaseScene{
         clearWayBox.getChildren().addAll(clearWay1, distanceBetweenStopways, clearWay2);
 
 
+        obstacleBox.setAlignment(Pos.CENTER_LEFT);
 
-        displayStackPaneTop.getChildren().addAll(gradeAreaImageView, runwayPaneBox, stopWayBox, clearWayBox, planeObstacleBox);
+
+        planeBox.setAlignment(Pos.CENTER_LEFT);
+        displayStackPaneTop.getChildren().addAll(gradeAreaImageView, runwayPaneBox, stopWayBox, clearWayBox, obstacleBox, planeBox);
 
         // Designator Display
         Text designator1 = new Text();
@@ -756,6 +767,8 @@ public class SideViewScene extends BaseScene{
         designatorBox.getChildren().addAll(designator1, emptyHbox, designator2);
 
         displayStackPaneTop.getChildren().add(designatorBox);
+
+        displayStackPaneTop.getChildren().add(makeDisplacedThreshold());
 
 
 

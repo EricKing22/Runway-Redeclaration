@@ -112,6 +112,7 @@ public abstract class BaseScene {
     protected HBox asdaBox;
     protected HBox blastAllowanceBox;
     protected HBox resaBox;
+    protected HBox displacedThresholdBox = new HBox();
 
     // Obstacles
     protected ArrayList<Obstacle> predefinedObstacles = new ArrayList<>();
@@ -140,6 +141,7 @@ public abstract class BaseScene {
 
     protected HBox obstacleBox = new HBox();
     protected HBox planeBox = new HBox();
+    protected StackPane indicators = new StackPane();
     protected RadioButton firstDirectionButton;
     protected RadioButton secondDirectionButton;
 
@@ -174,13 +176,6 @@ public abstract class BaseScene {
         // Set the runway length
         displayBorderToRunway.setValue((homeWindow.getWidth() - 600 - displayRunwayLength.getValue()) / 2);
         displayBorderToStopway.setValue((homeWindow.getWidth() - 600 - displayRunwayLength.getValue() - displayStopWayLength.getValue() * 2) / 2);
-
-//        displayBorderToTODA.setValue(displayBorderToRunway.getValue());
-//        displayBorderToTORA.setValue(displayBorderToRunway.getValue());
-//        displayBorderToASDA.setValue(displayBorderToRunway.getValue());
-//        displayBorderToLDA.setValue(displayBorderToRunway.getValue());
-
-
 
 
         Obstacle Boeing_777 = new Obstacle("Boeing 777", 18.6, 64.8, 63.7);
@@ -487,15 +482,45 @@ public abstract class BaseScene {
                     if (runway.getName().equals(newValue)){
 
                         clearAllButtons();
+                        planeBox.getChildren().clear();
+                        obstacleBox.getChildren().clear();
                         currentRunway = runway;
 
 
                         subRunway1.update(currentRunway.getSubRunways().get(0));
                         subRunway2.update(currentRunway.getSubRunways().get(1));
 
-                        stopwayLengthDisplay.setText("Select designator to show");
-                        clearwayLengthDisplay.setText("Select designator to show");
-                        thresholdLengthDisplay.setText("Select designator to show");
+                        displacedThresholdBox.getChildren().clear();
+                        displacedThresholdBox.setAlignment(Pos.CENTER_LEFT);
+                        double ratio1 = (subRunway1.getDisplacedThreshold().get() / subRunway1.getOriginalTORA().get());
+                        double displayDisplacedThreshold1 = displayRunwayLength.getValue() * ratio1;
+
+                        double ratio2 = (subRunway2.getDisplacedThreshold().get() / subRunway2.getOriginalTORA().get());
+                        double displayDisplacedThreshold2 = displayRunwayLength.getValue() * ratio2;
+
+                        HBox borderToDisplacedThreshold1 = new HBox();
+                        borderToDisplacedThreshold1.getStyleClass().add("empty");
+                        borderToDisplacedThreshold1.prefWidthProperty().bind(Bindings.add(displayBorderToRunway, displayDisplacedThreshold1));
+
+                        DashedLine thresholdLine1 = new DashedLine(0.1, 500, "red");
+                        thresholdLine1.visibleProperty().set(ratio1 != 0);
+
+                        HBox emptyBox1 = new HBox();
+                        emptyBox1.getStyleClass().add("empty");
+                        HBox.setHgrow(emptyBox1, Priority.ALWAYS);
+
+                        DashedLine thresholdLine2 = new DashedLine(0.1, 500);
+                        thresholdLine2.visibleProperty().set(ratio2 != 0);
+
+                        HBox borderToDisplacedThreshold2 = new HBox();
+                        borderToDisplacedThreshold2.getStyleClass().add("empty");
+                        borderToDisplacedThreshold2.prefWidthProperty().bind(Bindings.add(displayBorderToRunway, displayDisplacedThreshold2));
+
+
+                        displacedThresholdBox.getChildren().addAll(borderToDisplacedThreshold1, thresholdLine1, emptyBox1, thresholdLine2, borderToDisplacedThreshold2);
+                        stopwayLengthDisplay.setText("(Select designator to show)");
+                        clearwayLengthDisplay.setText("(Select designator to show)");
+                        thresholdLengthDisplay.setText("(Select designator to show)");
 
 
                     }
@@ -515,7 +540,8 @@ public abstract class BaseScene {
                 for (Airport airport : airportList){
                     if (airport.getName().equals(newValue)){
                         clearAllButtons();
-                        System.out.println("Airport changed to " + newValue);
+                        planeBox.getChildren().clear();
+                        obstacleBox.getChildren().clear();
                         currentAirport = airport;
                         currentRunway = currentAirport.getRunways().get(0);
 
@@ -692,7 +718,15 @@ public abstract class BaseScene {
                 if (subRunway1.getObstacle() != null){
                     double distance = subRunway1.getObstacleDistance();
                     double ratio = distance / subRunway1.getOriginalTORA().get();
-                    double displayObstacleToThreshold = ratio * displayRunwayLength.get();
+                    double displayObstacleToThreshold;
+                    if (ratio < 0){// If negative then the obstacle is before the threshold
+                        displayObstacleToThreshold = ratio * displayRunwayLength.get() - 30;
+                    }
+                    else{
+                        displayObstacleToThreshold = ratio * displayRunwayLength.get();
+                    }
+
+
 
                     System.out.println("Display obstacle to threshold: " + displayObstacleToThreshold);
 
@@ -710,6 +744,30 @@ public abstract class BaseScene {
                     this.obstacleBox.getChildren().addAll(borderToObstacleBox, obstacleImageView);
 
                 }
+
+                // Plane Image
+                Image planeImage = new Image(getClass().getResource("/images/Plane1.png").toExternalForm());
+                ImageView planeImageView = new ImageView(planeImage);
+                planeImageView.setPreserveRatio(true);
+                planeImageView.setFitWidth(displayPlaneWidth.getValue());
+
+                HBox borderToPlane = new HBox();
+                borderToPlane.getStyleClass().add("empty");
+
+                SimpleDoubleProperty displayBorderToPlaneTail = new SimpleDoubleProperty();
+                SimpleDoubleProperty displayBorderToPlaneNose = new SimpleDoubleProperty();
+
+                displayBorderToPlaneTail.bind(Bindings.subtract( (Bindings.add(displayBorderToRunway, displayRunwayToPlane) ), displayPlaneWidth));
+                displayBorderToPlaneNose.bind(Bindings.add(displayBorderToRunway, displayRunwayToPlane));
+                borderToPlane.prefWidthProperty().bind(displayBorderToPlaneTail);
+
+
+                planeBox.getChildren().clear();
+                planeBox.getStyleClass().add("empty");
+                planeBox.setAlignment(Pos.CENTER_LEFT);
+                planeBox.getChildren().addAll(borderToPlane, planeImageView);
+
+
 
 
 
@@ -750,10 +808,6 @@ public abstract class BaseScene {
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
-
-
-
-
 
 
 
