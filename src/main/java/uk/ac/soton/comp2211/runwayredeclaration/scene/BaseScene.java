@@ -105,14 +105,13 @@ public abstract class BaseScene {
     protected DoubleProperty displayPlaneWidth = new SimpleDoubleProperty(60);
 
 
-    protected StackPane takeOffIndicators;
-    protected StackPane landingIndicators;
     protected HBox toraBox;
     protected HBox todaBox;
     protected HBox ldaBox;
     protected HBox asdaBox;
     protected HBox blastAllowanceBox;
     protected HBox resaBox;
+    protected HBox stripEndBox;
     protected HBox displacedThresholdBox = new HBox();
 
     // Obstacles
@@ -184,7 +183,6 @@ public abstract class BaseScene {
         Obstacle Boeing_737 = new Obstacle("Boeing 737", 12.42, 35.91, 39.52);
         Obstacle Luggage_Car = new Obstacle("Luggage Car", 1.7, 5.1, 4.6);
         predefinedObstacles.addAll(new ArrayList<Obstacle>(List.of(Boeing_777, Boeing_737, Luggage_Car)));
-
 
 
 
@@ -421,35 +419,44 @@ public abstract class BaseScene {
 
 
             if (selectedButton.getText().equals("TORA")){
-                takeOffIndicators.getChildren().clear();
-                takeOffIndicators.getChildren().add(toraBox);
+                indicatorsSubRunway1.getChildren().clear();
+                indicatorsSubRunway2.getChildren().clear();
+                indicatorsSubRunway1.getChildren().add(toraBox);
+                indicatorsSubRunway2.getChildren().add(toraBox);
+
             }
             else if (selectedButton.getText().equals("TODA")){
-                takeOffIndicators.getChildren().clear();
-                takeOffIndicators.getChildren().add(todaBox);
+                indicatorsSubRunway1.getChildren().clear();
+                indicatorsSubRunway2.getChildren().clear();
+                indicatorsSubRunway1.getChildren().add(todaBox);
+                indicatorsSubRunway2.getChildren().add(todaBox);
+
             }
             else if (selectedButton.getText().equals("ASDA")){
-                takeOffIndicators.getChildren().clear();
-                takeOffIndicators.getChildren().add(asdaBox);
+                indicatorsSubRunway1.getChildren().clear();
+                indicatorsSubRunway2.getChildren().clear();
+                indicatorsSubRunway1.getChildren().add(asdaBox);
+                indicatorsSubRunway2.getChildren().add(asdaBox);
+
             }
-            else {
-                takeOffIndicators.getChildren().clear();
+            else if (selectedButton.getText().equals("LDA")){
+                indicatorsSubRunway1.getChildren().clear();
+                indicatorsSubRunway2.getChildren().clear();
+                indicatorsSubRunway1.getChildren().add(ldaBox);
+                indicatorsSubRunway2.getChildren().add(ldaBox);
             }
-            //else if()
 
 
         } else {
             displayArea.clear();
-            if (this instanceof SimultaneousScene){
-                return;
-            }
             // If it was already selected, clear the text area as the button is deselected
-            takeOffIndicators.getChildren().clear();
-            takeOffIndicators.getChildren().add(asdaBox);
-            takeOffIndicators.getChildren().add(todaBox);
-            takeOffIndicators.getChildren().add(toraBox);
-            takeOffIndicators.getChildren().add(blastAllowanceBox);
-            takeOffIndicators.getChildren().add(resaBox);
+
+            indicatorsSubRunway1.getChildren().clear();
+            indicatorsSubRunway1.getChildren().addAll(toraBox, todaBox, ldaBox, asdaBox, blastAllowanceBox, resaBox);
+
+            indicatorsSubRunway2.getChildren().clear();
+            indicatorsSubRunway2.getChildren().addAll(toraBox, todaBox, ldaBox, asdaBox, blastAllowanceBox, resaBox);
+
 
         }
 
@@ -478,6 +485,7 @@ public abstract class BaseScene {
             comboRunways.getItems().add(runway.getName());
         }
         comboRunways.setValue(currentRunway.getName());
+        // If the runway is changed, update the subRunway indicators
         comboRunways.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
@@ -547,6 +555,12 @@ public abstract class BaseScene {
                         clearAllButtons();
                         planeBox.getChildren().clear();
                         obstacleBox.getChildren().clear();
+
+                        // Hide all indicators
+
+                        indicatorsSubRunway1.getChildren().clear();
+                        indicatorsSubRunway2.getChildren().clear();
+
                         currentAirport = airport;
                         currentRunway = currentAirport.getRunways().get(0);
 
@@ -652,7 +666,7 @@ public abstract class BaseScene {
 
         });
 
-
+        // Recalculate Button
         Button recalculateB = new Button("Recalculate");
         recalculateB.setMaxWidth(Double.MAX_VALUE);
         recalculateB.setOnAction(e -> {
@@ -748,27 +762,7 @@ public abstract class BaseScene {
 
                 }
 
-                // Plane Image
-                Image planeImage = new Image(getClass().getResource("/images/Plane1.png").toExternalForm());
-                ImageView planeImageView = new ImageView(planeImage);
-                planeImageView.setPreserveRatio(true);
-                planeImageView.setFitWidth(displayPlaneWidth.getValue());
 
-                HBox borderToPlane = new HBox();
-                borderToPlane.getStyleClass().add("empty");
-
-                SimpleDoubleProperty displayBorderToPlaneTail = new SimpleDoubleProperty();
-                SimpleDoubleProperty displayBorderToPlaneNose = new SimpleDoubleProperty();
-
-                displayBorderToPlaneTail.bind(Bindings.subtract( (Bindings.add(displayBorderToRunway, displayRunwayToPlane) ), displayPlaneWidth));
-                displayBorderToPlaneNose.bind(Bindings.add(displayBorderToRunway, displayRunwayToPlane));
-                borderToPlane.prefWidthProperty().bind(displayBorderToPlaneTail);
-
-
-                planeBox.getChildren().clear();
-                planeBox.getStyleClass().add("empty");
-                planeBox.setAlignment(Pos.CENTER_LEFT);
-                planeBox.getChildren().addAll(borderToPlane, planeImageView);
 
                 if (firstDirectionButton.selectedProperty().get()){
                     System.out.println("First direction selected fired");
@@ -778,6 +772,7 @@ public abstract class BaseScene {
                 }
                 else if (secondDirectionButton.selectedProperty().get()) {
                     System.out.println("Second direction selected fired");
+                    secondDirectionButton.setSelected(false);
                     secondDirectionButton.fire();
                 }
 
@@ -875,10 +870,13 @@ public abstract class BaseScene {
             thresholdLengthDisplay.setText(subRunway1.getDisplacedThreshold().get() + "m");
             currentSubRunway = subRunway1;
 
+            indicatorsSubRunway1.getChildren().clear();
+            indicatorsSubRunway1.getChildren().addAll(toraBox, todaBox, ldaBox, asdaBox, blastAllowanceBox, resaBox);
 
             SimpleDoubleProperty displayBorderToObstacle = new SimpleDoubleProperty();
             if ( obstacleBox.getChildren().isEmpty() ){ // If there is no obstacle on the runway
-                resaBox.setVisible(false);
+                indicatorsSubRunway1.getChildren().remove(resaBox);
+                indicatorsSubRunway1.getChildren().remove(blastAllowanceBox);
 
             }
             else{ // If there is an obstacle on the runway
@@ -888,17 +886,23 @@ public abstract class BaseScene {
                 if (displayBorderToObstacle.get() > (displayBorderToRunway.get() + (displayRunwayLength.get() / 2)) ){
                     // If the obstacle is further away
                     displayBorderToRESA.bind( Bindings.subtract( displayBorderToObstacle, displayRESA));
-                    resaBox.setVisible(true);
+                    resaBox.visibleProperty().set(true);
+
 
 
 
                 }
                 else{
                     // If the obstacle is closer
-                    resaBox.setVisible(false);
+                    resaBox.visibleProperty().set(false);
                 }
 
             }
+
+            System.out.println("Border to TODA : " + displayBorderToTODA.getValue());
+            System.out.println("Border to TORA : " + displayBorderToTORA.getValue());
+            System.out.println("Border to ASDA : " + displayBorderToASDA.getValue());
+
 
 
         });

@@ -214,6 +214,7 @@ public class SideViewScene extends BaseScene{
 
         sideView.setOnAction(e -> {
             middleDisplayBox.getChildren().clear();
+            obstacleBox.setAlignment(Pos.BOTTOM_LEFT);
             middleDisplayBox.getChildren().addAll(makeSideViewMiddleDisplayBox(), makeDirectionPane());
             viewMenu.getItems().clear();
             viewMenu.getItems().addAll(topView, simultaneous);
@@ -221,6 +222,7 @@ public class SideViewScene extends BaseScene{
 
         topView.setOnAction(e -> {
             middleDisplayBox.getChildren().clear();
+            obstacleBox.setAlignment(Pos.CENTER_LEFT);
             middleDisplayBox.getChildren().addAll(makeTopViewMiddleDisplayBox(), makeDirectionPane());
             viewMenu.getItems().clear();
             viewMenu.getItems().addAll(sideView, simultaneous);
@@ -270,9 +272,6 @@ public class SideViewScene extends BaseScene{
         displacedThresholdStackPane.getStyleClass().add("empty");
         displacedThresholdStackPane.setAlignment(Pos.CENTER_LEFT);
 
-        // Displaced Threshold HBox
-        //displacedThresholdBox
-
 
         displacedThresholdStackPane.getChildren().add(displacedThresholdBox);
 
@@ -287,20 +286,15 @@ public class SideViewScene extends BaseScene{
     public StackPane makeIndicators(){
 
 
-
-        // Take Off Indicators: TORA, TODA, ASDA
-        takeOffIndicators = new StackPane();
-        takeOffIndicators.getStyleClass().add("empty");
-        takeOffIndicators.setAlignment(Pos.CENTER);
-
         // TORA HBox
         toraBox = new HBox();
+        toraBox.setMinWidth(125 * 2 + 550);
         toraBox.getStyleClass().add("empty");
         toraBox.setAlignment(Pos.CENTER_LEFT);
-        takeOffIndicators.getChildren().add(toraBox);
         HBox borderToTORA = new HBox();
         borderToTORA.getStyleClass().add("empty");
-        borderToTORA.prefWidthProperty().bind(displayBorderToRunway);
+        displayBorderToTORA.bind(displayBorderToRunway);
+        borderToTORA.prefWidthProperty().bind(displayBorderToTORA);
         DashedLine toraStart = new DashedLine(0.1, 500);
         DashedLine toraEnd = new DashedLine(0.1, 500);
 
@@ -321,9 +315,9 @@ public class SideViewScene extends BaseScene{
 
         // TODA HBox
         todaBox = new HBox();
+        todaBox.setMinWidth(125 * 2 + 550);
         todaBox.getStyleClass().add("empty");
         todaBox.setAlignment(Pos.CENTER_LEFT);
-        takeOffIndicators.getChildren().add(todaBox);
         DashedLine todaStart = new DashedLine(0.1, 500);
         DashedLine todaEnd = new DashedLine(0.1, 500);
 
@@ -331,6 +325,8 @@ public class SideViewScene extends BaseScene{
         todaDistanceBox.setAlignment(Pos.BOTTOM_CENTER);
         todaDistanceBox.setMaxHeight(500);
         todaDistanceBox.getStyleClass().add("empty");
+
+
 
         displayTODA.bind(Bindings.when(
                         subRunway1.getClearwayLength().isNotEqualTo(0).and(subRunway1.getTORA().isNotEqualTo(subRunway1.getTODA())))
@@ -347,14 +343,16 @@ public class SideViewScene extends BaseScene{
         borderToTODA.getStyleClass().add("empty");
         displayBorderToTODA.bind(displayBorderToRunway);
         borderToTODA.prefWidthProperty().bind(displayBorderToTODA);
+
+
         todaBox.getChildren().addAll(borderToTODA, todaStart, todaDistanceBox, todaEnd);
 
 
         // ASDA HBox
         asdaBox = new HBox();
+        asdaBox.setMinWidth(125 * 2 + 550);
         asdaBox.getStyleClass().add("empty");
         asdaBox.setAlignment(Pos.CENTER_LEFT);
-        takeOffIndicators.getChildren().add(asdaBox);
 
         DashedLine asdaStart = new DashedLine(0.1, 500);
         DashedLine asdaEnd = new DashedLine(0.1, 500);
@@ -385,7 +383,6 @@ public class SideViewScene extends BaseScene{
         resaBox = new HBox();
         resaBox.getStyleClass().add("empty");
         resaBox.setAlignment(Pos.CENTER_LEFT);
-        takeOffIndicators.getChildren().add(resaBox);
 
         DashedLine resaStart = new DashedLine(0.1, 150);
         DashedLine resaEnd = new DashedLine(0.1, 150);
@@ -411,7 +408,6 @@ public class SideViewScene extends BaseScene{
         blastAllowanceBox = new HBox();
         blastAllowanceBox.getStyleClass().add("empty");
         blastAllowanceBox.setAlignment(Pos.CENTER_LEFT);
-        takeOffIndicators.getChildren().add(blastAllowanceBox);
 
         DashedLine blastAllowanceStart = new DashedLine(0.1, 150);
         DashedLine blastAllowanceEnd = new DashedLine(0.1, 150);
@@ -435,17 +431,11 @@ public class SideViewScene extends BaseScene{
 
 
 
-        // Landing Indicators: LDA
-        landingIndicators = new StackPane();
-        landingIndicators.getStyleClass().add("empty");
-        landingIndicators.setAlignment(Pos.CENTER);
-
 
         // LDA HBox
         ldaBox = new HBox();
         ldaBox.getStyleClass().add("empty");
         ldaBox.setAlignment(Pos.CENTER_LEFT);
-        landingIndicators.getChildren().add(ldaBox);
 
         DashedLine ldaStart = new DashedLine(0.1, 500);
         DashedLine ldaEnd = new DashedLine(0.1, 500);
@@ -466,7 +456,7 @@ public class SideViewScene extends BaseScene{
         ldaBox.getChildren().addAll(borderToLDA, ldaStart, ldaDistanceBox, ldaEnd);
 
 
-        indicatorsSubRunway1.getChildren().addAll(takeOffIndicators, landingIndicators);
+        indicatorsSubRunway1.getChildren().addAll(toraBox, todaBox, asdaBox, resaBox, blastAllowanceBox, ldaBox);
 
 
 
@@ -508,10 +498,23 @@ public class SideViewScene extends BaseScene{
         planeImageView.setPreserveRatio(true);
         planeImageView.setFitWidth(displayPlaneWidth.getValue());
 
-        if (planeBox.getChildren().size() != 0){
-            planeBox.getChildren().remove(1);
-            planeBox.getChildren().add(planeImageView);
-        }
+
+
+        HBox borderToPlane = new HBox();
+        borderToPlane.getStyleClass().add("empty");
+
+        SimpleDoubleProperty displayBorderToPlaneTail = new SimpleDoubleProperty();
+        SimpleDoubleProperty displayBorderToPlaneNose = new SimpleDoubleProperty();
+
+        displayBorderToPlaneTail.bind(Bindings.subtract( (Bindings.add(displayBorderToRunway, displayRunwayToPlane) ), displayPlaneWidth));
+        displayBorderToPlaneNose.bind(Bindings.add(displayBorderToRunway, displayRunwayToPlane));
+        borderToPlane.prefWidthProperty().bind(displayBorderToPlaneTail);
+
+
+        planeBox.getChildren().clear();
+        planeBox.getStyleClass().add("empty");
+        planeBox.setAlignment(Pos.CENTER_LEFT);
+        planeBox.getChildren().addAll(borderToPlane, planeImageView);
 
 
 

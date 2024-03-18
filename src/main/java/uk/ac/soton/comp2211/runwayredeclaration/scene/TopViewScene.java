@@ -259,16 +259,12 @@ public class TopViewScene extends BaseScene{
         displayStackPane.getChildren().addAll(gradeAreaImageView, runwayPaneBox, stopWayBox, clearWayBox, planeObstacleBox);
 
         // Take Off Indicators: TORA, TODA, ASDA
-        takeOffIndicators = new StackPane();
-        takeOffIndicators.getStyleClass().add("empty");
-        takeOffIndicators.setAlignment(Pos.CENTER);
-        displayStackPane.getChildren().add(takeOffIndicators);
+
 
         // TORA HBox
         toraBox = new HBox();
         toraBox.getStyleClass().add("empty");
         toraBox.setAlignment(Pos.CENTER_LEFT);
-        takeOffIndicators.getChildren().add(toraBox);
         HBox borderToTORA = new HBox();
         borderToTORA.getStyleClass().add("empty");
         borderToTORA.setPrefWidth(displayBorderToRunway.getValue() + displayStopWayLength.getValue() - 1);
@@ -293,7 +289,6 @@ public class TopViewScene extends BaseScene{
         todaBox = new HBox();
         todaBox.getStyleClass().add("empty");
         todaBox.setAlignment(Pos.CENTER_LEFT);
-        takeOffIndicators.getChildren().add(todaBox);
         DashedLine todaStart = new DashedLine(0.1, 500);
         DashedLine todaEnd = new DashedLine(0.1, 500);
 
@@ -318,7 +313,6 @@ public class TopViewScene extends BaseScene{
         asdaBox = new HBox();
         asdaBox.getStyleClass().add("empty");
         asdaBox.setAlignment(Pos.CENTER_LEFT);
-        takeOffIndicators.getChildren().add(asdaBox);
 
         DashedLine asdaStart = new DashedLine(0.1, 500);
         DashedLine asdaEnd = new DashedLine(0.1, 500);
@@ -376,7 +370,6 @@ public class TopViewScene extends BaseScene{
         resaBox = new HBox();
         resaBox.getStyleClass().add("empty");
         resaBox.setAlignment(Pos.CENTER_LEFT);
-        takeOffIndicators.getChildren().add(resaBox);
 
         DashedLine resaStart = new DashedLine(0.1, 150);
         DashedLine resaEnd = new DashedLine(0.1, 150);
@@ -402,7 +395,6 @@ public class TopViewScene extends BaseScene{
         blastAllowanceBox = new HBox();
         blastAllowanceBox.getStyleClass().add("empty");
         blastAllowanceBox.setAlignment(Pos.CENTER_LEFT);
-        takeOffIndicators.getChildren().add(blastAllowanceBox);
 
         DashedLine blastAllowanceStart = new DashedLine(0.1, 150);
         DashedLine blastAllowanceEnd = new DashedLine(0.1, 150);
