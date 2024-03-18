@@ -33,17 +33,6 @@ public class Runway {
         return subRunways;
     }
 
-    /**
-     * Add a sub runway to the runway
-     * @param obstacle the obstacle to be added
-     * @param distance the distance from the start of the runway to the obstacle
-     */
-    public void addObstacle(Obstacle obstacle, double distance){
-        this.obstacle = obstacle;
-        for (SubRunway subRunway : subRunways) {
-            subRunway.setObstacle(obstacle, distance);
-        }
-    }
 
     /**
      * Get the obstacle of the runway

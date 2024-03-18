@@ -14,6 +14,8 @@ import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -55,6 +57,7 @@ public abstract class BaseScene {
     protected Runway currentRunway;
     protected SubRunway subRunway1;
     protected SubRunway subRunway2;
+    protected SubRunway currentSubRunway;
     protected Obstacle currentObstacle;
 
     protected DoubleProperty runwayLength = new SimpleDoubleProperty();
@@ -91,6 +94,7 @@ public abstract class BaseScene {
     protected DoubleProperty displayBlastAllowance = new SimpleDoubleProperty(50);
     protected DoubleProperty RESA = new SimpleDoubleProperty();
     protected DoubleProperty displayRESA = new SimpleDoubleProperty(100);
+    protected DoubleProperty displayDisplacedThreshold = new SimpleDoubleProperty(30);
 
     protected DoubleProperty displayRunwayToPlane = new SimpleDoubleProperty(0);
     protected DoubleProperty displayPlaneToObstacle = new SimpleDoubleProperty(400);
@@ -134,6 +138,11 @@ public abstract class BaseScene {
 
     protected CurrentState currentState = new CurrentState();
 
+    protected HBox obstacleBox = new HBox();
+    protected HBox planeBox = new HBox();
+    protected RadioButton firstDirectionButton;
+    protected RadioButton secondDirectionButton;
+
 
     /**
      * Create a new scene, passing in the GameWindow the scene will be displayed in
@@ -166,10 +175,10 @@ public abstract class BaseScene {
         displayBorderToRunway.setValue((homeWindow.getWidth() - 600 - displayRunwayLength.getValue()) / 2);
         displayBorderToStopway.setValue((homeWindow.getWidth() - 600 - displayRunwayLength.getValue() - displayStopWayLength.getValue() * 2) / 2);
 
-        displayBorderToTODA.setValue(displayBorderToRunway.getValue());
-        displayBorderToTORA.setValue(displayBorderToRunway.getValue());
-        displayBorderToASDA.setValue(displayBorderToRunway.getValue());
-        displayBorderToLDA.setValue(displayBorderToRunway.getValue());
+//        displayBorderToTODA.setValue(displayBorderToRunway.getValue());
+//        displayBorderToTORA.setValue(displayBorderToRunway.getValue());
+//        displayBorderToASDA.setValue(displayBorderToRunway.getValue());
+//        displayBorderToLDA.setValue(displayBorderToRunway.getValue());
 
 
 
@@ -595,6 +604,7 @@ public abstract class BaseScene {
         obstacleBox.getChildren().addAll(distanceFromLabel1, distanceFromThreshold1, distanceFromLabel2, distanceFromThreshold2);
 
         obstacle.setOnAction(e -> {
+
             currentObstacle = obstacle.getValue();
             obstacleHeight.setText(String.valueOf(currentObstacle.getHeight()));
 
@@ -657,8 +667,11 @@ public abstract class BaseScene {
                     }
 
                 }
-
+                currentObstacle = new Obstacle(obstacle.getValue().getName());
                 currentObstacle.setHeight(height);
+
+                subRunway1.setObstacle(currentObstacle, distance1);
+                subRunway2.setObstacle(currentObstacle, distance2);
 
 
                 subRunway1.setTORA(RunwayCalculator.calculateTORA(subRunway1, currentObstacle, distance1));
@@ -671,6 +684,35 @@ public abstract class BaseScene {
                 subRunway2.setTODA(RunwayCalculator.calculateTODA(subRunway2, currentObstacle, distance2));
                 subRunway2.setASDA(RunwayCalculator.calculateASDA(subRunway2, currentObstacle, distance2));
                 subRunway2.setLDA(RunwayCalculator.calculateLDA(subRunway2, currentObstacle, distance2));
+
+
+
+                this.obstacleBox.getChildren().clear();
+                this.obstacleBox.setAlignment(Pos.BOTTOM_LEFT);
+                if (subRunway1.getObstacle() != null){
+                    double distance = subRunway1.getObstacleDistance();
+                    double ratio = distance / subRunway1.getOriginalTORA().get();
+                    double displayObstacleToThreshold = ratio * displayRunwayLength.get();
+
+                    System.out.println("Display obstacle to threshold: " + displayObstacleToThreshold);
+
+                    HBox borderToObstacleBox = new HBox();
+                    borderToObstacleBox.getStyleClass().add("empty");
+                    borderToObstacleBox.prefWidthProperty().bind( Bindings.add(displayBorderToRunway, displayObstacleToThreshold));
+
+
+                    // Obstacle Image
+                    Image obstacleImage = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
+                    ImageView obstacleImageView = new ImageView(obstacleImage);
+                    obstacleImageView.setPreserveRatio(true);
+                    obstacleImageView.setFitWidth(30);
+
+                    this.obstacleBox.getChildren().addAll(borderToObstacleBox, obstacleImageView);
+
+                }
+
+
+
 
             } catch (NumberFormatException ex) {
                 // If parsing fails (e.g., input is not a valid double), show an error message
@@ -756,7 +798,7 @@ public abstract class BaseScene {
         landingRadioButton.setToggleGroup(operationButtons);
         operationButtons.selectToggle(null);
 
-        RadioButton firstDirectionButton = new RadioButton();
+        firstDirectionButton = new RadioButton();
         firstDirectionButton.textProperty().bind(subRunway1.getDesignator());
         firstDirectionButton.setUserData(subRunway1.getDesignator());
         firstDirectionButton.setOnAction(e -> {
@@ -764,11 +806,13 @@ public abstract class BaseScene {
             clearwayLengthDisplay.setText(subRunway1.getClearwayLength().get() + "m");
             stopwayLengthDisplay.setText(subRunway1.getStopwayLength().get() + "m");
             thresholdLengthDisplay.setText(subRunway1.getDisplacedThreshold().get() + "m");
+            currentSubRunway = subRunway1;
+
         });
 
 
 
-        RadioButton secondDirectionButton = new RadioButton();
+        secondDirectionButton = new RadioButton();
         secondDirectionButton.textProperty().bind(subRunway2.getDesignator());
         secondDirectionButton.setUserData(subRunway2.getDesignator());
         secondDirectionButton.setOnAction(e -> {
@@ -776,17 +820,7 @@ public abstract class BaseScene {
             clearwayLengthDisplay.setText(subRunway2.getClearwayLength().get() + "m");
             stopwayLengthDisplay.setText(subRunway2.getStopwayLength().get() + "m");
             thresholdLengthDisplay.setText(subRunway2.getDisplacedThreshold().get() + "m");
-
-
-
-
-//            Collections.reverse(todaBox.getChildren());
-//            Collections.reverse(todaBox.getChildren());
-//            Collections.reverse(ldaBox.getChildren());
-//            Collections.reverse(asdaBox.getChildren());
-//            Collections.reverse(blastAllowanceBox.getChildren());
-//            Collections.reverse(resaBox.getChildren());
-
+            currentSubRunway = subRunway2;
 
 
         });
@@ -814,6 +848,7 @@ public abstract class BaseScene {
             // Update the global variable based on the new selection
             if (newValue != null) {
                 directionSelected.set( ((RadioButton) newValue).getText());
+
             } else {
                 // If no RadioButton is selected (e.g., initial state or all selections are cleared)
                 directionSelected.set("(...)");
