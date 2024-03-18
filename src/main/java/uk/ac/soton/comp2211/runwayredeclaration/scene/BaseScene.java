@@ -94,6 +94,7 @@ public abstract class BaseScene {
     protected DoubleProperty displayBlastAllowance = new SimpleDoubleProperty(50);
     protected DoubleProperty RESA = new SimpleDoubleProperty();
     protected DoubleProperty displayRESA = new SimpleDoubleProperty(100);
+    protected DoubleProperty displayBorderToRESA = new SimpleDoubleProperty(0);
     protected DoubleProperty displayDisplacedThreshold = new SimpleDoubleProperty(30);
 
     protected DoubleProperty displayRunwayToPlane = new SimpleDoubleProperty(0);
@@ -141,7 +142,8 @@ public abstract class BaseScene {
 
     protected HBox obstacleBox = new HBox();
     protected HBox planeBox = new HBox();
-    protected StackPane indicators = new StackPane();
+    protected StackPane indicatorsSubRunway1 = new StackPane();
+    protected StackPane indicatorsSubRunway2 = new StackPane();
     protected RadioButton firstDirectionButton;
     protected RadioButton secondDirectionButton;
 
@@ -182,6 +184,8 @@ public abstract class BaseScene {
         Obstacle Boeing_737 = new Obstacle("Boeing 737", 12.42, 35.91, 39.52);
         Obstacle Luggage_Car = new Obstacle("Luggage Car", 1.7, 5.1, 4.6);
         predefinedObstacles.addAll(new ArrayList<Obstacle>(List.of(Boeing_777, Boeing_737, Luggage_Car)));
+
+
 
 
     }
@@ -490,6 +494,7 @@ public abstract class BaseScene {
                         subRunway1.update(currentRunway.getSubRunways().get(0));
                         subRunway2.update(currentRunway.getSubRunways().get(1));
 
+                        // Make displaced threshold indicator
                         displacedThresholdBox.getChildren().clear();
                         displacedThresholdBox.setAlignment(Pos.CENTER_LEFT);
                         double ratio1 = (subRunway1.getDisplacedThreshold().get() / subRunway1.getOriginalTORA().get());
@@ -728,8 +733,6 @@ public abstract class BaseScene {
 
 
 
-                    System.out.println("Display obstacle to threshold: " + displayObstacleToThreshold);
-
                     HBox borderToObstacleBox = new HBox();
                     borderToObstacleBox.getStyleClass().add("empty");
                     borderToObstacleBox.prefWidthProperty().bind( Bindings.add(displayBorderToRunway, displayObstacleToThreshold));
@@ -767,6 +770,16 @@ public abstract class BaseScene {
                 planeBox.setAlignment(Pos.CENTER_LEFT);
                 planeBox.getChildren().addAll(borderToPlane, planeImageView);
 
+                if (firstDirectionButton.selectedProperty().get()){
+                    System.out.println("First direction selected fired");
+                    firstDirectionButton.setSelected(false);
+                    firstDirectionButton.fire();
+
+                }
+                else if (secondDirectionButton.selectedProperty().get()) {
+                    System.out.println("Second direction selected fired");
+                    secondDirectionButton.fire();
+                }
 
 
 
@@ -862,6 +875,32 @@ public abstract class BaseScene {
             thresholdLengthDisplay.setText(subRunway1.getDisplacedThreshold().get() + "m");
             currentSubRunway = subRunway1;
 
+
+            SimpleDoubleProperty displayBorderToObstacle = new SimpleDoubleProperty();
+            if ( obstacleBox.getChildren().isEmpty() ){ // If there is no obstacle on the runway
+                resaBox.setVisible(false);
+
+            }
+            else{ // If there is an obstacle on the runway
+
+                displayBorderToObstacle.bind( ((HBox) obstacleBox.getChildren().get(0)).prefWidthProperty() );
+                // Check whether the obstacle is close or further away from the threshold
+                if (displayBorderToObstacle.get() > (displayBorderToRunway.get() + (displayRunwayLength.get() / 2)) ){
+                    // If the obstacle is further away
+                    displayBorderToRESA.bind( Bindings.subtract( displayBorderToObstacle, displayRESA));
+                    resaBox.setVisible(true);
+
+
+
+                }
+                else{
+                    // If the obstacle is closer
+                    resaBox.setVisible(false);
+                }
+
+            }
+
+
         });
 
 
@@ -884,6 +923,9 @@ public abstract class BaseScene {
         secondDirectionButton.setToggleGroup(directionButtons);
 
         directionButtons.selectToggle(null);
+
+        indicatorsSubRunway1.visibleProperty().bind(firstDirectionButton.selectedProperty());
+        indicatorsSubRunway2.visibleProperty().bind(secondDirectionButton.selectedProperty());
 
 
 

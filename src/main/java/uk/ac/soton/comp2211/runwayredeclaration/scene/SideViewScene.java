@@ -52,7 +52,6 @@ public class SideViewScene extends BaseScene{
 
 
 
-
     /**
      * Create a new side view scene
      * @param homeWindow the home Window this will be displayed in
@@ -285,7 +284,9 @@ public class SideViewScene extends BaseScene{
      * StackPane for all the indicators
      * @return StackPane the indicators
      */
-    public StackPane makeIndicators(SubRunway subRunway, String direction){
+    public StackPane makeIndicators(){
+
+
 
         // Take Off Indicators: TORA, TODA, ASDA
         takeOffIndicators = new StackPane();
@@ -332,7 +333,7 @@ public class SideViewScene extends BaseScene{
         todaDistanceBox.getStyleClass().add("empty");
 
         displayTODA.bind(Bindings.when(
-                        subRunway.getClearwayLength().isNotEqualTo(0).and(subRunway.getTORA().isNotEqualTo(subRunway.getTODA())))
+                        subRunway1.getClearwayLength().isNotEqualTo(0).and(subRunway1.getTORA().isNotEqualTo(subRunway1.getTODA())))
                 .then(Bindings.add(displayTORA, displayClearWayLength))
                 .otherwise(displayTORA));
 
@@ -361,7 +362,7 @@ public class SideViewScene extends BaseScene{
         VBox asdaDistanceBox = new VBox();
         asdaDistanceBox.getStyleClass().add("empty");
         displayASDA.bind(Bindings.when(
-                        subRunway.getStopwayLength().isNotEqualTo(0).and(subRunway.getTORA().isNotEqualTo(subRunway.getASDA())))
+                        subRunway1.getStopwayLength().isNotEqualTo(0).and(subRunway1.getTORA().isNotEqualTo(subRunway1.getASDA())))
                 .then(Bindings.add(displayTORA, displayStopWayLength))
                 .otherwise(displayTORA));
         asdaDistanceBox.prefWidthProperty().bindBidirectional(displayASDA);
@@ -400,11 +401,11 @@ public class SideViewScene extends BaseScene{
         resaText.setStyle("-fx-font-size: 10");
         resaDistanceBox.getChildren().addAll(resaArrow, resaText, new EmptyVBox(0.1, 200));
 
-        HBox borderToRESA = new HBox();
-        borderToRESA.getStyleClass().add("empty");
-        borderToRESA.prefWidthProperty().bind(Bindings.subtract(Bindings.subtract(Bindings.add(displayBorderToRunway, Bindings.add(displayRunwayToPlane, Bindings.add(displayRunwayLength, displayPlaneToObstacle))), displayRESA),0));
+        HBox displayBorderToRESABox = new HBox();
+        displayBorderToRESABox.getStyleClass().add("empty");
+        displayBorderToRESABox.prefWidthProperty().bind(displayBorderToRESA);
+        resaBox.getChildren().addAll(displayBorderToRESABox, resaStart, resaDistanceBox, resaEnd);
 
-        resaBox.getChildren().addAll(borderToRESA, resaStart, resaDistanceBox, resaEnd);
 
         // Blast Allowance HBox
         blastAllowanceBox = new HBox();
@@ -465,10 +466,14 @@ public class SideViewScene extends BaseScene{
         ldaBox.getChildren().addAll(borderToLDA, ldaStart, ldaDistanceBox, ldaEnd);
 
 
-        indicators.getChildren().addAll(takeOffIndicators, landingIndicators);
+        indicatorsSubRunway1.getChildren().addAll(takeOffIndicators, landingIndicators);
 
 
-        return indicators;
+
+
+
+
+        return indicatorsSubRunway1;
     }
 
 
@@ -626,6 +631,8 @@ public class SideViewScene extends BaseScene{
        displayStackPane.getChildren().add(designatorBox);
 
        displayStackPane.getChildren().add(makeDisplacedThreshold());
+
+       displayStackPane.getChildren().add(makeIndicators());
 
 
         return displayStackPane;
