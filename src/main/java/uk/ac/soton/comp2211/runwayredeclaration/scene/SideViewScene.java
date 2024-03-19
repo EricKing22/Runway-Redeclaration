@@ -359,7 +359,7 @@ public class SideViewScene extends BaseScene{
         toraArrow.widthProperty().bind(displayTORA);
         Text toraText = new Text("TORA");
         toraText.getStyleClass().add("arrow-text");
-        toraDistanceBox.getChildren().addAll(toraArrow, toraText, new EmptyVBox(0.1, 50));
+        toraDistanceBox.getChildren().addAll(toraArrow, toraText, new EmptyVBox(0.1, 60));
 
         toraBox.getChildren().addAll(borderToTORA, toraStart, toraDistanceBox, toraEnd);
 
@@ -391,7 +391,7 @@ public class SideViewScene extends BaseScene{
         todaArrow.widthProperty().bind(displayTODA);
         Text todaText = new Text("TODA");
         todaText.getStyleClass().add("arrow-text");
-        todaDistanceBox.getChildren().addAll(todaArrow, todaText, new EmptyVBox(0.1, 100));
+        todaDistanceBox.getChildren().addAll(todaArrow, todaText, new EmptyVBox(0.1, 105));
 
         HBox borderToTODA = new HBox();
         borderToTODA.getStyleClass().add("empty");
@@ -443,8 +443,14 @@ public class SideViewScene extends BaseScene{
         resaBox.getStyleClass().add("empty");
         resaBox.setAlignment(Pos.CENTER_LEFT);
 
-        DashedLine resaStart = new DashedLine(0.1, 150);
-        DashedLine resaEnd = new DashedLine(0.1, 150);
+
+        double height = 150;
+        if (currentView.equals("Simultaneous")){
+            height = 500;
+        }
+
+        DashedLine resaStart = new DashedLine(0.1, height);
+        DashedLine resaEnd = new DashedLine(0.1, height);
 
         VBox resaDistanceBox = new VBox();
         resaDistanceBox.getStyleClass().add("empty");
@@ -455,7 +461,7 @@ public class SideViewScene extends BaseScene{
         Text resaText = new Text("RESA");
         resaText.getStyleClass().add("arrow-text");
         resaText.setStyle("-fx-font-size: 10");
-        resaDistanceBox.getChildren().addAll(resaArrow, resaText, new EmptyVBox(0.1, 260));
+        resaDistanceBox.getChildren().addAll(resaArrow, resaText, new EmptyVBox(0.1, 280));
 
         HBox displayBorderToRESABox = new HBox();
         displayBorderToRESABox.getStyleClass().add("empty");
@@ -467,8 +473,8 @@ public class SideViewScene extends BaseScene{
         stripEndBox.getStyleClass().add("empty");
         stripEndBox.setAlignment(Pos.CENTER_LEFT);
 
-        DashedLine stripEndStart = new DashedLine(0.1, 150);
-        DashedLine stripEndEnd = new DashedLine(0.1, 150);
+        DashedLine stripEndStart = new DashedLine(0.1, height);
+        DashedLine stripEndEnd = new DashedLine(0.1, height);
 
         VBox stripEndDistanceBox = new VBox();
         stripEndDistanceBox.getStyleClass().add("empty");
@@ -479,7 +485,7 @@ public class SideViewScene extends BaseScene{
         Text stripEndText = new Text("Strip End");
         stripEndText.getStyleClass().add("arrow-text");
         stripEndText.setStyle("-fx-font-size: 10");
-        stripEndDistanceBox.getChildren().addAll(stripEndArrow, stripEndText, new EmptyVBox(0.1, 260));
+        stripEndDistanceBox.getChildren().addAll(stripEndArrow, stripEndText, new EmptyVBox(0.1, 280));
 
         HBox borderToStripEnd = new HBox();
         borderToStripEnd.getStyleClass().add("empty");
@@ -494,8 +500,8 @@ public class SideViewScene extends BaseScene{
         blastAllowanceBox.getStyleClass().add("empty");
         blastAllowanceBox.setAlignment(Pos.CENTER_LEFT);
 
-        DashedLine blastAllowanceStart = new DashedLine(0.1, 150);
-        DashedLine blastAllowanceEnd = new DashedLine(0.1, 150);
+        DashedLine blastAllowanceStart = new DashedLine(0.1, height);
+        DashedLine blastAllowanceEnd = new DashedLine(0.1, height);
 
         VBox blastAllowanceDistanceBox = new VBox();
         blastAllowanceDistanceBox.getStyleClass().add("empty");
@@ -506,7 +512,7 @@ public class SideViewScene extends BaseScene{
         Text blastAllowanceText = new Text("Blast\nAllowance");
         blastAllowanceText.getStyleClass().add("arrow-text");
         blastAllowanceText.setStyle("-fx-font-size: 10");
-        blastAllowanceDistanceBox.getChildren().addAll(blastAllowanceArrow, blastAllowanceText, new EmptyVBox(0.1, 200));
+        blastAllowanceDistanceBox.getChildren().addAll(blastAllowanceArrow, blastAllowanceText, new EmptyVBox(0.1, 180));
 
         HBox borderToBlastAllowance = new HBox();
         borderToBlastAllowance.getStyleClass().add("empty");
@@ -574,7 +580,7 @@ public class SideViewScene extends BaseScene{
         toraArrow.widthProperty().bind(displayTORA2);
         Text toraText = new Text("TORA");
         toraText.getStyleClass().add("arrow-text");
-        toraDistanceBox.getChildren().addAll(toraArrow, toraText, new EmptyVBox(0.1, 50));
+        toraDistanceBox.getChildren().addAll(toraArrow, toraText, new EmptyVBox(0.1, 60));
 
 
         toraBox2.getChildren().addAll(toraEnd, toraDistanceBox, toraStart, borderToTORA);
@@ -607,7 +613,7 @@ public class SideViewScene extends BaseScene{
         todaArrow.widthProperty().bind(displayTODA2);
         Text todaText = new Text("TODA");
         todaText.getStyleClass().add("arrow-text");
-        todaDistanceBox.getChildren().addAll(todaArrow, todaText, new EmptyVBox(0.1, 100));
+        todaDistanceBox.getChildren().addAll(todaArrow, todaText, new EmptyVBox(0.1, 105));
 
         HBox borderToTODA = new HBox();
         borderToTODA.getStyleClass().add("empty");
@@ -654,13 +660,18 @@ public class SideViewScene extends BaseScene{
 
         asdaBox2.getChildren().addAll(asdaEnd, asdaDistanceBox, asdaStart, borderToASDA);
 
+        double height = 150;
+        if (currentView.equals("Simultaneous")){
+            height = 500;
+        }
+
         // RESA HBox
         resaBox2 = new HBox();
         resaBox2.getStyleClass().add("empty");
         resaBox2.setAlignment(Pos.CENTER_RIGHT);
 
-        DashedLine resaStart = new DashedLine(0.1, 150);
-        DashedLine resaEnd = new DashedLine(0.1, 150);
+        DashedLine resaStart = new DashedLine(0.1, height);
+        DashedLine resaEnd = new DashedLine(0.1, height);
 
         VBox resaDistanceBox = new VBox();
         resaDistanceBox.getStyleClass().add("empty");
@@ -671,7 +682,7 @@ public class SideViewScene extends BaseScene{
         Text resaText = new Text("RESA");
         resaText.getStyleClass().add("arrow-text");
         resaText.setStyle("-fx-font-size: 10");
-        resaDistanceBox.getChildren().addAll(resaArrow, resaText, new EmptyVBox(0.1, 260));
+        resaDistanceBox.getChildren().addAll(resaArrow, resaText, new EmptyVBox(0.1, 280));
 
         HBox displayBorderToRESABox = new HBox();
         displayBorderToRESABox.getStyleClass().add("empty");
@@ -683,8 +694,8 @@ public class SideViewScene extends BaseScene{
         stripEndBox2.getStyleClass().add("empty");
         stripEndBox2.setAlignment(Pos.CENTER_RIGHT);
 
-        DashedLine stripEndStart = new DashedLine(0.1, 150);
-        DashedLine stripEndEnd = new DashedLine(0.1, 150);
+        DashedLine stripEndStart = new DashedLine(0.1, height);
+        DashedLine stripEndEnd = new DashedLine(0.1, height);
 
         VBox stripEndDistanceBox = new VBox();
         stripEndDistanceBox.getStyleClass().add("empty");
@@ -695,7 +706,7 @@ public class SideViewScene extends BaseScene{
         Text stripEndText = new Text("Strip End");
         stripEndText.getStyleClass().add("arrow-text");
         stripEndText.setStyle("-fx-font-size: 10");
-        stripEndDistanceBox.getChildren().addAll(stripEndArrow, stripEndText, new EmptyVBox(0.1, 260));
+        stripEndDistanceBox.getChildren().addAll(stripEndArrow, stripEndText, new EmptyVBox(0.1, 280));
 
         HBox borderToStripEnd = new HBox();
         borderToStripEnd.getStyleClass().add("empty");
@@ -723,7 +734,7 @@ public class SideViewScene extends BaseScene{
         Text blastAllowanceText = new Text("Blast\nAllowance");
         blastAllowanceText.getStyleClass().add("arrow-text");
         blastAllowanceText.setStyle("-fx-font-size: 10");
-        blastAllowanceDistanceBox.getChildren().addAll(blastAllowanceArrow, blastAllowanceText, new EmptyVBox(0.1, 200));
+        blastAllowanceDistanceBox.getChildren().addAll(blastAllowanceArrow, blastAllowanceText, new EmptyVBox(0.1,180));
 
         HBox borderToBlastAllowance = new HBox();
         borderToBlastAllowance.getStyleClass().add("empty");
@@ -792,7 +803,8 @@ public class SideViewScene extends BaseScene{
 
 
         // Plane and Obstacle Pane
-        StackPane planeObstaclePane = new StackPane();
+        StackPane planePane = new StackPane();
+
 
         obstacleBox.setAlignment(Pos.BOTTOM_LEFT);
         planeBox.setAlignment(Pos.BOTTOM_LEFT);
@@ -803,16 +815,18 @@ public class SideViewScene extends BaseScene{
         planeImageView.setPreserveRatio(true);
         planeImageView.setFitWidth(displayPlaneWidth.getValue());
 
+        // Reverse Plane Image
+        Image planeImage2 = new Image(getClass().getResource("/images/Plane2.png").toExternalForm());
+        ImageView planeImageView2 = new ImageView(planeImage2);
+        planeImageView2.setPreserveRatio(true);
+        planeImageView2.setScaleX(-1);
+        planeImageView2.setFitWidth(displayPlaneWidth.getValue());
+
 
 
         HBox borderToPlane = new HBox();
         borderToPlane.getStyleClass().add("empty");
-
-        SimpleDoubleProperty displayBorderToPlaneTail = new SimpleDoubleProperty();
-        SimpleDoubleProperty displayBorderToPlaneNose = new SimpleDoubleProperty();
-
-        displayBorderToPlaneTail.bind( displayBorderToPlane);
-        borderToPlane.prefWidthProperty().bind(displayBorderToPlaneTail);
+        borderToPlane.prefWidthProperty().bind(displayBorderToPlane);
 
 
         planeBox.getChildren().clear();
@@ -820,10 +834,20 @@ public class SideViewScene extends BaseScene{
         planeBox.setAlignment(Pos.CENTER_LEFT);
         planeBox.getChildren().addAll(borderToPlane, planeImageView);
 
+        HBox borderToPlane2 = new HBox();
+        borderToPlane2.getStyleClass().add("empty");
+        borderToPlane2.prefWidthProperty().bind(displayBorderToPlane2);
 
-        planeObstaclePane.getChildren().addAll(planeBox, obstacleBox);
 
-        bluePane.setBottom(planeObstaclePane);
+        planeBox2.getChildren().clear();
+        planeBox2.getStyleClass().add("empty");
+        planeBox2.setAlignment(Pos.CENTER_RIGHT);
+        planeBox2.getChildren().addAll( planeImageView2, borderToPlane2);
+
+
+        planePane.getChildren().addAll(planeBox, obstacleBox, planeBox2);
+
+        bluePane.setBottom(planePane);
 
 
         // Ground Part
@@ -1026,7 +1050,13 @@ public class SideViewScene extends BaseScene{
         Image planeImage = new Image(getClass().getResource("/images/Plane-TopView1.png").toExternalForm());
         ImageView planeImageView = new ImageView(planeImage);
         planeImageView.setPreserveRatio(true);
-        planeImageView.setFitWidth(60);
+        planeImageView.setFitWidth(displayPlaneWidth.get());
+
+        Image planeImage2 = new Image(getClass().getResource("/images/Plane-TopView2.png").toExternalForm());
+        ImageView planeImageView2 = new ImageView(planeImage2);
+        planeImageView2.setPreserveRatio(true);
+        planeImageView2.setScaleX(-1);
+        planeImageView2.setFitWidth(displayPlaneWidth.get());
 
 
 
@@ -1034,6 +1064,11 @@ public class SideViewScene extends BaseScene{
         if (planeBox.getChildren().size() != 0){
             planeBox.getChildren().remove(1);
             planeBox.getChildren().add(planeImageView);
+        }
+
+        if (planeBox2.getChildren().size() != 0){
+            planeBox2.getChildren().remove(0);
+            planeBox2.getChildren().add(0, planeImageView2);
         }
 
 
@@ -1065,9 +1100,10 @@ public class SideViewScene extends BaseScene{
 
 
         planeBox.setAlignment(Pos.CENTER_LEFT);
+        planeBox2.setAlignment(Pos.CENTER_RIGHT);
 
         displayStackPaneTop.getChildren().clear();
-        displayStackPaneTop.getChildren().addAll(gradeAreaImageView, runwayPaneBox, stopWayBox, clearWayBox, obstacleBox, planeBox);
+        displayStackPaneTop.getChildren().addAll(gradeAreaImageView, runwayPaneBox, stopWayBox, clearWayBox, obstacleBox, planeBox, planeBox2);
 
         // Designator Display
         Text designator1 = new Text();
@@ -1112,6 +1148,9 @@ public class SideViewScene extends BaseScene{
         StackPane displayStackPane = new StackPane();
         BorderPane displayBorderPane = new BorderPane();
         displayStackPane.getChildren().add(displayBorderPane);
+        displayStackPane.getChildren().addAll(makeDisplacedThreshold(), makeIndicators1(), makeIndicators2());
+
+        currentView = "Simultaneous";
 
 
         // Top-View Part
@@ -1190,8 +1229,13 @@ public class SideViewScene extends BaseScene{
         // Plane Image
         Image planeImageTop = new Image(getClass().getResource("/images/Plane-TopView1.png").toExternalForm());
         ImageView planeImageViewTop = new ImageView(planeImageTop);
-        planeImageViewTop.setFitWidth(50);
+        planeImageViewTop.setFitWidth(displayPlaneWidth.get());
         planeImageViewTop.setPreserveRatio(true);
+
+        Image planeImageTop2 = new Image(getClass().getResource("/images/Plane-TopView2.png").toExternalForm());
+        ImageView planeImageViewTop2 = new ImageView(planeImageTop2);
+        planeImageViewTop2.setFitWidth(displayPlaneWidth.get());
+        planeImageViewTop2.setPreserveRatio(true);
 
 
         // Empty boxes to push the plane to the center
@@ -1200,10 +1244,7 @@ public class SideViewScene extends BaseScene{
         frontPlaneTopEmpty.prefWidthProperty().bind(Bindings.add(displayBorderToRunway,displayRunwayToPlane));
 
 
-        // HBox distance between the plane and obstacle
-        HBox planeObstacleTopDistanceBox = new HBox();
-        planeObstacleTopDistanceBox.getStyleClass().add("empty");
-        planeObstacleTopDistanceBox.setPrefWidth(displayPlaneToObstacle.getValue());
+
 
         // Obstacle Image
         Image obstacleImageTop = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
@@ -1454,7 +1495,12 @@ public class SideViewScene extends BaseScene{
                 ImageView defaultGradeAreaImageView = new ImageView(defaultGradeArea);
                 defaultGradeAreaImageView.setPreserveRatio(true);
                 defaultGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
-                displayStackPaneTop.getChildren().set(0,defaultGradeAreaImageView);
+
+                try{
+                    displayStackPaneTop.getChildren().set(0,defaultGradeAreaImageView);
+                }catch (IndexOutOfBoundsException e){
+                    displayStackPaneTop.getChildren().add(defaultGradeAreaImageView);
+                }
             });
 
 

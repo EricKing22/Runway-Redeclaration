@@ -117,6 +117,7 @@ public abstract class BaseScene {
     protected DoubleProperty displayBorderToRunway = new SimpleDoubleProperty();
     protected DoubleProperty displayBorderToObstacle = new SimpleDoubleProperty(0);
     protected DoubleProperty displayBorderToPlane = new SimpleDoubleProperty(0);
+    protected DoubleProperty displayBorderToPlane2 = new SimpleDoubleProperty(0);
     protected DoubleProperty displayBorderToStopway = new SimpleDoubleProperty();
     protected DoubleProperty displayPlaneWidth = new SimpleDoubleProperty(60);
 
@@ -165,6 +166,7 @@ public abstract class BaseScene {
 
     protected HBox obstacleBox = new HBox();
     protected HBox planeBox = new HBox();
+    protected HBox planeBox2 = new HBox();
     protected StackPane indicatorsSubRunway1 = new StackPane();
     protected StackPane indicatorsSubRunway2 = new StackPane();
     protected RadioButton firstDirectionButton;
@@ -210,8 +212,10 @@ public abstract class BaseScene {
 
 
         displayBorderToPlane.set(displayBorderToRunway.get() - displayPlaneWidth.get());
+        displayBorderToPlane2.set(displayBorderToRunway.get() - displayPlaneWidth.get());
         
         planeBox.visibleProperty().set(false);
+        planeBox2.visibleProperty().set(false);
 
 
         Obstacle Boeing_777 = new Obstacle("Boeing 777", 18.6, 64.8, 63.7);
@@ -561,7 +565,10 @@ public abstract class BaseScene {
 
                         clearAllButtons();
                         planeBox.visibleProperty().set(false);
+                        planeBox2.visibleProperty().set(false);
+
                         obstacleBox.getChildren().clear();
+
                         currentRunway = runway;
 
 
@@ -623,6 +630,7 @@ public abstract class BaseScene {
                         clearAllButtons();
                         obstacleBox.getChildren().clear();
                         planeBox.visibleProperty().set(false);
+                        planeBox2.visibleProperty().set(false);
 
                         // Hide all indicators
                         indicatorsSubRunway1.getChildren().clear();
@@ -953,11 +961,17 @@ public abstract class BaseScene {
 
 
         takeOffRadioButton.setOnAction(e -> {
-            if (firstDirectionButton.isSelected() || secondDirectionButton.isSelected()){
+            if (firstDirectionButton.isSelected()){
                 planeBox.visibleProperty().set(true);
+                planeBox2.visibleProperty().set(false);
+            }
+            else if (secondDirectionButton.isSelected()){
+                planeBox.visibleProperty().set(false);
+                planeBox2.visibleProperty().set(true);
             }
             else {
                 planeBox.visibleProperty().set(false);
+                planeBox2.visibleProperty().set(false);
             }
 
 
@@ -973,11 +987,17 @@ public abstract class BaseScene {
 
 
         landingRadioButton.setOnAction(e -> {
-            if (firstDirectionButton.isSelected() || secondDirectionButton.isSelected()){
+            if (firstDirectionButton.isSelected()){
                 planeBox.visibleProperty().set(true);
+                planeBox2.visibleProperty().set(false);
+            }
+            else if (secondDirectionButton.isSelected()){
+                planeBox.visibleProperty().set(false);
+                planeBox2.visibleProperty().set(true);
             }
             else {
                 planeBox.visibleProperty().set(false);
+                planeBox2.visibleProperty().set(false);
             }
 
             if (firstDirectionButton.isSelected()){
@@ -1001,6 +1021,7 @@ public abstract class BaseScene {
             stopwayLengthDisplay.setText(subRunway1.getStopwayLength().get() + "m");
             thresholdLengthDisplay.setText(subRunway1.getDisplacedThreshold().get() + "m");
             currentSubRunway = subRunway1;
+            planeBox2.visibleProperty().set(false);
 
             if (!takeOffRadioButton.isSelected() && !landingRadioButton.isSelected() ){ // if neither operation button is selected
                 planeBox.visibleProperty().set(false);
@@ -1015,7 +1036,7 @@ public abstract class BaseScene {
 
             indicatorsSubRunway1.getChildren().addAll(toraBox, todaBox, ldaBox, asdaBox, stripEndBox,blastAllowanceBox, resaBox);
 
-            displayBorderToObstacle = new SimpleDoubleProperty();
+
 
             if ( obstacleBox.getChildren().isEmpty() ){ // If there is no obstacle on the runway
                 indicatorsSubRunway1.getChildren().remove(resaBox);
@@ -1024,7 +1045,7 @@ public abstract class BaseScene {
 
                 displayTORA.set(displayRunwayLength.get() - 2);
 
-                if (subRunway1.getDisplacedThreshold().get() != 0){
+                if (subRunway1.getDisplacedThreshold().get() != 0){ // If there is a displaced threshold
                     displayBorderToLDA.set(displayBorderToRunway.get() + displayDisplacedThreshold1.get() + 1);
                     displayLDA.set(displayTORA.get() - displayDisplacedThreshold1.get() - 2);
 
@@ -1065,7 +1086,7 @@ public abstract class BaseScene {
             else{ // If there is an obstacle on the runway
 
 
-                displayBorderToObstacle.bind( ((HBox) obstacleBox.getChildren().get(0)).prefWidthProperty() );
+                displayBorderToObstacle.set( ((HBox) obstacleBox.getChildren().get(0)).prefWidthProperty().get() );
 
 
 
@@ -1183,19 +1204,19 @@ public abstract class BaseScene {
             stopwayLengthDisplay.setText(subRunway2.getStopwayLength().get() + "m");
             thresholdLengthDisplay.setText(subRunway2.getDisplacedThreshold().get() + "m");
             currentSubRunway = subRunway2;
+            planeBox.visibleProperty().set(false);
 
             if (!takeOffRadioButton.isSelected() && !landingRadioButton.isSelected() ){ // If neither operation button is selected
-                planeBox.visibleProperty().set(false);
+                planeBox2.visibleProperty().set(false);
             }
             else { // if one operation is selected
-                planeBox.visibleProperty().set(true);
+                planeBox2.visibleProperty().set(true);
             }
 
             indicatorsSubRunway2.getChildren().clear();
 
             indicatorsSubRunway2.getChildren().addAll(toraBox2, todaBox2, ldaBox2, asdaBox2, stripEndBox2, blastAllowanceBox2, resaBox2);
 
-            displayBorderToObstacle = new SimpleDoubleProperty();
 
             if ( obstacleBox.getChildren().isEmpty() ){ // If there is no obstacle on the runway
                 indicatorsSubRunway2.getChildren().remove(resaBox2);
@@ -1205,13 +1226,22 @@ public abstract class BaseScene {
 
                 displayTORA2.set(displayRunwayLength.get() - 2);
 
-                if (subRunway2.getDisplacedThreshold().get() != 0){
+                if (subRunway2.getDisplacedThreshold().get() != 0){ // If there is a displaced threshold
                     displayBorderToLDA2.set(displayBorderToRunway.get() + displayDisplacedThreshold2.get() + 1);
                     displayLDA2.set(displayTORA2.get() - displayDisplacedThreshold2.get() - 2);
+
+                    if (landingRadioButton.isSelected()){
+                        displayBorderToPlane2.set(displayBorderToRunway.get() + displayDisplacedThreshold2.get());
+                    }
+                    else if (takeOffRadioButton.isSelected()){
+                        displayBorderToPlane2.set(displayBorderToRunway.get() - displayPlaneWidth.get());
+                    }
                 }
-                else {
+                else { // If there is no displaced threshold
                     displayBorderToLDA2.set(displayBorderToRunway.get());
                     displayLDA2.set(displayTORA2.get() - 2);
+
+                    displayBorderToPlane2.set(displayBorderToRunway.get() - displayPlaneWidth.get());
                 }
 
 
@@ -1230,10 +1260,12 @@ public abstract class BaseScene {
                 }
 
 
+
+
             }
             else{ // If there is an obstacle on the runway
+                displayBorderToObstacle.set( 800 - 30 - ((HBox) obstacleBox.getChildren().get(0)).prefWidthProperty().get() );
 
-                displayBorderToObstacle.bind( Bindings.subtract( (800-30), ((HBox) obstacleBox.getChildren().get(0)).prefWidthProperty()) );
 
                 // Check whether the obstacle is close or further away from the threshold
                 if (displayBorderToObstacle.get() > (displayBorderToRunway.get() + (displayRunwayLength.get() / 2)) ){
@@ -1264,10 +1296,19 @@ public abstract class BaseScene {
                     if (subRunway2.getDisplacedThreshold().get() != 0){
                         displayBorderToLDA2.set(displayBorderToRunway.get() + displayDisplacedThreshold2.get());
                         displayLDA2.set(displayTORA2.get() - displayDisplacedThreshold2.get() - 2);
+
+                        if (landingRadioButton.isSelected()){
+                            displayBorderToPlane2.set(displayBorderToLDA2.get());
+                        }
+                        else if (takeOffRadioButton.isSelected()){
+                            displayBorderToPlane2.set(displayBorderToRunway.get() - displayPlaneWidth.get());
+                        }
                     }
                     else {
                         displayBorderToLDA2.set(displayBorderToRunway.get());
                         displayLDA2.set(displayBorderToStripEnd2.get() - displayBorderToRunway.get() - 2);
+
+                        displayBorderToPlane2.set(displayBorderToRunway.get() - displayPlaneWidth.get());
                     }
 
                     blastAllowanceBox2.visibleProperty().set(false);
@@ -1314,6 +1355,13 @@ public abstract class BaseScene {
                     displayBorderToLDA2.set(displayBorderToStripEnd2.get() + displayStripEnd.get() + 2);
                     displayLDA2.set(displayRunwayLength.get() + displayBorderToRunway.get() - displayBorderToLDA2.get() - 3);
 
+
+                    if (landingRadioButton.isSelected()){
+                        displayBorderToPlane2.set(displayBorderToStripEnd2.get() + displayStripEnd.get());
+                    }
+                    else if (takeOffRadioButton.isSelected()){
+                        displayBorderToPlane2.set(displayBorderToBlastAllowance2.get() + displayBlastAllowance.get());
+                    }
                 }
 
             }
