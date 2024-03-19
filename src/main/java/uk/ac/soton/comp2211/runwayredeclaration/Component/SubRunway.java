@@ -83,8 +83,8 @@ public class SubRunway {
         this.ASDA.setValue(new_subRunway.getASDA().get());
         this.LDA.setValue(new_subRunway.getLDA().get());
 
-        this.clearwayLength.setValue(originalTODA.get() - originalTORA.get());
-        this.stopwayLength.setValue(originalASDA.get() - originalTORA.get());
+        this.clearwayLength.setValue(new_subRunway.getClearwayLength().get());
+        this.stopwayLength.setValue(new_subRunway.getStopwayLength().get());
 
 
         this.displacedThreshold.setValue(new_subRunway.getDisplacedThreshold().get());
@@ -111,8 +111,10 @@ public class SubRunway {
         this.ASDA.setValue(new_subRunway.getASDA().get());
         this.LDA.setValue(new_subRunway.getLDA().get());
 
-        this.clearwayLength.setValue(originalTODA.get() - originalTORA.get());
-        this.stopwayLength.setValue(originalASDA.get() - originalTORA.get());
+
+        this.clearwayLength.setValue(new_subRunway.getClearwayLength().get());
+        this.stopwayLength.setValue(new_subRunway.getStopwayLength().get());
+
 
 
         this.displacedThreshold.setValue(new_subRunway.getDisplacedThreshold().get());

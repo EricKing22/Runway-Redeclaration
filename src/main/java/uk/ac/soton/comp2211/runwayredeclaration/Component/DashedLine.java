@@ -10,6 +10,7 @@ public class DashedLine extends Rectangle {
         setStroke(Color.web("#4472C4"));
         setStrokeWidth(1);
         getStrokeDashArray().addAll(2d, 10d);
+//        setStroke(Color.web("transparent"));
     }
 
     public DashedLine(double width, double height, boolean isDashed) {
@@ -19,7 +20,10 @@ public class DashedLine extends Rectangle {
         setStroke(Color.web("#4472C4"));
         if (isDashed) {
             getStrokeDashArray().addAll(10d, 5d);
+
         }
+
+
 
     }
 
@@ -29,6 +33,17 @@ public class DashedLine extends Rectangle {
         setStrokeWidth(1);
         setStroke(Color.web(color));
         getStrokeDashArray().addAll(10d, 5d);
+
+    }
+
+    public DashedLine(double width, double height, String color, boolean isDashed) {
+        super(width, height);
+        setFill(null);
+        setStrokeWidth(1);
+        setStroke(Color.web(color));
+        if (isDashed) {
+            getStrokeDashArray().addAll(10d, 5d);
+        }
 
     }
 

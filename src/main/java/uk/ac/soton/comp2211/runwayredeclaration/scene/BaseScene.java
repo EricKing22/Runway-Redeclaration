@@ -89,13 +89,26 @@ public abstract class BaseScene {
     protected DoubleProperty displayBorderToLDA = new SimpleDoubleProperty();
 
 
-    // The blast protection is fixed to be 60m
+    // The blast protection is fixed to be 60m, display length is 50
     protected DoubleProperty blastAllowance = new SimpleDoubleProperty(60);
-    protected DoubleProperty displayBlastAllowance = new SimpleDoubleProperty(50);
-    protected DoubleProperty RESA = new SimpleDoubleProperty();
-    protected DoubleProperty displayRESA = new SimpleDoubleProperty(100);
+    protected DoubleProperty displayBlastAllowance = new SimpleDoubleProperty(60);
+    protected DoubleProperty displayBorderToBlastAllowance = new SimpleDoubleProperty(0);
+
+    // The RESA is fixed to be 240m. display length is 100
+    protected DoubleProperty RESA = new SimpleDoubleProperty(240);
+    protected DoubleProperty displayRESA = new SimpleDoubleProperty(80);
     protected DoubleProperty displayBorderToRESA = new SimpleDoubleProperty(0);
-    protected DoubleProperty displayDisplacedThreshold = new SimpleDoubleProperty(30);
+
+    // The strip end is fixed to be 60m. display length is 50
+    protected DoubleProperty stripEnd = new SimpleDoubleProperty(60);
+    protected DoubleProperty displayStripEnd = new SimpleDoubleProperty(50);
+    protected DoubleProperty displayBorderToStripEnd = new SimpleDoubleProperty(0);
+
+
+    protected DoubleProperty displayDisplacedThreshold1 = new SimpleDoubleProperty(0);
+    protected DoubleProperty displayDisplacedThreshold2 = new SimpleDoubleProperty(0);
+
+
 
     protected DoubleProperty displayRunwayToPlane = new SimpleDoubleProperty(0);
     protected DoubleProperty displayPlaneToObstacle = new SimpleDoubleProperty(400);
@@ -452,7 +465,7 @@ public abstract class BaseScene {
             // If it was already selected, clear the text area as the button is deselected
 
             indicatorsSubRunway1.getChildren().clear();
-            indicatorsSubRunway1.getChildren().addAll(toraBox, todaBox, ldaBox, asdaBox, blastAllowanceBox, resaBox);
+            indicatorsSubRunway1.getChildren().addAll(toraBox, todaBox, ldaBox, asdaBox, stripEndBox,blastAllowanceBox, resaBox);
 
             indicatorsSubRunway2.getChildren().clear();
             indicatorsSubRunway2.getChildren().addAll(toraBox, todaBox, ldaBox, asdaBox, blastAllowanceBox, resaBox);
@@ -531,10 +544,12 @@ public abstract class BaseScene {
 
 
                         displacedThresholdBox.getChildren().addAll(borderToDisplacedThreshold1, thresholdLine1, emptyBox1, thresholdLine2, borderToDisplacedThreshold2);
-                        stopwayLengthDisplay.setText("(Select designator to show)");
-                        clearwayLengthDisplay.setText("(Select designator to show)");
-                        thresholdLengthDisplay.setText("(Select designator to show)");
 
+
+                        displayBorderToTORA.set(displayBorderToRunway.get());
+                        displayBorderToTODA.set(displayBorderToRunway.get());
+                        displayBorderToASDA.set(displayBorderToRunway.get());
+                        displayBorderToLDA.set(displayBorderToRunway.get());
 
                     }
                 }
@@ -557,7 +572,6 @@ public abstract class BaseScene {
                         obstacleBox.getChildren().clear();
 
                         // Hide all indicators
-
                         indicatorsSubRunway1.getChildren().clear();
                         indicatorsSubRunway2.getChildren().clear();
 
@@ -577,6 +591,10 @@ public abstract class BaseScene {
                         clearwayLengthDisplay.setText("(Select designator to show)");
                         thresholdLengthDisplay.setText("(Select designator to show)");
 
+                        displayBorderToTORA.set(displayBorderToRunway.get());
+                        displayBorderToTODA.set(displayBorderToRunway.get());
+                        displayBorderToASDA.set(displayBorderToRunway.get());
+                        displayBorderToLDA.set(displayBorderToRunway.get());
 
 
 
@@ -871,12 +889,43 @@ public abstract class BaseScene {
             currentSubRunway = subRunway1;
 
             indicatorsSubRunway1.getChildren().clear();
-            indicatorsSubRunway1.getChildren().addAll(toraBox, todaBox, ldaBox, asdaBox, blastAllowanceBox, resaBox);
+
+            indicatorsSubRunway1.getChildren().addAll(toraBox, todaBox, ldaBox, asdaBox, stripEndBox,blastAllowanceBox, resaBox);
 
             SimpleDoubleProperty displayBorderToObstacle = new SimpleDoubleProperty();
+
             if ( obstacleBox.getChildren().isEmpty() ){ // If there is no obstacle on the runway
                 indicatorsSubRunway1.getChildren().remove(resaBox);
+                indicatorsSubRunway1.getChildren().remove(stripEndBox);
                 indicatorsSubRunway1.getChildren().remove(blastAllowanceBox);
+
+
+                displayTORA.set(displayRunwayLength.get() - 2);
+
+                if (subRunway1.getDisplacedThreshold().get() != 0){
+                    displayBorderToLDA.set(displayBorderToRunway.get() + displayDisplacedThreshold1.get() + 1);
+                    displayLDA.set(displayTORA.get() - displayDisplacedThreshold1.get() - 2);
+                }
+                else {
+                    displayBorderToLDA.set(displayBorderToRunway.get());
+                    displayLDA.set(displayTORA.get() - 2);
+                }
+
+
+                if (subRunway1.getStopwayLength().get() == 0){
+                    displayASDA.set(displayTORA.get() - 2);
+                }
+                else{
+                    displayASDA.set(displayTORA.get() - 2 + displayStopWayLength.get());
+
+                }
+                if (subRunway1.getClearwayLength().get() == 0){
+                    displayTODA.set(displayTORA.get() - 2);
+                }
+                else{
+                    displayTODA.set(displayTORA.get() - 2 + displayClearWayLength.get());
+                }
+
 
             }
             else{ // If there is an obstacle on the runway
@@ -885,23 +934,86 @@ public abstract class BaseScene {
                 // Check whether the obstacle is close or further away from the threshold
                 if (displayBorderToObstacle.get() > (displayBorderToRunway.get() + (displayRunwayLength.get() / 2)) ){
                     // If the obstacle is further away
-                    displayBorderToRESA.bind( Bindings.subtract( displayBorderToObstacle, displayRESA));
+                    displayBorderToRESA.set(displayBorderToObstacle.get() - displayRESA.get() - 2);
                     resaBox.visibleProperty().set(true);
 
+                    // Check slope calculation and RESA, choose the larger value to display
+                    if (currentObstacle.getHeight() * 50 > subRunway1.getRESA().get()){
+                        ((Text) ((VBox) resaBox.getChildren().get(2)).getChildren().get(1)).setText("Slope");
+                    }
+                    else {
+                        ((Text) ((VBox) resaBox.getChildren().get(2)).getChildren().get(1)).setText("RESA");
+                    }
+                    displayBorderToStripEnd.set(displayBorderToRESA.get() - displayStripEnd.get() - 2);
 
+                    stripEndBox.visibleProperty().set(true);
+
+                    displayBorderToTORA.set(displayBorderToRunway.get());
+                    displayBorderToTODA.set(displayBorderToTORA.get());
+                    displayBorderToASDA.set(displayBorderToTORA.get());
+
+
+                    displayTORA.set(displayBorderToStripEnd.get() - displayBorderToRunway.get() - 2);
+                    displayTODA.set(displayTORA.get());
+                    displayASDA.set(displayTORA.get());
+
+                    if (subRunway1.getDisplacedThreshold().get() != 0){
+                        displayBorderToLDA.set(displayBorderToRunway.get() + displayDisplacedThreshold1.get());
+                        displayLDA.set(displayTORA.get() - displayDisplacedThreshold1.get() - 2);
+                    }
+                    else {
+                        displayBorderToLDA.set(displayBorderToRunway.get());
+                        displayLDA.set(displayBorderToStripEnd.get() - displayBorderToRunway.get() - 2);
+                    }
+
+                    blastAllowanceBox.visibleProperty().set(false);
 
 
                 }
                 else{
                     // If the obstacle is closer
-                    resaBox.visibleProperty().set(false);
+
+                    blastAllowanceBox.visibleProperty().set(true);
+                    // 30 is the obstacle image view width
+                    displayBorderToBlastAllowance.set(displayBorderToObstacle.get() + 30 );
+
+                    displayBorderToTORA.set(displayBorderToBlastAllowance.get() + displayBlastAllowance.get() + 1);
+                    displayBorderToTODA.set(displayBorderToTORA.get());
+                    displayBorderToASDA.set(displayBorderToTORA.get());
+
+
+
+                    displayTORA.set( (displayBorderToRunway.get() + displayRunwayLength.get()) - displayBorderToObstacle.get() - displayBlastAllowance.get() - 30 - 3);
+                    if (subRunway1.getStopwayLength().get() == 0){
+                        displayASDA.set(displayTORA.get());
+                    }
+                    else {
+                        displayASDA.set(displayTORA.get() + displayStopWayLength.get());
+                    }
+                    if (subRunway1.getClearwayLength().get() == 0){
+                        displayTODA.set(displayTORA.get());
+                    }
+                    else {
+                        displayTODA.set(displayTORA.get() + displayClearWayLength.get());
+                    }
+
+
+                    displayBorderToRESA.set(displayBorderToBlastAllowance.get());
+                    // Check slope calculation and RESA, choose the larger value to display
+                    if (currentObstacle.getHeight() * 50 > subRunway1.getRESA().get()){
+                        ((Text) ((VBox) resaBox.getChildren().get(2)).getChildren().get(1)).setText("Slope");
+                    }
+                    else {
+                        ((Text) ((VBox) resaBox.getChildren().get(2)).getChildren().get(1)).setText("RESA");
+                    }
+                    displayBorderToStripEnd.set(displayBorderToRESA.get() + displayRESA.get() + 2);
+
+                    displayBorderToLDA.set(displayBorderToStripEnd.get() + displayStripEnd.get() + 2);
+                    displayLDA.set(displayRunwayLength.get() + displayBorderToRunway.get() - displayBorderToLDA.get() - 3);
+
                 }
 
             }
-
-            System.out.println("Border to TODA : " + displayBorderToTODA.getValue());
-            System.out.println("Border to TORA : " + displayBorderToTORA.getValue());
-            System.out.println("Border to ASDA : " + displayBorderToASDA.getValue());
 
 
 
