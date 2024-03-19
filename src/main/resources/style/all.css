@@ -5,7 +5,7 @@
 }
 
 .sideView-background-Deuteranopia, .topView-background-Deuteranopia, .simultaneous-background-Deuteranopia {
-    -fx-background-color: #BDD7EE; /*same as default*/
+    -fx-background-color: #8ea1f2; /*same as default*/
 }
 
 .sideView-background-Tritanopia, .topView-background-Tritanopia, .simultaneous-background-Tritanopia {

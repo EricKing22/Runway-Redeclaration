@@ -482,6 +482,8 @@ public abstract class BaseScene {
             }
 
 
+
+
             if (selectedButton.getText().equals("TORA")){
                 indicatorsSubRunway1.getChildren().clear();
                 indicatorsSubRunway2.getChildren().clear();
@@ -1409,7 +1411,12 @@ public abstract class BaseScene {
     Checkers checker = new Checkers(obstacleHeightD, obstacleWidthD, distanceD);
 
     public String handleObstacle(double h, double w, double d1, double d2) throws SQLException {
-        return checker.obstacleChecker(h, w, d1, d2);
+        if (firstDirectionButton.isSelected()) {
+            return checker.obstacleChecker(h, w, d1, d2, subRunway1);
+        } else if (secondDirectionButton.isSelected()){
+            return checker.obstacleChecker(h, w, d1, d2, subRunway2);
+        }
+        return null;
     }
 
 
