@@ -115,6 +115,8 @@ public abstract class BaseScene {
     protected DoubleProperty displayPlaneToObstacle = new SimpleDoubleProperty(400);
 
     protected DoubleProperty displayBorderToRunway = new SimpleDoubleProperty();
+    protected DoubleProperty displayBorderToObstacle = new SimpleDoubleProperty(0);
+    protected DoubleProperty displayBorderToPlane = new SimpleDoubleProperty(0);
     protected DoubleProperty displayBorderToStopway = new SimpleDoubleProperty();
     protected DoubleProperty displayPlaneWidth = new SimpleDoubleProperty(60);
 
@@ -167,6 +169,12 @@ public abstract class BaseScene {
     protected StackPane indicatorsSubRunway2 = new StackPane();
     protected RadioButton firstDirectionButton;
     protected RadioButton secondDirectionButton;
+    private Button buttonTORA;
+    private Button buttonASDA;
+    private Button buttonTODA;
+    private Button buttonLDA;
+    private Button[] allButtons;
+    private TextArea displayArea;
 
 
     /**
@@ -199,6 +207,11 @@ public abstract class BaseScene {
         // Set the runway length
         displayBorderToRunway.setValue((homeWindow.getWidth() - 600 - displayRunwayLength.getValue()) / 2);
         displayBorderToStopway.setValue((homeWindow.getWidth() - 600 - displayRunwayLength.getValue() - displayStopWayLength.getValue() * 2) / 2);
+
+
+        displayBorderToPlane.set(displayBorderToRunway.get() - displayPlaneWidth.get());
+        
+        planeBox.visibleProperty().set(false);
 
 
         Obstacle Boeing_777 = new Obstacle("Boeing 777", 18.6, 64.8, 63.7);
@@ -389,15 +402,16 @@ public abstract class BaseScene {
         tpane2.setText("Calculation Breakdown:");
         tpane2.setCollapsible(true);
 
-        TextArea displayArea = new TextArea();
+        displayArea = new TextArea();
         displayArea.setEditable(false);
+        displayArea.setWrapText(true); // Set wrapText property to true
         displayArea.setPrefHeight(600);
 
         // Create Buttons
-        Button buttonTORA = new Button("TORA");
-        Button buttonTODA = new Button("TODA");
-        Button buttonLDA = new Button("LDA");
-        Button buttonASDA = new Button("ASDA");
+        buttonTORA = new Button("TORA");
+        buttonTODA = new Button("TODA");
+        buttonLDA = new Button("LDA");
+        buttonASDA = new Button("ASDA");
 
         // Apply the normal style to all buttons initially
         buttonTORA.getStyleClass().add("button");
@@ -406,7 +420,7 @@ public abstract class BaseScene {
         buttonASDA.getStyleClass().add("button");
 
         // Button Actions
-        Button[] allButtons = new Button[]{buttonTORA, buttonTODA, buttonLDA, buttonASDA};
+        allButtons = new Button[]{buttonTORA, buttonTODA, buttonLDA, buttonASDA};
 
         // Button Actions
         for (Button button : allButtons) {
@@ -433,7 +447,35 @@ public abstract class BaseScene {
         // If the selected button was not already highlighted, highlight it
         if (!isSelected) {
             selectedButton.getStyleClass().add("button-selected");
-            displayArea.setText("Content for " + selectedButton.getText());
+            if (selectedButton.getText().equals("TORA")) {
+                if (firstDirectionButton.isSelected()){
+                    displayArea.setText(RunwayCalculator.breakdownTORA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                } else if (secondDirectionButton.isSelected()){
+                    displayArea.setText(RunwayCalculator.breakdownTORA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                }
+
+            } else if (selectedButton.getText().equals("TODA")) {
+                if (firstDirectionButton.isSelected()){
+                    displayArea.setText(RunwayCalculator.breakdownTODA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                } else if (secondDirectionButton.isSelected()){
+                    displayArea.setText(RunwayCalculator.breakdownTODA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                }
+
+            } else if (selectedButton.getText().equals("ASDA")) {
+                if (firstDirectionButton.isSelected()){
+                    displayArea.setText(RunwayCalculator.breakdownASDA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                } else if (secondDirectionButton.isSelected()){
+                    displayArea.setText(RunwayCalculator.breakdownASDA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                }
+
+            } else if (selectedButton.getText().equals("LDA")) {
+                if (firstDirectionButton.isSelected()){
+                    displayArea.setText(RunwayCalculator.breakdownLDA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                } else if (secondDirectionButton.isSelected()){
+                    displayArea.setText(RunwayCalculator.breakdownLDA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                }
+
+            }
 
             if (this instanceof SimultaneousScene){
                 return;
@@ -444,28 +486,28 @@ public abstract class BaseScene {
                 indicatorsSubRunway1.getChildren().clear();
                 indicatorsSubRunway2.getChildren().clear();
                 indicatorsSubRunway1.getChildren().add(toraBox);
-                indicatorsSubRunway2.getChildren().add(toraBox);
+                indicatorsSubRunway2.getChildren().add(toraBox2);
 
             }
             else if (selectedButton.getText().equals("TODA")){
                 indicatorsSubRunway1.getChildren().clear();
                 indicatorsSubRunway2.getChildren().clear();
                 indicatorsSubRunway1.getChildren().add(todaBox);
-                indicatorsSubRunway2.getChildren().add(todaBox);
+                indicatorsSubRunway2.getChildren().add(todaBox2);
 
             }
             else if (selectedButton.getText().equals("ASDA")){
                 indicatorsSubRunway1.getChildren().clear();
                 indicatorsSubRunway2.getChildren().clear();
                 indicatorsSubRunway1.getChildren().add(asdaBox);
-                indicatorsSubRunway2.getChildren().add(asdaBox);
+                indicatorsSubRunway2.getChildren().add(asdaBox2);
 
             }
             else if (selectedButton.getText().equals("LDA")){
                 indicatorsSubRunway1.getChildren().clear();
                 indicatorsSubRunway2.getChildren().clear();
                 indicatorsSubRunway1.getChildren().add(ldaBox);
-                indicatorsSubRunway2.getChildren().add(ldaBox);
+                indicatorsSubRunway2.getChildren().add(ldaBox2);
             }
 
 
@@ -477,7 +519,7 @@ public abstract class BaseScene {
             indicatorsSubRunway1.getChildren().addAll(toraBox, todaBox, ldaBox, asdaBox, stripEndBox,blastAllowanceBox, resaBox);
 
             indicatorsSubRunway2.getChildren().clear();
-            indicatorsSubRunway2.getChildren().addAll(toraBox, todaBox, ldaBox, asdaBox, blastAllowanceBox, resaBox);
+            indicatorsSubRunway2.getChildren().addAll(toraBox2, todaBox2, ldaBox2, asdaBox2,stripEndBox2, blastAllowanceBox2, resaBox2);
 
 
         }
@@ -516,7 +558,7 @@ public abstract class BaseScene {
                     if (runway.getName().equals(newValue)){
 
                         clearAllButtons();
-                        planeBox.getChildren().clear();
+                        planeBox.visibleProperty().set(false);
                         obstacleBox.getChildren().clear();
                         currentRunway = runway;
 
@@ -577,8 +619,8 @@ public abstract class BaseScene {
                 for (Airport airport : airportList){
                     if (airport.getName().equals(newValue)){
                         clearAllButtons();
-                        planeBox.getChildren().clear();
                         obstacleBox.getChildren().clear();
+                        planeBox.visibleProperty().set(false);
 
                         // Hide all indicators
                         indicatorsSubRunway1.getChildren().clear();
@@ -701,6 +743,13 @@ public abstract class BaseScene {
             String distanceToCentreline = obstacleToCentreLine.getText();
             String distanceTextD1 = distanceFromThreshold1.getText();
             String distanceTextD2 = distanceFromThreshold2.getText();
+            for (Button btn : allButtons){
+                btn.getStyleClass().remove("button-selected");
+            }
+            displayArea.clear();
+
+
+
 
             double height;
             double distanceToCentrelineD;
@@ -716,6 +765,11 @@ public abstract class BaseScene {
 
                 // Check if the obstacle values are valid
                 String errorMessage = handleObstacle(height, distanceToCentrelineD, distance1, distance2);
+
+                // 
+
+
+
 
                 // If there is an error, display the appropriate error message(s) and clear the corresponding input field(s)
                 if (errorMessage != null) {
@@ -876,7 +930,7 @@ public abstract class BaseScene {
 
 
 
-    public TitledPane makeAirplaneTPane(){
+    public TitledPane makeAirplaneTPane() {
 
 
         VBox airplaneStuff = new VBox(3);
@@ -895,6 +949,47 @@ public abstract class BaseScene {
         landingRadioButton.setToggleGroup(operationButtons);
         operationButtons.selectToggle(null);
 
+
+        takeOffRadioButton.setOnAction(e -> {
+            if (firstDirectionButton.isSelected() || secondDirectionButton.isSelected()){
+                planeBox.visibleProperty().set(true);
+            }
+            else {
+                planeBox.visibleProperty().set(false);
+            }
+
+
+            if (firstDirectionButton.isSelected()){
+                firstDirectionButton.setSelected(false);
+                firstDirectionButton.fire();
+            }
+            else if (secondDirectionButton.isSelected()){
+                secondDirectionButton.setSelected(false);
+                secondDirectionButton.fire();
+            }
+        });
+
+
+        landingRadioButton.setOnAction(e -> {
+            if (firstDirectionButton.isSelected() || secondDirectionButton.isSelected()){
+                planeBox.visibleProperty().set(true);
+            }
+            else {
+                planeBox.visibleProperty().set(false);
+            }
+
+            if (firstDirectionButton.isSelected()){
+                firstDirectionButton.setSelected(false);
+                firstDirectionButton.fire();
+            }
+            else if (secondDirectionButton.isSelected()){
+                secondDirectionButton.setSelected(false);
+                secondDirectionButton.fire();
+            }
+
+        });
+
+        // Direction buttons
         firstDirectionButton = new RadioButton();
         firstDirectionButton.textProperty().bind(subRunway1.getDesignator());
         firstDirectionButton.setUserData(subRunway1.getDesignator());
@@ -905,39 +1000,59 @@ public abstract class BaseScene {
             thresholdLengthDisplay.setText(subRunway1.getDisplacedThreshold().get() + "m");
             currentSubRunway = subRunway1;
 
+            if (!takeOffRadioButton.isSelected() && !landingRadioButton.isSelected() ){ // if neither operation button is selected
+                planeBox.visibleProperty().set(false);
+
+            }
+            else { // if one operation is selected
+                planeBox.visibleProperty().set(true);
+            }
+
+
             indicatorsSubRunway1.getChildren().clear();
 
             indicatorsSubRunway1.getChildren().addAll(toraBox, todaBox, ldaBox, asdaBox, stripEndBox,blastAllowanceBox, resaBox);
 
-            SimpleDoubleProperty displayBorderToObstacle = new SimpleDoubleProperty();
+            displayBorderToObstacle = new SimpleDoubleProperty();
 
             if ( obstacleBox.getChildren().isEmpty() ){ // If there is no obstacle on the runway
                 indicatorsSubRunway1.getChildren().remove(resaBox);
                 indicatorsSubRunway1.getChildren().remove(stripEndBox);
                 indicatorsSubRunway1.getChildren().remove(blastAllowanceBox);
 
-
                 displayTORA.set(displayRunwayLength.get() - 2);
 
                 if (subRunway1.getDisplacedThreshold().get() != 0){
                     displayBorderToLDA.set(displayBorderToRunway.get() + displayDisplacedThreshold1.get() + 1);
                     displayLDA.set(displayTORA.get() - displayDisplacedThreshold1.get() - 2);
+
+                    if (landingRadioButton.isSelected()){
+                        displayBorderToPlane.set(displayBorderToRunway.get() + displayDisplacedThreshold1.get());
+                    }
+                    else if (takeOffRadioButton.isSelected()){
+                        displayBorderToPlane.set(displayBorderToRunway.get() - displayPlaneWidth.get());
+                    }
+
                 }
                 else {
                     displayBorderToLDA.set(displayBorderToRunway.get());
-                    displayLDA.set(displayTORA.get() - 2);
+                    displayLDA.set(displayTORA.get());
+
+
+                    displayBorderToPlane.set(displayBorderToRunway.get() - displayPlaneWidth.get());
+
                 }
 
 
                 if (subRunway1.getStopwayLength().get() == 0){
-                    displayASDA.set(displayTORA.get() - 2);
+                    displayASDA.set(displayTORA.get());
                 }
                 else{
                     displayASDA.set(displayTORA.get() - 2 + displayStopWayLength.get());
 
                 }
                 if (subRunway1.getClearwayLength().get() == 0){
-                    displayTODA.set(displayTORA.get() - 2);
+                    displayTODA.set(displayTORA.get() );
                 }
                 else{
                     displayTODA.set(displayTORA.get() - 2 + displayClearWayLength.get());
@@ -981,10 +1096,19 @@ public abstract class BaseScene {
                     if (subRunway1.getDisplacedThreshold().get() != 0){
                         displayBorderToLDA.set(displayBorderToRunway.get() + displayDisplacedThreshold1.get());
                         displayLDA.set(displayTORA.get() - displayDisplacedThreshold1.get() - 2);
+
+                        if (landingRadioButton.isSelected()){
+                            displayBorderToPlane.set(displayBorderToLDA.get());
+                        }
+                        else if (takeOffRadioButton.isSelected()){
+                            displayBorderToPlane.set(displayBorderToRunway.get() - displayPlaneWidth.get());
+                        }
                     }
                     else {
                         displayBorderToLDA.set(displayBorderToRunway.get());
                         displayLDA.set(displayBorderToStripEnd.get() - displayBorderToRunway.get() - 2);
+
+                        displayBorderToPlane.set(displayBorderToRunway.get() - displayPlaneWidth.get());
                     }
 
                     blastAllowanceBox.visibleProperty().set(false);
@@ -1032,6 +1156,12 @@ public abstract class BaseScene {
                     displayBorderToLDA.set(displayBorderToStripEnd.get() + displayStripEnd.get() + 2);
                     displayLDA.set(displayRunwayLength.get() + displayBorderToRunway.get() - displayBorderToLDA.get() - 3);
 
+                    if (landingRadioButton.isSelected()){
+                        displayBorderToPlane.set(displayBorderToStripEnd.get() + displayStripEnd.get());
+                    }
+                    else if (takeOffRadioButton.isSelected()){
+                        displayBorderToPlane.set(displayBorderToBlastAllowance.get() + displayBlastAllowance.get());
+                    }
                 }
 
             }
@@ -1052,12 +1182,18 @@ public abstract class BaseScene {
             thresholdLengthDisplay.setText(subRunway2.getDisplacedThreshold().get() + "m");
             currentSubRunway = subRunway2;
 
+            if (!takeOffRadioButton.isSelected() && !landingRadioButton.isSelected() ){ // If neither operation button is selected
+                planeBox.visibleProperty().set(false);
+            }
+            else { // if one operation is selected
+                planeBox.visibleProperty().set(true);
+            }
 
             indicatorsSubRunway2.getChildren().clear();
 
             indicatorsSubRunway2.getChildren().addAll(toraBox2, todaBox2, ldaBox2, asdaBox2, stripEndBox2, blastAllowanceBox2, resaBox2);
 
-            SimpleDoubleProperty displayBorderToObstacle = new SimpleDoubleProperty();
+            displayBorderToObstacle = new SimpleDoubleProperty();
 
             if ( obstacleBox.getChildren().isEmpty() ){ // If there is no obstacle on the runway
                 indicatorsSubRunway2.getChildren().remove(resaBox2);
@@ -1096,6 +1232,7 @@ public abstract class BaseScene {
             else{ // If there is an obstacle on the runway
 
                 displayBorderToObstacle.bind( Bindings.subtract( (800-30), ((HBox) obstacleBox.getChildren().get(0)).prefWidthProperty()) );
+
                 // Check whether the obstacle is close or further away from the threshold
                 if (displayBorderToObstacle.get() > (displayBorderToRunway.get() + (displayRunwayLength.get() / 2)) ){
                     // If the obstacle is further away
@@ -1146,9 +1283,8 @@ public abstract class BaseScene {
                     displayBorderToTODA2.set(displayBorderToTORA2.get());
                     displayBorderToASDA2.set(displayBorderToTORA2.get());
 
-
-
                     displayTORA2.set( (displayBorderToRunway.get() + displayRunwayLength.get()) - displayBorderToObstacle.get() - displayBlastAllowance.get() - 30 - 3);
+
                     if (subRunway2.getStopwayLength().get() == 0){
                         displayASDA2.set(displayTORA2.get());
                     }
@@ -1238,6 +1374,8 @@ public abstract class BaseScene {
         return airplaneTPane;
     }
 
+
+
     public void clearAllButtons(){
         operationButtons.selectToggle(null);
         directionButtons.selectToggle(null);
@@ -1269,6 +1407,7 @@ public abstract class BaseScene {
     }
 
     Checkers checker = new Checkers(obstacleHeightD, obstacleWidthD, distanceD);
+
     public String handleObstacle(double h, double w, double d1, double d2) throws SQLException {
         return checker.obstacleChecker(h, w, d1, d2);
     }

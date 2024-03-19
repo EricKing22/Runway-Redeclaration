@@ -216,6 +216,7 @@ public class SideViewScene extends BaseScene{
 
         sideView.setOnAction(e -> {
             currentView = "Side";
+            bluePane.setTop(null);
             middleDisplayBox.getChildren().clear();
             obstacleBox.setAlignment(Pos.BOTTOM_LEFT);
             middleDisplayBox.getChildren().addAll(makeSideViewMiddleDisplayBox(), makeDirectionPane());
@@ -262,6 +263,17 @@ public class SideViewScene extends BaseScene{
             middleDisplayBox.getChildren().addAll(makeSimultaneousMiddleDisplayBox(), makeDirectionPane());
             viewMenu.getItems().clear();
             viewMenu.getItems().addAll(sideView, topView);
+            if (firstDirectionButton.selectedProperty().get()){
+                System.out.println("First direction selected fired");
+                firstDirectionButton.setSelected(false);
+                firstDirectionButton.fire();
+
+            }
+            else if (secondDirectionButton.selectedProperty().get()) {
+                System.out.println("Second direction selected fired");
+                secondDirectionButton.setSelected(false);
+                secondDirectionButton.fire();
+            }
         });
 
         // Add menu items
@@ -789,8 +801,7 @@ public class SideViewScene extends BaseScene{
         SimpleDoubleProperty displayBorderToPlaneTail = new SimpleDoubleProperty();
         SimpleDoubleProperty displayBorderToPlaneNose = new SimpleDoubleProperty();
 
-        displayBorderToPlaneTail.bind(Bindings.subtract( (Bindings.add(displayBorderToRunway, displayRunwayToPlane) ), displayPlaneWidth));
-        displayBorderToPlaneNose.bind(Bindings.add(displayBorderToRunway, displayRunwayToPlane));
+        displayBorderToPlaneTail.bind( displayBorderToPlane);
         borderToPlane.prefWidthProperty().bind(displayBorderToPlaneTail);
 
 
@@ -798,7 +809,6 @@ public class SideViewScene extends BaseScene{
         planeBox.getStyleClass().add("empty");
         planeBox.setAlignment(Pos.CENTER_LEFT);
         planeBox.getChildren().addAll(borderToPlane, planeImageView);
-
 
 
         planeObstaclePane.getChildren().addAll(planeBox, obstacleBox);
@@ -1040,6 +1050,8 @@ public class SideViewScene extends BaseScene{
 
 
         planeBox.setAlignment(Pos.CENTER_LEFT);
+
+        displayStackPaneTop.getChildren().clear();
         displayStackPaneTop.getChildren().addAll(gradeAreaImageView, runwayPaneBox, stopWayBox, clearWayBox, obstacleBox, planeBox);
 
         // Designator Display
@@ -1182,10 +1194,18 @@ public class SideViewScene extends BaseScene{
         obstacleImageViewTop.setFitWidth(30);
         obstacleImageViewTop.setPreserveRatio(true);
 
-        // Plane & Obstacle HBox
-        HBox planeObstacleTopBox = new HBox(frontPlaneTopEmpty ,planeImageViewTop, planeObstacleTopDistanceBox, obstacleImageViewTop);
-        planeObstacleTopBox.setAlignment(Pos.CENTER_LEFT);
 
+
+        // Obstacle
+        HBox obstacleTopBox = new HBox();
+        obstacleTopBox.getStyleClass().add("empty");
+        obstacleTopBox.setAlignment(Pos.CENTER_LEFT);
+        obstacleTopBox.visibleProperty().bind(displayBorderToObstacle.greaterThan(0));
+
+        HBox borderToObstacle = new HBox();
+        borderToObstacle.getStyleClass().add("empty");
+        borderToObstacle.prefWidthProperty().bind( ( displayBorderToObstacle ));
+        obstacleTopBox.getChildren().addAll(borderToObstacle, obstacleImageViewTop);
 
 
 
@@ -1209,7 +1229,7 @@ public class SideViewScene extends BaseScene{
 
 
         // Add the runway, plane, obstacle and graded area to the top view pane
-        topViewPane.getChildren().addAll(gradeAreaImageView, runwayTopPaneBox, planeObstacleTopBox, topViewLabelBox, topClearWayBox);
+        topViewPane.getChildren().addAll(gradeAreaImageView, runwayTopPaneBox, obstacleTopBox, topViewLabelBox, topClearWayBox);
 
         // Designator Display
         Text designator1 = new Text();
@@ -1267,10 +1287,9 @@ public class SideViewScene extends BaseScene{
         ImageView planeImageViewSide = new ImageView(planeImageSide);
         planeImageViewSide.setPreserveRatio(true);
         planeImageViewSide.setFitWidth(50);
-        // HBox distance between the plane and obstacle
-        HBox planeObstacleSideDistance = new HBox();
-        planeObstacleSideDistance.getStyleClass().add("empty");
-        planeObstacleSideDistance.setPrefWidth(displayPlaneToObstacle.getValue());
+
+
+
         // Obstacle Image
         Image obstacleImageSide = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
         ImageView obstacleImageViewSide = new ImageView(obstacleImageSide);
@@ -1279,19 +1298,19 @@ public class SideViewScene extends BaseScene{
 
 
 
+        // Obstacle
+        HBox obstacleSideBox = new HBox();
+        obstacleSideBox.getStyleClass().add("empty");
+        obstacleSideBox.setAlignment(Pos.CENTER_LEFT);
+        obstacleSideBox.visibleProperty().bind(displayBorderToObstacle.greaterThan(0));
 
-        // Plane & Obstacle Pane (Might change)
-        HBox planeObstacleSideBox = new HBox();
-        planeObstacleSideBox.setAlignment(Pos.BOTTOM_LEFT);
-        HBox frontPlaneEmpty = new HBox();
-        frontPlaneEmpty.getStyleClass().add("empty");
-        frontPlaneEmpty.prefWidthProperty().bind(Bindings.add(displayBorderToRunway,displayRunwayToPlane));
+        HBox borderToObstacleSide = new HBox();
+        borderToObstacleSide.getStyleClass().add("empty");
+        borderToObstacleSide.prefWidthProperty().bind( ( displayBorderToObstacle ));
+        obstacleSideBox.getChildren().addAll(borderToObstacleSide, obstacleImageViewSide);
 
 
-        //planeObstacleSideBox.setMaxWidth(displayRunwayLength.getValue());
-        planeObstacleSideBox.getChildren().addAll(frontPlaneEmpty, planeImageViewSide, planeObstacleSideDistance, obstacleImageViewSide);
-
-        bluePane.setBottom(planeObstacleSideBox);
+        bluePane.setBottom(obstacleSideBox);
 
 
         // Ground Part
