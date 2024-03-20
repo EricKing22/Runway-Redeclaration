@@ -567,6 +567,8 @@ public abstract class BaseScene {
                         planeBox.visibleProperty().set(false);
                         planeBox2.visibleProperty().set(false);
 
+                        displayBorderToObstacle.set(0);
+
                         obstacleBox.getChildren().clear();
 
                         currentRunway = runway;
@@ -631,6 +633,8 @@ public abstract class BaseScene {
                         obstacleBox.getChildren().clear();
                         planeBox.visibleProperty().set(false);
                         planeBox2.visibleProperty().set(false);
+
+                        displayBorderToObstacle.set(0);
 
                         // Hide all indicators
                         indicatorsSubRunway1.getChildren().clear();
@@ -750,7 +754,7 @@ public abstract class BaseScene {
         recalculateB.setMaxWidth(Double.MAX_VALUE);
         recalculateB.setOnAction(e -> {
             String heightText = obstacleHeight.getText();
-            String distanceToCentreline = obstacleToCentreLine.getText();
+            String distanceToCentrelineText = obstacleToCentreLine.getText();
             String distanceTextD1 = distanceFromThreshold1.getText();
             String distanceTextD2 = distanceFromThreshold2.getText();
             for (Button btn : allButtons){
@@ -761,161 +765,163 @@ public abstract class BaseScene {
 
 
 
-            double height;
-            double distanceToCentrelineD;
-            double distance1;
-            double distance2;
+            double height = 0;
+            double distanceToCentreline = 0;
+            double distance1 = 0;
+            double distance2 = 0;
+
+            String errorMessage = "";
+
+            // Clear all fields if parsing fails
+            try {
+                height = Double.parseDouble(heightText);
+            } catch (NumberFormatException f) {
+                errorMessage = errorMessage +  "Invalid height.\n";
+                obstacleHeight.clear();
+            }
 
             try {
-                // Parse values to doubles
-                height = Double.parseDouble(heightText);
-                distanceToCentrelineD = Double.parseDouble(distanceToCentreline);
+                distanceToCentreline = Double.parseDouble(distanceToCentrelineText);
+            } catch (NumberFormatException f) {
+                errorMessage = errorMessage + "Invalid distance from centreline.\n";
+                obstacleToCentreLine.clear();
+            }
+
+            try {
                 distance1 = Double.parseDouble(distanceTextD1);
+            } catch (NumberFormatException f) {
+                errorMessage = errorMessage + "Invalid distance from " + subRunway1.getDesignator().get() + " .\n";
+                distanceFromThreshold1.clear();
+            }
+
+            try {
                 distance2 = Double.parseDouble(distanceTextD2);
+            } catch (NumberFormatException f) {
+                errorMessage = errorMessage + "Invalid distance from " + subRunway2.getDesignator().get() + " .\n";
+                distanceFromThreshold2.clear();
+            }
 
-                // Check if the obstacle values are valid
-                String errorMessage = handleObstacle(height, distanceToCentrelineD, distance1, distance2);
+            if (height < 0){
+                errorMessage = errorMessage + "Obstacle height cannot be negative.\n";
+                obstacleHeight.clear();
+            }
 
-                // 
+            if (height > 100){
+                errorMessage = errorMessage + "Obstacle height is unreasonable.\n";
+                obstacleHeight.clear();
+            }
+
+            if (distanceToCentreline > 75 || distanceToCentreline < -75){
+                errorMessage = errorMessage + "Distance from centreline exceeds consideration zone.\n";
+                obstacleToCentreLine.clear();
+            }
+
+            if (distance1 + subRunway1.getDisplacedThreshold().get() - subRunway1.getOriginalTORA().get() > 60){
+                errorMessage = errorMessage + "Distance from " + subRunway1.getDesignator().get() + " threshold exceeds consideration zone.\n";
+                distanceFromThreshold1.clear();
+            }
+
+            if (distance2 + subRunway2.getDisplacedThreshold().get() - subRunway2.getOriginalTORA().get() > 60){
+                errorMessage = errorMessage + "Distance from " + subRunway2.getDesignator().get() + " threshold exceeds consideration zone.\n";
+                distanceFromThreshold2.clear();
+            }
+
+
+            if (currentObstacle == null){
+                errorMessage = errorMessage + "No obstacle is selected.\n";
+            }
+
+            double calculateRunwayLength = distance1 + subRunway1.getDisplacedThreshold().get() + distance2 + subRunway2.getDisplacedThreshold().get();
+
+            if (calculateRunwayLength > subRunway1.getOriginalTORA().get() + 120 && calculateRunwayLength > subRunway2.getOriginalTORA().get() + 120){
+                errorMessage = errorMessage + "Wrong distances from threshold.\n";
+                distanceFromThreshold1.clear();
+                distanceFromThreshold2.clear();
+            }
 
 
 
 
-                // If there is an error, display the appropriate error message(s) and clear the corresponding input field(s)
-                if (errorMessage != null) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("Invalid Input");
-                    alert.setContentText(errorMessage);
-                    alert.showAndWait();
+            if (!errorMessage.equals("")){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Invalid Input");
+                alert.setContentText(errorMessage + "Please enter valid values.");
+                alert.showAndWait();
+                return;
+            }
 
-                    if (errorMessage.contains("Invalid height")) {
-                        obstacleHeight.clear();
-                    }
-                    if (errorMessage.contains("Invalid width")) {
-                        obstacleToCentreLine.clear();
-                    }
-                    if (errorMessage.contains("Invalid distance")) {
-                        distanceFromThreshold1.clear();
-                    }
-                    if (errorMessage.contains("Invalid distance")) {
-                        distanceFromThreshold2.clear();
-                    }
 
+
+            currentObstacle = new Obstacle(obstacle.getValue().getName());
+            currentObstacle.setHeight(height);
+
+
+
+            subRunway1.setObstacle(currentObstacle, distance1);
+            subRunway2.setObstacle(currentObstacle, distance2);
+
+
+            subRunway1.setTORA(RunwayCalculator.calculateTORA(subRunway1, currentObstacle, distance1));
+            subRunway1.setTODA(RunwayCalculator.calculateTODA(subRunway1, currentObstacle, distance1));
+            subRunway1.setASDA(RunwayCalculator.calculateASDA(subRunway1, currentObstacle, distance1));
+            subRunway1.setLDA(RunwayCalculator.calculateLDA(subRunway1, currentObstacle, distance1));
+
+
+            subRunway2.setTORA(RunwayCalculator.calculateTORA(subRunway2, currentObstacle, distance2));
+            subRunway2.setTODA(RunwayCalculator.calculateTODA(subRunway2, currentObstacle, distance2));
+            subRunway2.setASDA(RunwayCalculator.calculateASDA(subRunway2, currentObstacle, distance2));
+            subRunway2.setLDA(RunwayCalculator.calculateLDA(subRunway2, currentObstacle, distance2));
+
+
+
+            this.obstacleBox.getChildren().clear();
+
+            if (subRunway1.getObstacle() != null){
+                double distance = subRunway1.getObstacleDistance();
+                double ratio = distance / subRunway1.getOriginalTORA().get();
+                double displayObstacleToThreshold;
+                if (ratio < 0){// If negative then the obstacle is before the threshold
+                    displayObstacleToThreshold = ratio * displayRunwayLength.get() - 30;
                 }
-                currentObstacle = new Obstacle(obstacle.getValue().getName());
-                currentObstacle.setHeight(height);
+                else{
+                    displayObstacleToThreshold = ratio * displayRunwayLength.get();
+                }
 
-
-
-                subRunway1.setObstacle(currentObstacle, distance1);
-                subRunway2.setObstacle(currentObstacle, distance2);
-
-
-                subRunway1.setTORA(RunwayCalculator.calculateTORA(subRunway1, currentObstacle, distance1));
-                subRunway1.setTODA(RunwayCalculator.calculateTODA(subRunway1, currentObstacle, distance1));
-                subRunway1.setASDA(RunwayCalculator.calculateASDA(subRunway1, currentObstacle, distance1));
-                subRunway1.setLDA(RunwayCalculator.calculateLDA(subRunway1, currentObstacle, distance1));
-
-
-                subRunway2.setTORA(RunwayCalculator.calculateTORA(subRunway2, currentObstacle, distance2));
-                subRunway2.setTODA(RunwayCalculator.calculateTODA(subRunway2, currentObstacle, distance2));
-                subRunway2.setASDA(RunwayCalculator.calculateASDA(subRunway2, currentObstacle, distance2));
-                subRunway2.setLDA(RunwayCalculator.calculateLDA(subRunway2, currentObstacle, distance2));
-
-
-
-                this.obstacleBox.getChildren().clear();
-
-                if (subRunway1.getObstacle() != null){
-                    double distance = subRunway1.getObstacleDistance();
-                    double ratio = distance / subRunway1.getOriginalTORA().get();
-                    double displayObstacleToThreshold;
-                    if (ratio < 0){// If negative then the obstacle is before the threshold
-                        displayObstacleToThreshold = ratio * displayRunwayLength.get() - 30;
-                    }
-                    else{
-                        displayObstacleToThreshold = ratio * displayRunwayLength.get();
-                    }
-
-
-
-                    HBox borderToObstacleBox = new HBox();
-                    borderToObstacleBox.getStyleClass().add("empty");
-                    if(subRunway1.getDisplacedThreshold().get() != 0){
-                        borderToObstacleBox.prefWidthProperty().bind( Bindings.add(Bindings.add(displayBorderToRunway, displayObstacleToThreshold), displayDisplacedThreshold1));
-                    }
-                    else{
-                        borderToObstacleBox.prefWidthProperty().bind( Bindings.add(displayBorderToRunway, displayObstacleToThreshold));
-                    }
+                HBox borderToObstacleBox = new HBox();
+                borderToObstacleBox.getStyleClass().add("empty");
+                if(subRunway1.getDisplacedThreshold().get() != 0){
+                    borderToObstacleBox.prefWidthProperty().bind( Bindings.add(Bindings.add(displayBorderToRunway, displayObstacleToThreshold), displayDisplacedThreshold1));
+                }
+                else{
+                    borderToObstacleBox.prefWidthProperty().bind( Bindings.add(displayBorderToRunway, displayObstacleToThreshold));
+                }
                     //borderToObstacleBox.prefWidthProperty().bind( Bindings.add(Bindings.add(displayBorderToRunway, displayObstacleToThreshold), displayDisplacedThreshold1));
 
 
                     // Obstacle Image
-                    Image obstacleImage = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
-                    ImageView obstacleImageView = new ImageView(obstacleImage);
-                    obstacleImageView.setPreserveRatio(true);
-                    obstacleImageView.setFitWidth(30);
+                Image obstacleImage = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
+                ImageView obstacleImageView = new ImageView(obstacleImage);
+                obstacleImageView.setPreserveRatio(true);
+                obstacleImageView.setFitWidth(30);
 
-                    this.obstacleBox.getChildren().addAll(borderToObstacleBox, obstacleImageView);
+                this.obstacleBox.getChildren().addAll(borderToObstacleBox, obstacleImageView);
 
-                }
-
-
-
-                if (firstDirectionButton.selectedProperty().get()){
-                    System.out.println("First direction selected fired");
-                    firstDirectionButton.setSelected(false);
-                    firstDirectionButton.fire();
-
-                }
-                else if (secondDirectionButton.selectedProperty().get()) {
-                    System.out.println("Second direction selected fired");
-                    secondDirectionButton.setSelected(false);
-                    secondDirectionButton.fire();
-                }
-
-
-
-
-
-            } catch (NumberFormatException ex) {
-                // If parsing fails (e.g., input is not a valid double), show an error message
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Invalid Input");
-                alert.setContentText("Please enter only numeric values in all sections");
-                alert.showAndWait();
-
-                // Clear all fields if parsing fails
-                try {
-                    height = Double.parseDouble(heightText);
-                } catch (NumberFormatException f) {
-                    obstacleHeight.clear();
-                }
-
-                try {
-                    distanceToCentrelineD = Double.parseDouble(distanceToCentreline);
-                } catch (NumberFormatException f) {
-                    obstacleToCentreLine.clear();
-                }
-
-                try {
-                    distance1 = Double.parseDouble(distanceTextD1);
-                } catch (NumberFormatException f) {
-                    distanceFromThreshold1.clear();
-                }
-
-                try {
-                    distance2 = Double.parseDouble(distanceTextD2);
-                } catch (NumberFormatException f) {
-                    distanceFromThreshold2.clear();
-                }
-
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
             }
 
+
+
+            if (firstDirectionButton.selectedProperty().get()){
+                System.out.println("First direction selected fired");
+                firstDirectionButton.setSelected(false);
+                firstDirectionButton.fire();
+
+            }
+            else if (secondDirectionButton.selectedProperty().get()) {
+                System.out.println("Second direction selected fired");
+                secondDirectionButton.setSelected(false);
+                secondDirectionButton.fire();
+            }
 
 
         });
@@ -1456,16 +1462,7 @@ public abstract class BaseScene {
         return this.scene;
     }
 
-    Checkers checker = new Checkers(obstacleHeightD, obstacleWidthD, distanceD);
 
-    public String handleObstacle(double h, double w, double d1, double d2) throws SQLException {
-        if (firstDirectionButton.isSelected()) {
-            return checker.obstacleChecker(h, w, d1, d2, subRunway1);
-        } else if (secondDirectionButton.isSelected()){
-            return checker.obstacleChecker(h, w, d1, d2, subRunway2);
-        }
-        return null;
-    }
 
 
 

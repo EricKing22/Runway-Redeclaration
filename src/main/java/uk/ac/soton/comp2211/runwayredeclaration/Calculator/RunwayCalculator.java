@@ -51,7 +51,7 @@ public class RunwayCalculator {
 
 
 
-        return tora;
+        return Math.round(tora);
 
     }
 
@@ -146,7 +146,7 @@ public class RunwayCalculator {
             toda = RunwayCalculator.calculateTORA(subRunway, obstacle, distance);
         }
 
-        return toda;
+        return Math.round(toda);
 
     }
 
@@ -293,7 +293,7 @@ public class RunwayCalculator {
 
         }
 
-        return lda;
+        return Math.round(lda);
     }
 
     /**
