@@ -11,10 +11,12 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import uk.ac.soton.comp2211.runwayredeclaration.Calculator.RunwayCalculator;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.*;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomePane;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomeWindow;
@@ -24,6 +26,9 @@ import javafx.scene.text.Text;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Collections;
 import java.util.List;
@@ -208,13 +213,59 @@ public class SideViewScene extends BaseScene{
 
         // File Menu
         Menu fileMenu = new Menu("File");
-        fileMenu.getItems().addAll(new MenuItem("Import XML"), new MenuItem("Export XML"), new MenuItem("Export Report"));
+        MenuItem exportReport = new MenuItem("Export Report");
+        fileMenu.getItems().addAll(new MenuItem("Import XML"), new MenuItem("Export XML"), exportReport);
+
+        // Export Report
+
+        exportReport.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Report");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+            File file = fileChooser.showSaveDialog(null);
+            if (file != null) {
+                try {
+                    FileWriter writer = new FileWriter(file);
+                    if (firstDirectionButton.isSelected()) {
+                        writer.write(RunwayCalculator.breakdownTORA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                    } else if (secondDirectionButton.isSelected()) {
+                        writer.write(RunwayCalculator.breakdownTORA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                    }
+                    writer.write("\n\n");
+                    if (firstDirectionButton.isSelected()) {
+                        writer.write(RunwayCalculator.breakdownTODA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                    } else if (secondDirectionButton.isSelected()) {
+                        writer.write(RunwayCalculator.breakdownTODA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                    }
+                    writer.write("\n\n");
+                    if (firstDirectionButton.isSelected()) {
+                        writer.write(RunwayCalculator.breakdownASDA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                    } else if (secondDirectionButton.isSelected()) {
+                        writer.write(RunwayCalculator.breakdownASDA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                    }
+                    writer.write("\n\n");
+                    if (firstDirectionButton.isSelected()) {
+                        writer.write(RunwayCalculator.breakdownLDA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                    } else if (secondDirectionButton.isSelected()) {
+                        writer.write(RunwayCalculator.breakdownLDA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                    }
+                    writer.close();
+                    System.out.println("Report saved successfully.");
+                } catch (IOException ex) {
+                    System.out.println("An error occurred while writing to the file.");
+                    ex.printStackTrace();
+                }
+            } else {
+                System.out.println("Report saving cancelled.");
+            }
+        });
 
         // View Menu
         Menu viewMenu = new Menu("View");
 
         // Switch to Side View
         MenuItem sideView = new MenuItem("Side View");
+        //sideView.getStyleClass().add("menu-item");
 
 
         // Switch to Top view
@@ -294,7 +345,11 @@ public class SideViewScene extends BaseScene{
         Menu helpMenu = new Menu("Help");
         MenuItem colourSettings = new MenuItem("Colour Schemes");
         colourSettings.setOnAction(e -> makeColourSettingPage());
-        helpMenu.getItems().addAll(new MenuItem("About"), new MenuItem("Contact"), colourSettings);
+
+        MenuItem musicSettings = new MenuItem("Music Settings");
+        musicSettings.setOnAction(e -> makeMusicSettingPage());
+
+        helpMenu.getItems().addAll(new MenuItem("About"), new MenuItem("Contact"), colourSettings, musicSettings);
 
         // Add Menus to the MenuBar
         menuBar.getMenus().addAll(fileMenu, viewMenu, helpMenu);
@@ -1477,6 +1532,8 @@ public class SideViewScene extends BaseScene{
         sideViewStackPane.getChildren().add(designatorBox2);
 
         changeColourScheme();
+        changeColourSchemeTopSim();
+//        changeBaseSceneColours();
         return displayStackPane;
     }
 
@@ -1491,16 +1548,16 @@ public class SideViewScene extends BaseScene{
                 groundPane.getStyleClass().clear();
                 groundPane.getStyleClass().add("sideView-ground");
 
-                Image defaultGradeArea = new Image(getClass().getResource("/images/GradedArea.png").toExternalForm());
-                ImageView defaultGradeAreaImageView = new ImageView(defaultGradeArea);
-                defaultGradeAreaImageView.setPreserveRatio(true);
-                defaultGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
+//                Image defaultGradeArea = new Image(getClass().getResource("/images/GradedArea.png").toExternalForm());
+//                ImageView defaultGradeAreaImageView = new ImageView(defaultGradeArea);
+//                defaultGradeAreaImageView.setPreserveRatio(true);
+//                defaultGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
 
-                try{
-                    displayStackPaneTop.getChildren().set(0,defaultGradeAreaImageView);
-                }catch (IndexOutOfBoundsException e){
-                    displayStackPaneTop.getChildren().add(defaultGradeAreaImageView);
-                }
+//                try{
+//                    displayStackPaneTop.getChildren().set(0,defaultGradeAreaImageView);
+//                }catch (IndexOutOfBoundsException e){
+//                    displayStackPaneTop.getChildren().add(defaultGradeAreaImageView);
+//                }
             });
 
 
@@ -1515,11 +1572,11 @@ public class SideViewScene extends BaseScene{
                 groundPane.getStyleClass().add("sideView-ground-Deuteranopia");
 
 
-                Image yellowGradeArea = new Image(getClass().getResource("/images/yellowGraded.png").toExternalForm());
-                ImageView yellowGradeAreaImageView = new ImageView(yellowGradeArea);
-                yellowGradeAreaImageView.setPreserveRatio(true);
-                yellowGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
-                displayStackPaneTop.getChildren().set(0,yellowGradeAreaImageView);
+//                Image yellowGradeArea = new Image(getClass().getResource("/images/yellowGraded.png").toExternalForm());
+//                ImageView yellowGradeAreaImageView = new ImageView(yellowGradeArea);
+//                yellowGradeAreaImageView.setPreserveRatio(true);
+//                yellowGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
+//                displayStackPaneTop.getChildren().set(0,yellowGradeAreaImageView);
             });
         }else if (currentState.getColourSettting() == "Magenta/Lime Green"){
             Platform.runLater( () -> {
@@ -1529,11 +1586,11 @@ public class SideViewScene extends BaseScene{
                 bluePane.getStyleClass().add("sideView-background-Tritanopia");
                 groundPane.getStyleClass().clear();
                 groundPane.getStyleClass().add("sideView-ground-Tritanopia");
-                Image greenGradeArea = new Image(getClass().getResource("/images/greenGraded.png").toExternalForm());
-                ImageView greenGradeAreaImageView = new ImageView(greenGradeArea);
-                greenGradeAreaImageView.setPreserveRatio(true);
-                greenGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
-                displayStackPaneTop.getChildren().set(0,greenGradeAreaImageView);
+//                Image greenGradeArea = new Image(getClass().getResource("/images/greenGraded.png").toExternalForm());
+//                ImageView greenGradeAreaImageView = new ImageView(greenGradeArea);
+//                greenGradeAreaImageView.setPreserveRatio(true);
+//                greenGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
+//                displayStackPaneTop.getChildren().set(0,greenGradeAreaImageView);
             });
 
         }else if (currentState.getColourSettting() == "Cyan/Deep Purple"){
@@ -1544,14 +1601,68 @@ public class SideViewScene extends BaseScene{
                 bluePane.getStyleClass().add("sideView-background-Protanopia");
                 groundPane.getStyleClass().clear();
                 groundPane.getStyleClass().add("sideView-ground-Protanopia");
-                Image purpleGradeArea = new Image(getClass().getResource("/images/purpleGraded.png").toExternalForm());
-                ImageView purpleGradeAreaImageView = new ImageView(purpleGradeArea);
-                purpleGradeAreaImageView.setPreserveRatio(true);
-                purpleGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
-                displayStackPaneTop.getChildren().set(0,purpleGradeAreaImageView);
+//                Image purpleGradeArea = new Image(getClass().getResource("/images/purpleGraded.png").toExternalForm());
+//                ImageView purpleGradeAreaImageView = new ImageView(purpleGradeArea);
+//                purpleGradeAreaImageView.setPreserveRatio(true);
+//                purpleGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
+//                displayStackPaneTop.getChildren().set(0,purpleGradeAreaImageView);
             });
         }
     }
+
+    public void makeMusicSettingPage() {
+        Stage musicSetting = new Stage();
+        musicSetting.initModality(Modality.WINDOW_MODAL);
+
+        MusicPlayer player = new MusicPlayer(getClass().getResource("/Music/game.wav").toExternalForm());
+
+        ToggleGroup group = new ToggleGroup();
+        RadioButton onOption = new RadioButton("On");
+        onOption.setToggleGroup(group);
+        RadioButton offOption = new RadioButton("Off");
+        offOption.setToggleGroup(group);
+
+        if (currentState.getMusicSetting().equals("On")) {
+            onOption.setSelected(true);
+            player.play();
+        } else if (currentState.getMusicSetting().equals("Off")) {
+            offOption.setSelected(true);
+            player.stop();
+        }
+
+        RadioButton initiallySelected = (RadioButton) group.getSelectedToggle();
+
+        Button applyButton = new Button("Exit");
+        applyButton.setOnAction(e -> musicSetting.close());
+
+        applyButton.setOnAction(e -> {
+            currentState.setMusicSetting(((RadioButton) group.getSelectedToggle()).getText());
+            if (currentState.getMusicSetting().equals("On")) {
+                player.play();
+            } else if (currentState.getMusicSetting().equals("Off")) {
+                player.stop();
+            }
+            musicSetting.close();
+        });
+
+        // Listen for changes in selection
+        group.selectedToggleProperty().addListener((observable, oldVal, newVal) -> {
+            if (newVal != initiallySelected) {
+                applyButton.setText("Apply");
+            } else {
+                applyButton.setText("Exit");
+            }
+        });
+
+        VBox layout = new VBox(10, new Label("Music:"), onOption, offOption, applyButton);
+        layout.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(layout, 300, 200);
+        musicSetting.setScene(scene);
+        musicSetting.show();
+    }
+
+
 
     public void makeColourSettingPage(){
         Stage colourSetting = new Stage();
@@ -1589,6 +1700,7 @@ public class SideViewScene extends BaseScene{
                     changeColourScheme();
                     changeColourSchemeTop();
                     changeColourSchemeTopSim();
+                    changeBaseSceneColours();
 
                     //here there needs to be an update style section. not really sure how to do it
 
@@ -1616,6 +1728,9 @@ public class SideViewScene extends BaseScene{
 
 
     public void changeColourSchemeTop(){
+        if (displayStackPaneTop.getChildren().isEmpty()){
+            return;
+        }
         //System.out.println(currentState.getColourSettting());
         if (currentState.getColourSettting() == "Default (Blue/Green)"){
             Platform.runLater( () -> {
@@ -1624,6 +1739,13 @@ public class SideViewScene extends BaseScene{
 
                 displayStackPaneTop.getStyleClass().clear();
                 displayStackPaneTop.getStyleClass().add("topView-background");
+
+                Image defaultGradeArea = new Image(getClass().getResource("/images/GradedArea.png").toExternalForm());
+                ImageView defaultGradeAreaImageView = new ImageView(defaultGradeArea);
+                defaultGradeAreaImageView.setPreserveRatio(true);
+                defaultGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
+
+                displayStackPaneTop.getChildren().set(0,defaultGradeAreaImageView);
             });
 
 
@@ -1635,6 +1757,12 @@ public class SideViewScene extends BaseScene{
 
                 displayStackPaneTop.getStyleClass().clear();
                 displayStackPaneTop.getStyleClass().add("topView-background-Deuteranopia");
+
+                Image yellowGradeArea = new Image(getClass().getResource("/images/yellowGraded.png").toExternalForm());
+                ImageView yellowGradeAreaImageView = new ImageView(yellowGradeArea);
+                yellowGradeAreaImageView.setPreserveRatio(true);
+                yellowGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
+                displayStackPaneTop.getChildren().set(0,yellowGradeAreaImageView);
             });
         }else if (currentState.getColourSettting() == "Magenta/Lime Green"){
             Platform.runLater( () -> {
@@ -1643,6 +1771,12 @@ public class SideViewScene extends BaseScene{
 
                 displayStackPaneTop.getStyleClass().clear();
                 displayStackPaneTop.getStyleClass().add("topView-background-Tritanopia");
+
+                Image greenGradeArea = new Image(getClass().getResource("/images/greenGraded.png").toExternalForm());
+                ImageView greenGradeAreaImageView = new ImageView(greenGradeArea);
+                greenGradeAreaImageView.setPreserveRatio(true);
+                greenGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
+                displayStackPaneTop.getChildren().set(0,greenGradeAreaImageView);
             });
 
         }else if (currentState.getColourSettting() == "Cyan/Deep Purple"){
@@ -1652,11 +1786,20 @@ public class SideViewScene extends BaseScene{
 
                 displayStackPaneTop.getStyleClass().clear();
                 displayStackPaneTop.getStyleClass().add("topView-background-Protanopia");
+
+                Image purpleGradeArea = new Image(getClass().getResource("/images/purpleGraded.png").toExternalForm());
+                ImageView purpleGradeAreaImageView = new ImageView(purpleGradeArea);
+                purpleGradeAreaImageView.setPreserveRatio(true);
+                purpleGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
+                displayStackPaneTop.getChildren().set(0,purpleGradeAreaImageView);
             });
         }
     }
 
     public void changeColourSchemeTopSim(){
+        if (topViewPane.getChildren().isEmpty()){
+            return;
+        }
         //System.out.println(currentState.getColourSettting());
         if (currentState.getColourSettting() == "Default (Blue/Green)"){
             Platform.runLater( () -> {
@@ -1664,6 +1807,12 @@ public class SideViewScene extends BaseScene{
 
                 topViewPane.getStyleClass().clear();
                 topViewPane.getStyleClass().add("topView-background");
+
+                Image gradeArea = new Image(getClass().getResource("/images/GradedArea.png").toExternalForm());
+                ImageView gradeAreaImageView = new ImageView(gradeArea);
+                gradeAreaImageView.setFitHeight(200);
+                gradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
+                topViewPane.getChildren().set(0, gradeAreaImageView);
             });
 
 
@@ -1675,6 +1824,12 @@ public class SideViewScene extends BaseScene{
 
                 topViewPane.getStyleClass().clear();
                 topViewPane.getStyleClass().add("topView-background-Deuteranopia");
+
+                Image gradeArea = new Image(getClass().getResource("/images/yellowGraded.png").toExternalForm());
+                ImageView gradeAreaImageView = new ImageView(gradeArea);
+                gradeAreaImageView.setFitHeight(200);
+                gradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
+                topViewPane.getChildren().set(0, gradeAreaImageView);
             });
         }else if (currentState.getColourSettting() == "Magenta/Lime Green"){
             Platform.runLater( () -> {
@@ -1683,6 +1838,12 @@ public class SideViewScene extends BaseScene{
 
                 topViewPane.getStyleClass().clear();
                 topViewPane.getStyleClass().add("topView-background-Tritanopia");
+
+                Image gradeArea = new Image(getClass().getResource("/images/greenGraded.png").toExternalForm());
+                ImageView gradeAreaImageView = new ImageView(gradeArea);
+                gradeAreaImageView.setFitHeight(200);
+                gradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
+                topViewPane.getChildren().set(0, gradeAreaImageView);
             });
 
         }else if (currentState.getColourSettting() == "Cyan/Deep Purple"){
@@ -1692,6 +1853,12 @@ public class SideViewScene extends BaseScene{
 
                 topViewPane.getStyleClass().clear();
                 topViewPane.getStyleClass().add("topView-background-Protanopia");
+
+                Image gradeArea = new Image(getClass().getResource("/images/purpleGraded.png").toExternalForm());
+                ImageView gradeAreaImageView = new ImageView(gradeArea);
+                gradeAreaImageView.setFitHeight(200);
+                gradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
+                topViewPane.getChildren().set(0, gradeAreaImageView);
             });
         }
     }

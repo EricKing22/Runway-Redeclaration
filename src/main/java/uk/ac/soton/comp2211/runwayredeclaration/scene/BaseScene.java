@@ -178,6 +178,14 @@ public abstract class BaseScene {
     private Button[] allButtons;
     private TextArea displayArea;
 
+    private Label lblRecalculated = new Label("New Values");
+    private Label lblOriginal = new Label("Original Values");
+
+//    private buttonTORA = new Button("TORA");
+//    private buttonTODA = new Button("TODA");
+//    private buttonLDA = new Button("LDA");
+//    private Button buttonASDA = new Button("ASDA");
+
 
     /**
      * Create a new scene, passing in the GameWindow the scene will be displayed in
@@ -273,9 +281,9 @@ public abstract class BaseScene {
             GridPane.setValignment(label, VPos.CENTER); // For vertical alignment
         }
 
-        Label lblOriginal = new Label("Original Values");
+//        Label lblOriginal = new Label("Original Values");
         lblOriginal.setMaxWidth(Double.MAX_VALUE);
-        lblOriginal.getStyleClass().add("center-label");
+        lblOriginal.getStyleClass().add("center-label-blue");
         GridPane.setColumnSpan(lblOriginal, GridPane.REMAINING);
         GridPane.setHalignment(lblOriginal, HPos.CENTER);
         gpanething.add(lblOriginal, 0, 1);
@@ -333,9 +341,9 @@ public abstract class BaseScene {
         gpanething.add(asda_original2, 4, 3);
 
 
-        Label lblRecalculated = new Label("New Values");
+//        Label lblRecalculated = new Label("New Values");
         lblRecalculated.setMaxWidth(Double.MAX_VALUE);
-        lblRecalculated.getStyleClass().add("center-label");
+        lblRecalculated.getStyleClass().add("center-label-blue");
         GridPane.setColumnSpan(lblRecalculated, GridPane.REMAINING);
         GridPane.setHalignment(lblRecalculated, HPos.CENTER);
         gpanething.add(lblRecalculated, 0, 4);
@@ -418,10 +426,10 @@ public abstract class BaseScene {
         buttonASDA = new Button("ASDA");
 
         // Apply the normal style to all buttons initially
-        buttonTORA.getStyleClass().add("button");
-        buttonTODA.getStyleClass().add("button");
-        buttonLDA.getStyleClass().add("button");
-        buttonASDA.getStyleClass().add("button");
+        buttonTORA.getStyleClass().add("button-blue");
+        buttonTODA.getStyleClass().add("button-blue");
+        buttonLDA.getStyleClass().add("button-blue");
+        buttonASDA.getStyleClass().add("button-blue");
 
         // Button Actions
         allButtons = new Button[]{buttonTORA, buttonTODA, buttonLDA, buttonASDA};
@@ -445,11 +453,22 @@ public abstract class BaseScene {
     private void updateButtonStyles(Button selectedButton, Button[] allButtons, TextArea displayArea) {
         boolean isSelected = selectedButton.getStyleClass().contains("button-selected");
         for (Button btn : allButtons) {
+//            if (currentState.getColourSettting() == "Default (Blue/Green)"){
+//                btn.getStyleClass().remove("button-selected-blue");
+//            }else if (currentState.getColourSettting() == "Blue/Yellow"){
+//                btn.getStyleClass().remove("button-selected-blue");
+//            }else if (currentState.getColourSettting() == "Magenta/Lime Green"){
+//                btn.getStyleClass().remove("button-selected-green");
+//            }else if (currentState.getColourSettting() == "Cyan/Deep Purple"){
+//                btn.getStyleClass().remove("button-selected-purple");
+//            }
             btn.getStyleClass().remove("button-selected");
+
         }
 
         // If the selected button was not already highlighted, highlight it
         if (!isSelected) {
+
             selectedButton.getStyleClass().add("button-selected");
             if (selectedButton.getText().equals("TORA")) {
                 if (firstDirectionButton.isSelected()){
@@ -806,6 +825,11 @@ public abstract class BaseScene {
                 obstacleHeight.clear();
             }
 
+            if (height < 0.01){
+                errorMessage = errorMessage + "Obstacle height is too small.\n";
+                obstacleHeight.clear();
+            }
+
             if (height > 100){
                 errorMessage = errorMessage + "Obstacle height is unreasonable.\n";
                 obstacleHeight.clear();
@@ -816,12 +840,12 @@ public abstract class BaseScene {
                 obstacleToCentreLine.clear();
             }
 
-            if (distance1 + subRunway1.getDisplacedThreshold().get() - subRunway1.getOriginalTORA().get() > 60){
+            if (distance1 + subRunway1.getDisplacedThreshold().get() - subRunway1.getOriginalTORA().get() > 60 || distance1  + subRunway1.getDisplacedThreshold().get() < -60){
                 errorMessage = errorMessage + "Distance from " + subRunway1.getDesignator().get() + " threshold exceeds consideration zone.\n";
                 distanceFromThreshold1.clear();
             }
 
-            if (distance2 + subRunway2.getDisplacedThreshold().get() - subRunway2.getOriginalTORA().get() > 60){
+            if (distance2 + subRunway2.getDisplacedThreshold().get() - subRunway2.getOriginalTORA().get() > 60 || distance2 + subRunway2.getDisplacedThreshold().get() < -60){
                 errorMessage = errorMessage + "Distance from " + subRunway2.getDesignator().get() + " threshold exceeds consideration zone.\n";
                 distanceFromThreshold2.clear();
             }
@@ -1463,6 +1487,78 @@ public abstract class BaseScene {
     }
 
 
+    public void changeBaseSceneColours(){
+        if (currentState.getColourSettting() == "Default (Blue/Green)"){
+            Platform.runLater( () -> {
+                lblOriginal.getStyleClass().clear();
+                lblRecalculated.getStyleClass().clear();
+                lblOriginal.getStyleClass().add("center-label-blue");
+                lblRecalculated.getStyleClass().add("center-label-blue");
+                //System.out.println("shj;jhskgkjhbsegjhkgjiojhksbdklojslkgbm");
+
+//                buttonASDA.getStyleClass().remove(1);
+//                buttonLDA.getStyleClass().remove(1);
+//                buttonTODA.getStyleClass().remove(1);
+//                buttonTORA.getStyleClass().remove(1);
+//                buttonASDA.getStyleClass().add("button-blue");
+//                buttonLDA.getStyleClass().add("button-blue");
+//                buttonTODA.getStyleClass().add("button-blue");
+//                buttonTORA.getStyleClass().add("button-blue");
+
+//                globalSelectedButton.getStyleClass().add("button-selected-blue");
+            });
+        }else if (currentState.getColourSettting() == "Blue/Yellow"){
+            Platform.runLater( () -> {
+                lblOriginal.getStyleClass().clear();
+                lblRecalculated.getStyleClass().clear();
+                lblOriginal.getStyleClass().add("center-label-blue");
+                lblRecalculated.getStyleClass().add("center-label-blue");
+
+//                buttonASDA.getStyleClass().remove(1);
+//                buttonLDA.getStyleClass().remove(1);
+//                buttonTODA.getStyleClass().remove(1);
+//                buttonTORA.getStyleClass().remove(1);
+//                buttonASDA.getStyleClass().add("button-blue");
+//                buttonLDA.getStyleClass().add("button-blue");
+//                buttonTODA.getStyleClass().add("button-blue");
+//                buttonTORA.getStyleClass().add("button-blue");
+            });
+        }else if (currentState.getColourSettting() == "Magenta/Lime Green"){
+            Platform.runLater( () -> {
+                lblOriginal.getStyleClass().clear();
+                lblRecalculated.getStyleClass().clear();
+                lblOriginal.getStyleClass().add("center-label-green");
+                lblRecalculated.getStyleClass().add("center-label-green");
+
+
+//                buttonASDA.getStyleClass().remove(1);
+//                buttonLDA.getStyleClass().remove(1);
+//                buttonTODA.getStyleClass().remove(1);
+//                buttonTORA.getStyleClass().remove(1);
+//                buttonASDA.getStyleClass().add("button-green");
+//                buttonLDA.getStyleClass().add("button-green");
+//                buttonTODA.getStyleClass().add("button-green");
+//                buttonTORA.getStyleClass().add("button-green");
+            });
+
+        }else if (currentState.getColourSettting() == "Cyan/Deep Purple"){
+            Platform.runLater( () -> {
+                lblOriginal.getStyleClass().clear();
+                lblRecalculated.getStyleClass().clear();
+                lblOriginal.getStyleClass().add("center-label-purple");
+                lblRecalculated.getStyleClass().add("center-label-purple");
+
+//                buttonASDA.getStyleClass().remove(1);
+//                buttonLDA.getStyleClass().remove(1);
+//                buttonTODA.getStyleClass().remove(1);
+//                buttonTORA.getStyleClass().remove(1);
+//                buttonASDA.getStyleClass().add("button-purple");
+//                buttonLDA.getStyleClass().add("button-purple");
+//                buttonTODA.getStyleClass().add("button-purple");
+//                buttonTORA.getStyleClass().add("button-purple");
+            });
+        }
+    }
 
 
 

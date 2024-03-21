@@ -4,6 +4,7 @@ module uk.ac.soton.comp2211.runwayredeclaration {
     requires org.apache.logging.log4j;
     requires java.desktop;
     requires java.sql;
+    requires javafx.media;
 
 
     opens uk.ac.soton.comp2211.runwayredeclaration to javafx.fxml;
