@@ -1614,7 +1614,7 @@ public class SideViewScene extends BaseScene{
         Stage musicSetting = new Stage();
         musicSetting.initModality(Modality.WINDOW_MODAL);
 
-        MusicPlayer player = new MusicPlayer(getClass().getResource("/Music/game.wav").toExternalForm());
+        MusicPlayer player = new MusicPlayer(getClass().getResource("/Music/today-is-the-day.mp3").toExternalForm());
 
         ToggleGroup group = new ToggleGroup();
         RadioButton onOption = new RadioButton("On");
