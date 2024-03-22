@@ -11,12 +11,13 @@ import uk.ac.soton.comp2211.runwayredeclaration.Component.SubRunway;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class xmFileLoader {
 
-    static File file = new File("src/main/resources/predefined/Airport.xml");
+    static InputStream file = xmFileLoader.class.getResourceAsStream("/predefined/Airport.xml");
 
     public static ArrayList<Airport> loadAirports() {
         ArrayList<Airport> airports = new ArrayList<>();
