@@ -1,34 +1,74 @@
-package uk.ac.soton.comp2211.runwayredeclaration.XMLloader;
+package uk.ac.soton.comp2211.runwayredeclaration.XMLHandler;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.Airport;
+import uk.ac.soton.comp2211.runwayredeclaration.Component.Obstacle;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.Runway;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.SubRunway;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
-public abstract class xmFileLoader {
+public abstract class xmlFileLoader {
 
-    static InputStream file = xmFileLoader.class.getResourceAsStream("/predefined/Airport.xml");
 
-    public static ArrayList<Airport> loadAirports() {
+
+    public static ArrayList<Obstacle> loadObstacles(InputStream obstacle_file){
+        ArrayList<Obstacle> obstacles = new ArrayList<>();
+        try {
+
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(obstacle_file);
+            doc.getDocumentElement().normalize();
+
+            NodeList obstacleList = doc.getElementsByTagName("obstacle");
+
+            for (int i = 0; i < obstacleList.getLength(); i++){
+                Node current_obstacle = obstacleList.item(i);
+
+
+                if (current_obstacle.getNodeType() == Node.ELEMENT_NODE){
+                    Element obstacleElement = (Element) current_obstacle;
+                    Obstacle obstacle = new Obstacle(obstacleElement.getElementsByTagName("name").item(0).getTextContent());
+
+                    double height = Double.parseDouble(obstacleElement.getElementsByTagName("height").item(0).getTextContent());
+                    double distance_to_centreline = Double.parseDouble(obstacleElement.getElementsByTagName("distanceToCenterline").item(0).getTextContent());
+                    double distance_to_lower_threshold = Double.parseDouble(obstacleElement.getElementsByTagName("distanceToLowerThreshold").item(0).getTextContent());
+                    double distance_to_higher_threshold = Double.parseDouble(obstacleElement.getElementsByTagName("distanceToHigherThreshold").item(0).getTextContent());
+                    obstacle.setHeight(height);
+                    obstacle.setDistanceToCentreLine(distance_to_centreline);
+                    obstacle.setDistanceToLowerThreshold(distance_to_lower_threshold);
+                    obstacle.setDistanceToHigherThreshold(distance_to_higher_threshold);
+
+                    obstacles.add(obstacle);
+
+                }
+
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return obstacles;
+    }
+
+    public static ArrayList<Airport> loadAirports(InputStream airport_file) {
         ArrayList<Airport> airports = new ArrayList<>();
         try {
 
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(file);
+            Document doc = dBuilder.parse(airport_file);
             doc.getDocumentElement().normalize();
-
-
 
             NodeList airportList = doc.getElementsByTagName("airport");
 

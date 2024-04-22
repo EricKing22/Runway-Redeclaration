@@ -11,7 +11,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -20,26 +19,17 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.control.Alert;
-import java.sql.SQLException;
 
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import org.w3c.dom.Document;
+import java.io.InputStream;
+
 import uk.ac.soton.comp2211.runwayredeclaration.Calculator.RunwayCalculator;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.*;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomePane;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomeWindow;
-import uk.ac.soton.comp2211.runwayredeclaration.XMLloader.xmFileLoader;
+import uk.ac.soton.comp2211.runwayredeclaration.XMLHandler.xmlFileLoader;
 
 
-
-import javax.swing.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 
 /**
@@ -52,6 +42,7 @@ public abstract class BaseScene {
     protected HomePane root;
     protected Scene scene;
 
+    // Airports
     protected String currentView;
     protected ArrayList<Airport> airportList;
     protected Airport currentAirport;
@@ -60,6 +51,8 @@ public abstract class BaseScene {
     protected SubRunway subRunway2;
     protected SubRunway currentSubRunway;
     protected Obstacle currentObstacle;
+    // Obstacles
+    protected ArrayList<Obstacle> obstacleList;
 
     protected DoubleProperty stopWayLength1 = new SimpleDoubleProperty();
     protected DoubleProperty stopWayLength2 = new SimpleDoubleProperty();
@@ -139,8 +132,7 @@ public abstract class BaseScene {
     protected HBox stripEndBox2;
     protected HBox displacedThresholdBox = new HBox();
 
-    // Obstacles
-    protected ArrayList<Obstacle> predefinedObstacles = new ArrayList<>();
+
 
     public double obstacleHeightD;
     public double obstacleWidthD;
@@ -180,6 +172,8 @@ public abstract class BaseScene {
 
     private Label lblRecalculated = new Label("New Values");
     private Label lblOriginal = new Label("Original Values");
+    protected ComboBox<Airport> comboAirports;
+    protected ComboBox<Obstacle> comboObstacles;
 
 //    private buttonTORA = new Button("TORA");
 //    private buttonTODA = new Button("TODA");
@@ -196,8 +190,12 @@ public abstract class BaseScene {
 
 
 
+        InputStream airport_file = BaseScene.class.getResourceAsStream("/predefined/Airport.xml");
+        InputStream obstacle_file = BaseScene.class.getResourceAsStream("/predefined/Obstacle.xml");
         // Load Airports
-        this.airportList = xmFileLoader.loadAirports();
+        this.airportList = xmlFileLoader.loadAirports(airport_file);
+        // Load Obstacles
+        this.obstacleList = xmlFileLoader.loadObstacles(obstacle_file);
 
 
         currentAirport = airportList.get(0);
@@ -221,15 +219,11 @@ public abstract class BaseScene {
 
         displayBorderToPlane.set(displayBorderToRunway.get() - displayPlaneWidth.get());
         displayBorderToPlane2.set(displayBorderToRunway.get() - displayPlaneWidth.get());
-        
+
         planeBox.visibleProperty().set(false);
         planeBox2.visibleProperty().set(false);
 
 
-        Obstacle Boeing_777 = new Obstacle("Boeing 777", 18.6, 64.8, 63.7);
-        Obstacle Boeing_737 = new Obstacle("Boeing 737", 12.42, 35.91, 39.52);
-        Obstacle Luggage_Car = new Obstacle("Luggage Car", 1.7, 5.1, 4.6);
-        predefinedObstacles.addAll(new ArrayList<Obstacle>(List.of(Boeing_777, Boeing_737, Luggage_Car)));
 
 
 
@@ -637,58 +631,101 @@ public abstract class BaseScene {
             }
         });
 
-        ComboBox<String> comboAirports = new ComboBox<>();
+        comboAirports = new ComboBox<>();
         for (Airport airport : airportList){
-            comboAirports.getItems().add(airport.getName());
+            comboAirports.getItems().add(airport);
         }
 
-        comboAirports.setValue(currentAirport.getName());
-        comboAirports.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                for (Airport airport : airportList){
-                    if (airport.getName().equals(newValue)){
-                        clearAllButtons();
-                        obstacleBox.getChildren().clear();
-                        planeBox.visibleProperty().set(false);
-                        planeBox2.visibleProperty().set(false);
+        comboAirports.setValue(currentAirport);
+        comboAirports.setOnAction(e -> {
+            for (Airport airport : airportList){
+                if (airport.getName().equals(comboAirports.getValue().getName())){
+                    clearAllButtons();
+                    obstacleBox.getChildren().clear();
+                    planeBox.visibleProperty().set(false);
+                    planeBox2.visibleProperty().set(false);
 
-                        displayBorderToObstacle.set(0);
+                    displayBorderToObstacle.set(0);
 
-                        // Hide all indicators
-                        indicatorsSubRunway1.getChildren().clear();
-                        indicatorsSubRunway2.getChildren().clear();
+                    // Hide all indicators
+                    indicatorsSubRunway1.getChildren().clear();
+                    indicatorsSubRunway2.getChildren().clear();
 
-                        currentAirport = airport;
-                        currentRunway = currentAirport.getRunways().get(0);
+                    currentAirport = airport;
+                    currentRunway = currentAirport.getRunways().get(0);
 
-                        comboRunways.getItems().clear();
-                        for (Runway runway : currentAirport.getRunways()){
-                            comboRunways.getItems().add(runway.getName());
-                        }
-                        comboRunways.setValue(currentRunway.getName());
-
-                        subRunway1.update(currentRunway.getSubRunways().get(0));
-                        subRunway2.update(currentRunway.getSubRunways().get(1));
-
-                        stopwayLengthDisplay.setText("(Select designator to show)");
-                        clearwayLengthDisplay.setText("(Select designator to show)");
-                        thresholdLengthDisplay.setText("(Select designator to show)");
-
-                        displayBorderToTORA.set(displayBorderToRunway.get());
-                        displayBorderToTODA.set(displayBorderToRunway.get());
-                        displayBorderToASDA.set(displayBorderToRunway.get());
-                        displayBorderToLDA.set(displayBorderToRunway.get());
-
-
-
-
+                    comboRunways.getItems().clear();
+                    for (Runway runway : currentAirport.getRunways()){
+                        comboRunways.getItems().add(runway.getName());
                     }
+                    comboRunways.setValue(currentRunway.getName());
+
+                    subRunway1.update(currentRunway.getSubRunways().get(0));
+                    subRunway2.update(currentRunway.getSubRunways().get(1));
+
+                    stopwayLengthDisplay.setText("(Select designator to show)");
+                    clearwayLengthDisplay.setText("(Select designator to show)");
+                    thresholdLengthDisplay.setText("(Select designator to show)");
+
+                    displayBorderToTORA.set(displayBorderToRunway.get());
+                    displayBorderToTODA.set(displayBorderToRunway.get());
+                    displayBorderToASDA.set(displayBorderToRunway.get());
+                    displayBorderToLDA.set(displayBorderToRunway.get());
+
+
+
+
                 }
-
-
             }
+
         });
+
+//        comboAirports.valueProperty().addListener(new ChangeListener<String>() {
+//            @Override
+//            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+//                for (Airport airport : airportList){
+//                    if (airport.getName().equals(newValue)){
+//                        clearAllButtons();
+//                        obstacleBox.getChildren().clear();
+//                        planeBox.visibleProperty().set(false);
+//                        planeBox2.visibleProperty().set(false);
+//
+//                        displayBorderToObstacle.set(0);
+//
+//                        // Hide all indicators
+//                        indicatorsSubRunway1.getChildren().clear();
+//                        indicatorsSubRunway2.getChildren().clear();
+//
+//                        currentAirport = airport;
+//                        currentRunway = currentAirport.getRunways().get(0);
+//
+//                        comboRunways.getItems().clear();
+//                        for (Runway runway : currentAirport.getRunways()){
+//                            comboRunways.getItems().add(runway.getName());
+//                        }
+//                        comboRunways.setValue(currentRunway.getName());
+//
+//                        subRunway1.update(currentRunway.getSubRunways().get(0));
+//                        subRunway2.update(currentRunway.getSubRunways().get(1));
+//
+//                        stopwayLengthDisplay.setText("(Select designator to show)");
+//                        clearwayLengthDisplay.setText("(Select designator to show)");
+//                        thresholdLengthDisplay.setText("(Select designator to show)");
+//
+//                        displayBorderToTORA.set(displayBorderToRunway.get());
+//                        displayBorderToTODA.set(displayBorderToRunway.get());
+//                        displayBorderToASDA.set(displayBorderToRunway.get());
+//                        displayBorderToLDA.set(displayBorderToRunway.get());
+//
+//
+//
+//
+//                    }
+//                }
+//
+//
+//            }
+//        });
 
 
 
@@ -723,10 +760,15 @@ public abstract class BaseScene {
         obstacleTPane.setText("Add Obstacles:");
         obstacleTPane.setCollapsible(true);
 
-        ComboBox<Obstacle> obstacle = new ComboBox<>();
-        for (Obstacle o : predefinedObstacles){
-            obstacle.getItems().add(o);
+        comboObstacles = new ComboBox<>();
+        for (Obstacle o : obstacleList){
+            comboObstacles.getItems().add(o);
         }
+
+        //Custom obstacle
+        comboObstacles.getItems().add(new Obstacle("Custom"));
+
+
 
 
 
@@ -750,10 +792,22 @@ public abstract class BaseScene {
 
         obstacleBox.getChildren().addAll(distanceFromLabel1, distanceFromThreshold1, distanceFromLabel2, distanceFromThreshold2);
 
-        obstacle.setOnAction(e -> {
+        comboObstacles.setOnAction(e -> {
 
-            currentObstacle = obstacle.getValue();
-            obstacleHeight.setText(String.valueOf(currentObstacle.getHeight()));
+            obstacleHeight.clear();
+            obstacleToCentreLine.clear();
+            distanceFromThreshold1.clear();
+            distanceFromThreshold2.clear();
+
+
+            currentObstacle = comboObstacles.getValue();
+            if (!currentObstacle.getName().equals("Custom")){
+                obstacleHeight.setText(String.valueOf(currentObstacle.getHeight()));
+                obstacleToCentreLine.setText(String.valueOf(currentObstacle.getDistanceToCentreLine()));
+                distanceFromThreshold1.setText(String.valueOf(currentObstacle.getDistanceToLowerThreshold()));
+                distanceFromThreshold2.setText(String.valueOf(currentObstacle.getDistanceToHigherThreshold()));
+            }
+
 
             subRunway1.setTORA(subRunway1.getOriginalTORA().get());
             subRunway1.setTODA(subRunway1.getOriginalTODA().get());
@@ -780,8 +834,6 @@ public abstract class BaseScene {
                 btn.getStyleClass().remove("button-selected");
             }
             displayArea.clear();
-
-
 
 
             double height = 0;
@@ -865,7 +917,7 @@ public abstract class BaseScene {
 
 
 
-
+            // Output combined error message
             if (!errorMessage.equals("")){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -877,7 +929,7 @@ public abstract class BaseScene {
 
 
 
-            currentObstacle = new Obstacle(obstacle.getValue().getName());
+            currentObstacle = new Obstacle(comboObstacles.getValue().getName());
             currentObstacle.setHeight(height);
 
 
@@ -920,10 +972,9 @@ public abstract class BaseScene {
                 else{
                     borderToObstacleBox.prefWidthProperty().bind( Bindings.add(displayBorderToRunway, displayObstacleToThreshold));
                 }
-                    //borderToObstacleBox.prefWidthProperty().bind( Bindings.add(Bindings.add(displayBorderToRunway, displayObstacleToThreshold), displayDisplacedThreshold1));
 
 
-                    // Obstacle Image
+                // Obstacle Image
                 Image obstacleImage = new Image(getClass().getResource("/images/Obstacle.png").toExternalForm());
                 ImageView obstacleImageView = new ImageView(obstacleImage);
                 obstacleImageView.setPreserveRatio(true);
@@ -951,7 +1002,7 @@ public abstract class BaseScene {
         });
 
 
-        HBox obstacleLabel = new HBox(30, new Label("Obstacle: "), obstacle);
+        HBox obstacleLabel = new HBox(30, new Label("Obstacle: "), comboObstacles);
 
         obstacleGrid.addRow(0, obstacleLabel);
         obstacleGrid.addRow(1, obstacleBox);

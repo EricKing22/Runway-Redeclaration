@@ -2,10 +2,7 @@ package uk.ac.soton.comp2211.runwayredeclaration.scene;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.*;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -14,25 +11,20 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import uk.ac.soton.comp2211.runwayredeclaration.Calculator.RunwayCalculator;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.*;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomePane;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomeWindow;
+import uk.ac.soton.comp2211.runwayredeclaration.XMLHandler.xmlFileLoader;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Collections;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 
 public class SideViewScene extends BaseScene{
@@ -214,10 +206,143 @@ public class SideViewScene extends BaseScene{
         // File Menu
         Menu fileMenu = new Menu("File");
         MenuItem exportReport = new MenuItem("Export Report");
-        fileMenu.getItems().addAll(new MenuItem("Import XML"), new MenuItem("Export XML"), exportReport);
+        MenuItem importXML = new MenuItem("Import XML");
+        MenuItem exportXML = new MenuItem("Export XML");
+        fileMenu.getItems().addAll(importXML, exportXML, exportReport);
+
+        // Import XML
+        importXML.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open XML File");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+            File file = fileChooser.showOpenDialog(null);
+            if (file != null) {
+                try {
+                    System.out.println("File selected: " + file.getName());
+                    FileInputStream inputStream = new FileInputStream(file);
+                    List<Airport> airports = xmlFileLoader.loadAirports(inputStream);
+                    inputStream = new FileInputStream(file);
+                    List<Obstacle> obstacles = xmlFileLoader.loadObstacles(inputStream);
+                    List<Airport> airportsToAdd = new ArrayList<>();
+                    List<Obstacle> obstaclesToAdd = new ArrayList<>();
+                    for (Airport airport : airports){
+                        airportsToAdd.add(airport);
+                        for (Airport airport1 : airportList){
+                            if (airport1.getName().equals(airport.getName())){
+                                Alert alert = new Alert(Alert.AlertType.ERROR);
+                                alert.setTitle("Warning");
+                                alert.setHeaderText("Airport " + airport1.getName() + " already exists.");
+                                alert.setContentText("The new imported airport is discarded.");
+                                alert.showAndWait();
+                                airportsToAdd.remove(airport);
+                                break;
+                            }
+                        }
+                    }
+
+                    for (Obstacle obstacle : obstacles){
+                        obstaclesToAdd.add(obstacle);
+                        for (Obstacle obstacle1 : obstacleList){
+                            if (obstacle1.getName().equals(obstacle.getName())){
+                                Alert alert = new Alert(Alert.AlertType.ERROR);
+                                alert.setTitle("Warning");
+                                alert.setHeaderText("Obstacle " + obstacle1.getName() + " already exists.");
+                                alert.setContentText("Please use the pre-defined obstacle");
+                                alert.showAndWait();
+                                obstaclesToAdd.remove(obstacle);
+                                break;
+                            }
+                        }
+                    }
+
+                    // Add the new airports and obstacles
+                    this.airportList.addAll(airportsToAdd);
+                    this.obstacleList.addAll(obstaclesToAdd);
+
+
+
+                } catch (FileNotFoundException ex) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("An error occurred while reading the file.");
+                    alert.setContentText("Please try again.");
+                    alert.showAndWait();
+                    ex.printStackTrace();
+                }
+
+            } else {
+                System.out.println("No file selected.");
+            }
+        });
+
+        // Export XML
+        exportXML.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Airports XML File");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+            File file = fileChooser.showSaveDialog(null);
+            if (file != null) {
+                try {
+                    System.out.println("File saved: " + file.getName());
+                    FileWriter writer = new FileWriter(file);
+                    writer.write("<data>\n");
+                    writer.write("\t<airports>\n");
+                    for (Airport airport : airportList) {
+                        writer.write("\t\t<airport>\n");
+                        writer.write("\t\t\t<name>" + airport.getName() + "</name>\n");
+                        for (Runway runway : airport.getRunways()){
+                            writer.write("\t\t\t<runway>\n");
+                            writer.write("\t\t\t\t<name>" + runway.getName() + "</name>\n");
+                            for (SubRunway subRunway : runway.getSubRunways()){
+                                writer.write("\t\t\t\t<subRunway>\n");
+                                writer.write("\t\t\t\t\t<tora>" + subRunway.getTORA().get() + "</tora>\n");
+                                writer.write("\t\t\t\t\t<toda>" + subRunway.getTODA().get() + "</toda>\n");
+                                writer.write("\t\t\t\t\t<asda>" + subRunway.getASDA().get() + "</asda>\n");
+                                writer.write("\t\t\t\t\t<lda>" + subRunway.getLDA().get() + "</lda>\n");
+                                writer.write("\t\t\t\t\t<designator>" + subRunway.getDesignator().get() + "</designator>\n");
+                                writer.write("\t\t\t\t\t<displacedThreshold>" + subRunway.getDisplacedThreshold().get() + "</displacedThreshold>\n");
+                                writer.write("\t\t\t\t\t<RESA>" + subRunway.getRESA().get() + "</RESA>\n");
+                                writer.write("\t\t\t\t\t<stripEndLength>" + subRunway.getStripEndLength().get() + "</stripEndLength>\n");
+                                writer.write("\t\t\t\t\t<blastProtection>" + subRunway.getBlastProtection().get() + "</blastProtection>\n");
+                                writer.write("\t\t\t\t</subRunway>\n");
+                            }
+
+                            writer.write("\t\t\t</runway>\n");
+                        }
+                        writer.write("\t\t</airport>\n");
+
+                    }
+                    writer.write("\t</airports>\n");
+
+                    writer.write("\t<obstacles>\n");
+                    for (Obstacle obstacle : obstacleList) {
+                        writer.write("\t\t<obstacle>\n");
+                        writer.write("\t\t\t<name>" + obstacle.getName() + "</name>\n");
+                        writer.write("\t\t\t<height>" + obstacle.getHeight() + "</height>\n");
+                        writer.write("\t\t\t<distanceToCenterline>" + obstacle.getDistanceToCentreLine() + "</distanceToCenterline>\n");
+                        writer.write("\t\t\t<distanceToLowerThreshold>" + obstacle.getDistanceToLowerThreshold() + "</distanceToLowerThreshold>\n");
+                        writer.write("\t\t\t<distanceToHigherThreshold>" + obstacle.getDistanceToHigherThreshold() + "</distanceToHigherThreshold>\n");
+                        writer.write("\t\t</obstacle>\n");
+                    }
+                    writer.write("\t</obstacles>\n");
+                    writer.write("</data>");
+                    writer.close();
+                    System.out.println("XML file saved successfully.");
+                } catch (IOException ex) {
+                    System.out.println("An error occurred while writing to the file.");
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("An error occurred while writing to the file.");
+                    alert.setContentText("Please try again.");
+                    alert.showAndWait();
+                    ex.printStackTrace();
+                }
+            } else {
+                System.out.println("XML file saving cancelled.");
+            }
+        });
 
         // Export Report
-
         exportReport.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Save Report");

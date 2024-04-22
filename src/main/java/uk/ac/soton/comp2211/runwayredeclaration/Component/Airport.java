@@ -32,4 +32,8 @@ public class Airport {
     public ArrayList<Runway> getRunways(){
         return runways;
     }
+
+    public String toString(){
+        return name;
+    }
 }

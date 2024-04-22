@@ -10,7 +10,7 @@ public class CalculatorTestScenario1 {
 
     SubRunway testRunway1 = new SubRunway("09L",3902,3902,3902,3595,306,60,300,240);
     SubRunway testRunway2 = new SubRunway("27R",3884,3962,3884,3884,0,60,300,240);
-    Obstacle testObstacle = new Obstacle("plane", 12, 10, 10);
+    Obstacle testObstacle = new Obstacle("plane", 12, 0,-50, 3000);
 
     @Test
     public void testTORA09L() {
