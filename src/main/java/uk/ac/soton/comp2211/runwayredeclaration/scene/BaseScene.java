@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2211.runwayredeclaration.scene;
 
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
@@ -22,6 +23,7 @@ import javafx.scene.control.Alert;
 
 import java.io.InputStream;
 
+import javafx.util.Duration;
 import uk.ac.soton.comp2211.runwayredeclaration.Calculator.RunwayCalculator;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.*;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomePane;
@@ -133,11 +135,6 @@ public abstract class BaseScene {
     protected HBox displacedThresholdBox = new HBox();
 
 
-
-    public double obstacleHeightD;
-    public double obstacleWidthD;
-    public double distanceD;
-
     public String operationSelected = null;
     public SimpleStringProperty directionSelected = new SimpleStringProperty("(...)");
 
@@ -175,12 +172,8 @@ public abstract class BaseScene {
     protected ComboBox<Airport> comboAirports;
     protected ComboBox<Obstacle> comboObstacles;
 
-//    private buttonTORA = new Button("TORA");
-//    private buttonTODA = new Button("TODA");
-//    private buttonLDA = new Button("LDA");
-//    private Button buttonASDA = new Button("ASDA");
-
-
+    protected SimpleStringProperty notificationMessage = new SimpleStringProperty();
+    protected Label notificationLabel = new Label();
     /**
      * Create a new scene, passing in the GameWindow the scene will be displayed in
      * @param homeWindow the home window
@@ -224,7 +217,7 @@ public abstract class BaseScene {
         planeBox2.visibleProperty().set(false);
 
 
-
+        notificationLabel.setStyle("-fx-text-fill: red; -fx-font-size:34px;");
 
 
     }
@@ -464,35 +457,37 @@ public abstract class BaseScene {
         if (!isSelected) {
 
             selectedButton.getStyleClass().add("button-selected");
-            if (selectedButton.getText().equals("TORA")) {
-                if (firstDirectionButton.isSelected()){
-                    displayArea.setText(RunwayCalculator.breakdownTORA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
-                } else if (secondDirectionButton.isSelected()){
-                    displayArea.setText(RunwayCalculator.breakdownTORA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
-                }
+            try {
+                if (selectedButton.getText().equals("TORA")) {
+                    if (firstDirectionButton.isSelected()) {
+                        displayArea.setText(RunwayCalculator.breakdownTORA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                    } else if (secondDirectionButton.isSelected()) {
+                        displayArea.setText(RunwayCalculator.breakdownTORA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                    }
 
-            } else if (selectedButton.getText().equals("TODA")) {
-                if (firstDirectionButton.isSelected()){
-                    displayArea.setText(RunwayCalculator.breakdownTODA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
-                } else if (secondDirectionButton.isSelected()){
-                    displayArea.setText(RunwayCalculator.breakdownTODA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
-                }
+                } else if (selectedButton.getText().equals("TODA")) {
+                    if (firstDirectionButton.isSelected()) {
+                        displayArea.setText(RunwayCalculator.breakdownTODA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                    } else if (secondDirectionButton.isSelected()) {
+                        displayArea.setText(RunwayCalculator.breakdownTODA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                    }
 
-            } else if (selectedButton.getText().equals("ASDA")) {
-                if (firstDirectionButton.isSelected()){
-                    displayArea.setText(RunwayCalculator.breakdownASDA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
-                } else if (secondDirectionButton.isSelected()){
-                    displayArea.setText(RunwayCalculator.breakdownASDA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
-                }
+                } else if (selectedButton.getText().equals("ASDA")) {
+                    if (firstDirectionButton.isSelected()) {
+                        displayArea.setText(RunwayCalculator.breakdownASDA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                    } else if (secondDirectionButton.isSelected()) {
+                        displayArea.setText(RunwayCalculator.breakdownASDA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                    }
 
-            } else if (selectedButton.getText().equals("LDA")) {
-                if (firstDirectionButton.isSelected()){
-                    displayArea.setText(RunwayCalculator.breakdownLDA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
-                } else if (secondDirectionButton.isSelected()){
-                    displayArea.setText(RunwayCalculator.breakdownLDA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
-                }
+                } else if (selectedButton.getText().equals("LDA")) {
+                    if (firstDirectionButton.isSelected()) {
+                        displayArea.setText(RunwayCalculator.breakdownLDA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                    } else if (secondDirectionButton.isSelected()) {
+                        displayArea.setText(RunwayCalculator.breakdownLDA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                    }
 
-            }
+                }
+            } catch(Exception e){}
 
             if (this instanceof SimultaneousScene){
                 return;
@@ -576,6 +571,12 @@ public abstract class BaseScene {
 
                     if (runway.getName().equals(newValue)){
 
+                        notificationMessage.set("Successfully Changed Runway");
+                        FadeTransition ft = new FadeTransition(Duration.millis(3000), notificationLabel);
+                        ft.setFromValue(1.0);
+                        ft.setToValue(0.0);
+                        ft.play();
+
                         clearAllButtons();
                         planeBox.visibleProperty().set(false);
                         planeBox2.visibleProperty().set(false);
@@ -640,6 +641,9 @@ public abstract class BaseScene {
         comboAirports.setOnAction(e -> {
             for (Airport airport : airportList){
                 if (airport.getName().equals(comboAirports.getValue().getName())){
+
+
+
                     clearAllButtons();
                     obstacleBox.getChildren().clear();
                     planeBox.visibleProperty().set(false);
@@ -672,7 +676,11 @@ public abstract class BaseScene {
                     displayBorderToASDA.set(displayBorderToRunway.get());
                     displayBorderToLDA.set(displayBorderToRunway.get());
 
-
+                    notificationMessage.set("Successfully Changed Airport");
+                    FadeTransition ft = new FadeTransition(Duration.millis(3000), notificationLabel);
+                    ft.setFromValue(1.0);
+                    ft.setToValue(0.0);
+                    ft.play();
 
 
                 }
@@ -767,9 +775,6 @@ public abstract class BaseScene {
 
         //Custom obstacle
         comboObstacles.getItems().add(new Obstacle("Custom"));
-
-
-
 
 
         VBox obstacleBox = new VBox(5);
@@ -927,7 +932,11 @@ public abstract class BaseScene {
                 return;
             }
 
-
+            notificationMessage.set("Successfully Added Obstacle");
+            FadeTransition ft = new FadeTransition(Duration.millis(3000), notificationLabel);
+            ft.setFromValue(1.0);
+            ft.setToValue(0.0);
+            ft.play();
 
             currentObstacle = new Obstacle(comboObstacles.getValue().getName());
             currentObstacle.setHeight(height);

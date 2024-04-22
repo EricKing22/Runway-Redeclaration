@@ -1,5 +1,6 @@
 package uk.ac.soton.comp2211.runwayredeclaration.scene;
 
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.*;
@@ -50,10 +51,6 @@ public class SideViewScene extends BaseScene{
     private StackPane topViewPane = new StackPane();
 
 
-
-
-//    private Image gradeArea = new Image(getClass().getResource("/images/GradedArea.png").toExternalForm());
-//    private ImageView gradeAreaImageView = new ImageView(gradeArea);
 
 
 
@@ -191,6 +188,21 @@ public class SideViewScene extends BaseScene{
         directionPane.setLeft(takeoffArrowBox);
 
 
+        //Notification Message
+
+        notificationMessage.addListener((observable, oldValue, newValue) -> {
+            notificationLabel.setText(newValue);
+        });
+
+        VBox notificationBox = new VBox();
+        notificationBox.getStyleClass().add("empty");
+        notificationBox.setAlignment(Pos.TOP_CENTER);
+        notificationBox.getChildren().add(notificationLabel);
+
+        directionPane.setCenter(notificationBox);
+
+
+
         return directionPane;
     }
 
@@ -258,6 +270,13 @@ public class SideViewScene extends BaseScene{
                     // Add the new airports and obstacles
                     this.airportList.addAll(airportsToAdd);
                     this.obstacleList.addAll(obstaclesToAdd);
+
+                    notificationMessage.set("Successfully Imported");
+                    FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(3000), notificationLabel);
+                    ft.setFromValue(1.0);
+                    ft.setToValue(0.0);
+                    ft.play();
+
 
 
 
@@ -327,7 +346,11 @@ public class SideViewScene extends BaseScene{
                     writer.write("\t</obstacles>\n");
                     writer.write("</data>");
                     writer.close();
-                    System.out.println("XML file saved successfully.");
+                    notificationMessage.set("Successfully Exported");
+                    FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(3000), notificationLabel);
+                    ft.setFromValue(1.0);
+                    ft.setToValue(0.0);
+                    ft.play();
                 } catch (IOException ex) {
                     System.out.println("An error occurred while writing to the file.");
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -340,6 +363,8 @@ public class SideViewScene extends BaseScene{
             } else {
                 System.out.println("XML file saving cancelled.");
             }
+
+
         });
 
         // Export Report
@@ -375,7 +400,13 @@ public class SideViewScene extends BaseScene{
                         writer.write(RunwayCalculator.breakdownLDA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
                     }
                     writer.close();
-                    System.out.println("Report saved successfully.");
+
+                    notificationMessage.set("Successfully Exported.");
+                    FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(3000), notificationLabel);
+                    ft.setFromValue(1.0);
+                    ft.setToValue(0.0);
+                    ft.play();
+
                 } catch (IOException ex) {
                     System.out.println("An error occurred while writing to the file.");
                     ex.printStackTrace();
@@ -383,6 +414,8 @@ public class SideViewScene extends BaseScene{
             } else {
                 System.out.println("Report saving cancelled.");
             }
+
+
         });
 
         // View Menu
@@ -390,7 +423,7 @@ public class SideViewScene extends BaseScene{
 
         // Switch to Side View
         MenuItem sideView = new MenuItem("Side View");
-        //sideView.getStyleClass().add("menu-item");
+
 
 
         // Switch to Top view
@@ -401,6 +434,12 @@ public class SideViewScene extends BaseScene{
 
 
         sideView.setOnAction(e -> {
+            notificationMessage.set("Successfully switched to Side View");
+            FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(3000), notificationLabel);
+            ft.setFromValue(1.0);
+            ft.setToValue(0.0);
+            ft.play();
+
             currentView = "Side";
             bluePane.setTop(null);
             middleDisplayBox.getChildren().clear();
@@ -423,6 +462,12 @@ public class SideViewScene extends BaseScene{
         });
 
         topView.setOnAction(e -> {
+            notificationMessage.set("Successfully switched to Top View");
+            FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(3000), notificationLabel);
+            ft.setFromValue(1.0);
+            ft.setToValue(0.0);
+            ft.play();
+
             currentView = "Top";
             middleDisplayBox.getChildren().clear();
             obstacleBox.setAlignment(Pos.CENTER_LEFT);
@@ -444,6 +489,12 @@ public class SideViewScene extends BaseScene{
         });
 
         simultaneous.setOnAction(e -> {
+            notificationMessage.set("Successfully switched to Simultaneous");
+            FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(3000), notificationLabel);
+            ft.setFromValue(1.0);
+            ft.setToValue(0.0);
+            ft.play();
+
             currentView = "Simultaneous";
             middleDisplayBox.getChildren().clear();
             middleDisplayBox.getChildren().addAll(makeSimultaneousMiddleDisplayBox(), makeDirectionPane());
