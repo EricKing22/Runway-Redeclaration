@@ -107,7 +107,7 @@ public abstract class BaseScene {
 
 
     protected DoubleProperty displayRunwayToPlane = new SimpleDoubleProperty(0);
-    protected DoubleProperty displayPlaneToObstacle = new SimpleDoubleProperty(400);
+    protected DoubleProperty displayPlaneToObstacle = new SimpleDoubleProperty(0);
 
     protected DoubleProperty displayBorderToRunway = new SimpleDoubleProperty();
     protected DoubleProperty displayBorderToObstacle = new SimpleDoubleProperty(0);

@@ -4,6 +4,7 @@ import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.*;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -94,6 +95,7 @@ public class SideViewScene extends BaseScene{
         // Left Box Set-up
         left_box = new VBox(2, makeResultsTPane(), makeCalcBreakTPane());
         left_box.getStyleClass().add("left-box");
+        left_box.toFront();
         mainPane.setLeft(left_box);
         BorderPane.setAlignment(left_box, Pos.CENTER);
 
@@ -101,6 +103,7 @@ public class SideViewScene extends BaseScene{
         // Right Box Set-up
         right_box = new VBox(2, makeAirportTPane(), makeAirplaneTPane(), makeObstacleTPane());
         right_box.getStyleClass().add("right-box");
+        right_box.toFront();
         mainPane.setRight(right_box);
         BorderPane.setAlignment(right_box, Pos.CENTER);
 
@@ -112,6 +115,7 @@ public class SideViewScene extends BaseScene{
 
         // Middle Display Box Set-up
         middleDisplayBox = new StackPane(makeSideViewMiddleDisplayBox(), makeDirectionPane());
+        middleDisplayBox.toBack();
         middleDisplayBox.getStyleClass().add("sideView-background");
         BorderPane.setAlignment(middleDisplayBox, Pos.CENTER);
         mainPane.setCenter(middleDisplayBox);
@@ -570,7 +574,7 @@ public class SideViewScene extends BaseScene{
 
         // TORA HBox
         toraBox = new HBox();
-        toraBox.setMinWidth(125 * 2 + 550);
+        //toraBox.setMinWidth(125 * 2 + 550);
         toraBox.getStyleClass().add("empty");
         toraBox.setAlignment(Pos.CENTER_LEFT);
         HBox borderToTORA = new HBox();
@@ -598,7 +602,7 @@ public class SideViewScene extends BaseScene{
 
         // TODA HBox
         todaBox = new HBox();
-        todaBox.setMinWidth(125 * 2 + 550);
+        //todaBox.setMinWidth(125 * 2 + 550);
         todaBox.getStyleClass().add("empty");
         todaBox.setAlignment(Pos.CENTER_LEFT);
         DashedLine todaStart = new DashedLine(0.1, 500);
@@ -635,7 +639,7 @@ public class SideViewScene extends BaseScene{
 
         // ASDA HBox
         asdaBox = new HBox();
-        asdaBox.setMinWidth(125 * 2 + 550);
+        //asdaBox.setMinWidth(125 * 2 + 550);
         asdaBox.getStyleClass().add("empty");
         asdaBox.setAlignment(Pos.CENTER_LEFT);
 
@@ -755,7 +759,7 @@ public class SideViewScene extends BaseScene{
         ldaBox = new HBox();
         ldaBox.getStyleClass().add("empty");
         ldaBox.setAlignment(Pos.CENTER_LEFT);
-        ldaBox.setMinWidth(125 * 2 + 550);
+        //ldaBox.setMinWidth(125 * 2 + 550);
         DashedLine ldaStart = new DashedLine(0.1, 500);
         DashedLine ldaEnd = new DashedLine(0.1, 500);
 
@@ -791,7 +795,7 @@ public class SideViewScene extends BaseScene{
 
         // TORA HBox
         toraBox2 = new HBox();
-        toraBox2.setMinWidth(125 * 2 + 550);
+        //toraBox2.setMinWidth(125 * 2 + 550);
         toraBox2.getStyleClass().add("empty");
         toraBox2.setAlignment(Pos.CENTER_RIGHT);
         HBox borderToTORA = new HBox();
@@ -820,7 +824,7 @@ public class SideViewScene extends BaseScene{
 
         // TODA HBox
         todaBox2 = new HBox();
-        todaBox2.setMinWidth(125 * 2 + 550);
+        //todaBox2.setMinWidth(125 * 2 + 550);
         todaBox2.getStyleClass().add("empty");
         todaBox2.setAlignment(Pos.CENTER_RIGHT);
         DashedLine todaStart = new DashedLine(0.1, 500);
@@ -857,7 +861,7 @@ public class SideViewScene extends BaseScene{
 
         // ASDA HBox
         asdaBox2 = new HBox();
-        asdaBox2.setMinWidth(125 * 2 + 550);
+        //asdaBox2.setMinWidth(125 * 2 + 550);
         asdaBox2.getStyleClass().add("empty");
         asdaBox2.setAlignment(Pos.CENTER_RIGHT);
 
@@ -978,7 +982,7 @@ public class SideViewScene extends BaseScene{
         ldaBox2 = new HBox();
         ldaBox2.getStyleClass().add("empty");
         ldaBox2.setAlignment(Pos.CENTER_RIGHT);
-        ldaBox2.setMinWidth(125 * 2 + 550);
+        //ldaBox2.setMinWidth(125 * 2 + 550);
         DashedLine ldaStart = new DashedLine(0.1, 500);
         DashedLine ldaEnd = new DashedLine(0.1, 500);
 
@@ -1206,9 +1210,8 @@ public class SideViewScene extends BaseScene{
      */
     public StackPane makeTopViewMiddleDisplayBox(){
 
-        //displayStackPaneTop = new StackPane();
-        BorderPane displayBorderPane = new BorderPane();
-        displayStackPaneTop.getChildren().add(displayBorderPane);
+
+
         changeColourSchemeTop();
 
         // Top-View Runway
@@ -1252,7 +1255,7 @@ public class SideViewScene extends BaseScene{
         HBox stopWayBox = new HBox();
         HBox emptyBoxBetweenStopWays = new HBox();
         emptyBoxBetweenStopWays.getStyleClass().add("empty");
-        emptyBoxBetweenStopWays.setPrefHeight(displayStackPaneTop.getHeight());
+        //emptyBoxBetweenStopWays.setPrefHeight(displayStackPaneTop.getHeight());
         emptyBoxBetweenStopWays.setPrefWidth(displayRunwayLength.get());
         stopWayBox.getChildren().addAll(stopWay1, emptyBoxBetweenStopWays, stopWay2);
         stopWayBox.setAlignment(Pos.CENTER);
@@ -1354,15 +1357,34 @@ public class SideViewScene extends BaseScene{
         designatorBox.setAlignment(Pos.CENTER);
         designatorBox.getChildren().addAll(designator1, emptyHbox, designator2);
 
-        displayStackPaneTop.getChildren().add(designatorBox);
-
+        //displayStackPaneTop.getChildren().add(designatorBox);
         displayStackPaneTop.getChildren().add(makeDisplacedThreshold());
 
 
-        displayStackPaneTop.getChildren().add(makeIndicators1());
-        displayStackPaneTop.getChildren().add(makeIndicators2());
+        displayStackPaneTop.getChildren().add(makeIndicators1()); // TORA, TODA ... for left sub runway
+        displayStackPaneTop.getChildren().add(makeIndicators2()); // TORA, TODA ... for right sub runway
+
+
+
+        displayStackPaneTop.heightProperty().addListener((observable, oldValue, newValue) -> {
+            displayStackPaneTop.maxWidthProperty().bind(displayStackPaneTop.heightProperty());
+            System.out.println("New height: " + newValue);
+            for (Node node : displayStackPaneTop.getChildren()){
+                System.out.println(node.getClass().getName() + " " + node.getLayoutBounds().getWidth());
+            }
+        });
+
+        displayStackPaneTop.widthProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("New width: " + newValue);
+        });
+        displayStackPaneTop.setRotate(45);
+
 
         changeColourScheme();
+
+        displayStackPaneTop.toBack();
+        left_box.toFront();
+        right_box.toFront();
 
 
         return displayStackPaneTop;
@@ -1901,7 +1923,6 @@ public class SideViewScene extends BaseScene{
         colourSetting.setScene(scene);
         colourSetting.show();
     }
-
 
     public void changeColourSchemeTop(){
         if (displayStackPaneTop.getChildren().isEmpty()){
