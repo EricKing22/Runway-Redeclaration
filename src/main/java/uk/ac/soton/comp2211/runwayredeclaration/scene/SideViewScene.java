@@ -50,8 +50,8 @@ public class SideViewScene extends BaseScene{
     private StackPane displayStackPaneTop = new StackPane();
 
     private StackPane topViewPane = new StackPane();
-    private BorderPane directionPane;
-    private BorderPane compassPane;
+    private StackPane directionPane;
+    private StackPane compassPane;
 
 
 
@@ -93,7 +93,7 @@ public class SideViewScene extends BaseScene{
         // Left Box Set-up
         left_box = new VBox(2, makeResultsTPane(), makeCalcBreakTPane());
         left_box.getStyleClass().add("left-box");
-        left_box.toFront();
+        //left_box.toFront();
         mainPane.setLeft(left_box);
         BorderPane.setAlignment(left_box, Pos.CENTER);
 
@@ -101,7 +101,7 @@ public class SideViewScene extends BaseScene{
         // Right Box Set-up
         right_box = new VBox(2, makeAirportTPane(), makeAirplaneTPane(), makeObstacleTPane());
         right_box.getStyleClass().add("right-box");
-        right_box.toFront();
+        //right_box.toFront();
         mainPane.setRight(right_box);
         BorderPane.setAlignment(right_box, Pos.CENTER);
 
@@ -154,8 +154,10 @@ public class SideViewScene extends BaseScene{
      * Add the direction arrows
      * @return borderPane the direction pane
      */
-    public BorderPane makeDirectionPane(){
-        directionPane = new BorderPane();
+    public StackPane makeDirectionPane(){
+        directionPane = new StackPane();
+
+        BorderPane directionPane = new BorderPane();
 
         // Landing Direction
         Image arrow1 = new Image(getClass().getResource("/images/Arrow2.png").toExternalForm());
@@ -203,9 +205,9 @@ public class SideViewScene extends BaseScene{
 
         directionPane.setCenter(notificationBox);
 
+        this.directionPane.getChildren().add(directionPane);
 
-
-        return directionPane;
+        return this.directionPane;
     }
 
     /**
@@ -447,6 +449,9 @@ public class SideViewScene extends BaseScene{
             middleDisplayBox.getChildren().clear();
             obstacleBox.setAlignment(Pos.BOTTOM_LEFT);
             middleDisplayBox.getChildren().addAll(makeSideViewMiddleDisplayBox(), makeDirectionPane());
+            for (Node n : middleDisplayBox.getChildren()){
+                System.out.println(n);
+            }
             viewMenu.getItems().clear();
             viewMenu.getItems().addAll(topView, simultaneous);
 
@@ -1006,11 +1011,6 @@ public class SideViewScene extends BaseScene{
 
         indicatorsSubRunway2.getChildren().addAll(toraBox2, todaBox2, asdaBox2, ldaBox2);
 
-
-
-
-
-
         return indicatorsSubRunway2;
 
     }
@@ -1020,8 +1020,9 @@ public class SideViewScene extends BaseScene{
      * Create the compass pane
      * @return BorderPane Compass Pane
      */
-    public BorderPane makeCompassPane(){
-        compassPane = new BorderPane();
+    public StackPane makeCompassPane(){
+        compassPane = new StackPane();
+        BorderPane compassPane = new BorderPane();
         compassPane.getStyleClass().add("empty");
 
         Image compassImage = new Image(getClass().getResource("/images/Compass.png").toExternalForm());
@@ -1035,10 +1036,14 @@ public class SideViewScene extends BaseScene{
         compassImageView.setOnMouseClicked(e -> {
             compassImageView.setRotate(compassImageView.getRotate() + 45);
             displayStackPaneTop.setRotate(displayStackPaneTop.getRotate() + 45);
-            menuBox.toFront();
+
+
+//            menuBox.toFront();
             left_box.toFront();
             right_box.toFront();
-            compassPane.toFront();
+            displayStackPaneTop.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+//            compassPane.toFront();
+
 
         });
 
@@ -1046,9 +1051,11 @@ public class SideViewScene extends BaseScene{
         compassBox.getStyleClass().add("empty");
         compassBox.setAlignment(Pos.BOTTOM_RIGHT);
         compassBox.getChildren().add(compassImageView);
+
         compassPane.setRight(compassBox);
 
-        return compassPane;
+        this.compassPane.getChildren().add(compassPane);
+        return this.compassPane;
     }
 
 
@@ -1217,7 +1224,6 @@ public class SideViewScene extends BaseScene{
         Text designator2 = new Text();
         designator2.getStyleClass().add("display-designator-text");
         designator2.textProperty().bind(subRunway2.getDesignator());
-
         HBox emptyHbox = new HBox();
         emptyHbox.getStyleClass().add("empty");
         HBox.setHgrow(emptyHbox, Priority.ALWAYS);
@@ -1235,7 +1241,6 @@ public class SideViewScene extends BaseScene{
        displayStackPane.getChildren().add(makeIndicators1());
        displayStackPane.getChildren().add(makeIndicators2());
 
-       designatorBox.maxWidthProperty().bind(displayBorderPane.heightProperty());
 
 
         return displayStackPane;
@@ -1246,6 +1251,7 @@ public class SideViewScene extends BaseScene{
      * @return StackPane Middle display box
      */
     public StackPane makeTopViewMiddleDisplayBox(){
+        displayStackPaneTop.setRotate(0);
 
         changeColourSchemeTop();
 
@@ -1378,16 +1384,18 @@ public class SideViewScene extends BaseScene{
         Text designator1 = new Text();
         designator1.getStyleClass().add("display-designator-text");
         designator1.textProperty().bind(subRunway1.getDesignator());
+        designator1.setRotate(90);
         Text designator2 = new Text();
         designator2.getStyleClass().add("display-designator-text");
         designator2.textProperty().bind(subRunway2.getDesignator());
-
+        designator2.setRotate(-90);
         HBox emptyHbox = new HBox();
         emptyHbox.getStyleClass().add("empty");
-        HBox.setHgrow(emptyHbox, Priority.ALWAYS);
+        emptyHbox.setPrefWidth(600);
 
 
         HBox designatorBox = new HBox();
+        designatorBox.setId("designatorBox");
         designatorBox.getStyleClass().add("empty");
         designatorBox.setAlignment(Pos.CENTER);
         designatorBox.getChildren().addAll(designator1, emptyHbox, designator2);
@@ -1401,25 +1409,13 @@ public class SideViewScene extends BaseScene{
 
 
 
-        displayStackPaneTop.heightProperty().addListener((observable, oldValue, newValue) -> {
-            //displayStackPaneTop.maxWidthProperty().bind(displayStackPaneTop.heightProperty());
-            System.out.println("New height: " + newValue);
-            for (Node node : displayStackPaneTop.getChildren()){
-                System.out.println(node.getClass().getName() + " " + node.getLayoutBounds().getWidth());
-            }
-        });
-
-        displayStackPaneTop.widthProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println("New width: " + newValue);
-        });
-
 
         changeColourScheme();
 
-        left_box.toFront();
-        right_box.toFront();
-        menuBox.toFront();
-        middleDisplayBox.toFront();
+//
+//        left_box.toFront();
+//        right_box.toFront();
+//        menuBox.toFront();
 
 
         return displayStackPaneTop;
@@ -1969,6 +1965,7 @@ public class SideViewScene extends BaseScene{
                 menuBox.getStyleClass().clear();
                 menuBox.getStyleClass().add("menu-box");
 
+                middleDisplayBox.getStyleClass().clear();
                 displayStackPaneTop.getStyleClass().clear();
                 displayStackPaneTop.getStyleClass().add("topView-background");
 
@@ -1987,8 +1984,10 @@ public class SideViewScene extends BaseScene{
                 menuBox.getStyleClass().clear();
                 menuBox.getStyleClass().add("menu-box");
 
+
                 displayStackPaneTop.getStyleClass().clear();
-                displayStackPaneTop.getStyleClass().add("topView-background-Deuteranopia");
+                middleDisplayBox.getStyleClass().clear();
+                middleDisplayBox.getStyleClass().add("topView-background-Deuteranopia");
 
                 Image yellowGradeArea = new Image(getClass().getResource("/images/yellowGraded.png").toExternalForm());
                 ImageView yellowGradeAreaImageView = new ImageView(yellowGradeArea);
@@ -2002,7 +2001,8 @@ public class SideViewScene extends BaseScene{
                 menuBox.getStyleClass().add("menu-box-limegreen");
 
                 displayStackPaneTop.getStyleClass().clear();
-                displayStackPaneTop.getStyleClass().add("topView-background-Tritanopia");
+                middleDisplayBox.getStyleClass().clear();
+                middleDisplayBox.getStyleClass().add("topView-background-Tritanopia");
 
                 Image greenGradeArea = new Image(getClass().getResource("/images/greenGraded.png").toExternalForm());
                 ImageView greenGradeAreaImageView = new ImageView(greenGradeArea);
@@ -2017,7 +2017,8 @@ public class SideViewScene extends BaseScene{
                 menuBox.getStyleClass().add("menu-box-purple");
 
                 displayStackPaneTop.getStyleClass().clear();
-                displayStackPaneTop.getStyleClass().add("topView-background-Protanopia");
+                middleDisplayBox.getStyleClass().clear();
+                middleDisplayBox.getStyleClass().add("topView-background-Protanopia");
 
                 Image purpleGradeArea = new Image(getClass().getResource("/images/purpleGraded.png").toExternalForm());
                 ImageView purpleGradeAreaImageView = new ImageView(purpleGradeArea);
