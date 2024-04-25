@@ -61,7 +61,7 @@ public abstract class BaseScene {
     protected DoubleProperty clearWayLength1 = new SimpleDoubleProperty();
     protected DoubleProperty clearWayLength2 = new SimpleDoubleProperty();
     protected DoubleProperty displayStopWayLength = new SimpleDoubleProperty(60); // Need to be rescaled
-    protected DoubleProperty displayClearWayLength = new SimpleDoubleProperty(80); // Need to be rescaled
+    protected DoubleProperty displayClearWayLength = new SimpleDoubleProperty(50); // Need to be rescaled
     protected DoubleProperty displayRunwayLength = new SimpleDoubleProperty(550); // FIXED 550
 
 

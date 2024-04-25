@@ -50,10 +50,8 @@ public class SideViewScene extends BaseScene{
     private StackPane displayStackPaneTop = new StackPane();
 
     private StackPane topViewPane = new StackPane();
-
-
-
-
+    private BorderPane directionPane;
+    private BorderPane compassPane;
 
 
 
@@ -157,7 +155,7 @@ public class SideViewScene extends BaseScene{
      * @return borderPane the direction pane
      */
     public BorderPane makeDirectionPane(){
-        BorderPane directionPane = new BorderPane();
+        directionPane = new BorderPane();
 
         // Landing Direction
         Image arrow1 = new Image(getClass().getResource("/images/Arrow2.png").toExternalForm());
@@ -172,8 +170,8 @@ public class SideViewScene extends BaseScene{
         VBox.setVgrow(arrowEmpty1, Priority.ALWAYS);
         Text landingText = new Text("Landing");
         landingText.getStyleClass().add("arrow-text");
-        landingArrowBox.getChildren().addAll(landingArrow, arrowEmpty1);
-        landingArrowBox.setAlignment(Pos.CENTER_RIGHT);
+        landingArrowBox.getChildren().addAll(landingArrow);
+        landingArrowBox.setAlignment(Pos.TOP_RIGHT);
         directionPane.setRight(landingArrowBox);
 
         // Takeoff Direction
@@ -182,13 +180,13 @@ public class SideViewScene extends BaseScene{
         takeoffArrow.setPreserveRatio(true);
         takeoffArrow.setFitWidth(100);
         VBox takeoffArrowBox = new VBox();
-        takeoffArrowBox.setAlignment(Pos.CENTER_LEFT);
+        takeoffArrowBox.setAlignment(Pos.TOP_LEFT);
         VBox arrowEmpty2 = new VBox();
         arrowEmpty2.getStyleClass().add("empty");
         VBox.setVgrow(arrowEmpty2, Priority.ALWAYS);
         Text takeoffText = new Text("Take off");
         takeoffText.getStyleClass().add("arrow-text");
-        takeoffArrowBox.getChildren().addAll(takeoffArrow, arrowEmpty2);
+        takeoffArrowBox.getChildren().addAll(takeoffArrow);
         directionPane.setLeft(takeoffArrowBox);
 
 
@@ -475,7 +473,10 @@ public class SideViewScene extends BaseScene{
             currentView = "Top";
             middleDisplayBox.getChildren().clear();
             obstacleBox.setAlignment(Pos.CENTER_LEFT);
-            middleDisplayBox.getChildren().addAll(makeTopViewMiddleDisplayBox(), makeDirectionPane());
+            middleDisplayBox.setMaxWidth(homeWindow.getWidth() - 600);
+            middleDisplayBox.getChildren().addAll(makeTopViewMiddleDisplayBox(), makeDirectionPane(), makeCompassPane());
+
+
             viewMenu.getItems().clear();
             viewMenu.getItems().addAll(sideView, simultaneous);
 
@@ -557,8 +558,6 @@ public class SideViewScene extends BaseScene{
         StackPane displacedThresholdStackPane = new StackPane();
         displacedThresholdStackPane.getStyleClass().add("empty");
         displacedThresholdStackPane.setAlignment(Pos.CENTER_LEFT);
-
-
         displacedThresholdStackPane.getChildren().add(displacedThresholdBox);
 
         return displacedThresholdStackPane;
@@ -782,15 +781,14 @@ public class SideViewScene extends BaseScene{
 
 
         indicatorsSubRunway1.getChildren().addAll(toraBox, todaBox, asdaBox, ldaBox);
-
-
-
-
-
-
+        
         return indicatorsSubRunway1;
     }
 
+    /**
+     * StackPane for all the indicators for subRunway2
+     * @return StackPane the indicators
+     */
     public StackPane makeIndicators2(){
 
         // TORA HBox
@@ -1018,6 +1016,43 @@ public class SideViewScene extends BaseScene{
     }
 
 
+    /**
+     * Create the compass pane
+     * @return BorderPane Compass Pane
+     */
+    public BorderPane makeCompassPane(){
+        compassPane = new BorderPane();
+        compassPane.getStyleClass().add("empty");
+
+        Image compassImage = new Image(getClass().getResource("/images/Compass.png").toExternalForm());
+        ImageView compassImageView = new ImageView(compassImage);
+        compassImageView.setPreserveRatio(true);
+        compassImageView.setRotate(45);
+        compassImageView.setFitWidth(100);
+        compassImageView.setFitHeight(100);
+
+
+        compassImageView.setOnMouseClicked(e -> {
+            compassImageView.setRotate(compassImageView.getRotate() + 45);
+            displayStackPaneTop.setRotate(displayStackPaneTop.getRotate() + 45);
+            menuBox.toFront();
+            left_box.toFront();
+            right_box.toFront();
+            compassPane.toFront();
+
+        });
+
+        VBox compassBox = new VBox();
+        compassBox.getStyleClass().add("empty");
+        compassBox.setAlignment(Pos.BOTTOM_RIGHT);
+        compassBox.getChildren().add(compassImageView);
+        compassPane.setRight(compassBox);
+
+        return compassPane;
+    }
+
+
+
 
     /**
      * Create the middle display box
@@ -1200,6 +1235,8 @@ public class SideViewScene extends BaseScene{
        displayStackPane.getChildren().add(makeIndicators1());
        displayStackPane.getChildren().add(makeIndicators2());
 
+       designatorBox.maxWidthProperty().bind(displayBorderPane.heightProperty());
+
 
         return displayStackPane;
     }
@@ -1209,8 +1246,6 @@ public class SideViewScene extends BaseScene{
      * @return StackPane Middle display box
      */
     public StackPane makeTopViewMiddleDisplayBox(){
-
-
 
         changeColourSchemeTop();
 
@@ -1357,7 +1392,7 @@ public class SideViewScene extends BaseScene{
         designatorBox.setAlignment(Pos.CENTER);
         designatorBox.getChildren().addAll(designator1, emptyHbox, designator2);
 
-        //displayStackPaneTop.getChildren().add(designatorBox);
+        displayStackPaneTop.getChildren().add(designatorBox);
         displayStackPaneTop.getChildren().add(makeDisplacedThreshold());
 
 
@@ -1367,7 +1402,7 @@ public class SideViewScene extends BaseScene{
 
 
         displayStackPaneTop.heightProperty().addListener((observable, oldValue, newValue) -> {
-            displayStackPaneTop.maxWidthProperty().bind(displayStackPaneTop.heightProperty());
+            //displayStackPaneTop.maxWidthProperty().bind(displayStackPaneTop.heightProperty());
             System.out.println("New height: " + newValue);
             for (Node node : displayStackPaneTop.getChildren()){
                 System.out.println(node.getClass().getName() + " " + node.getLayoutBounds().getWidth());
@@ -1377,14 +1412,14 @@ public class SideViewScene extends BaseScene{
         displayStackPaneTop.widthProperty().addListener((observable, oldValue, newValue) -> {
             System.out.println("New width: " + newValue);
         });
-        displayStackPaneTop.setRotate(45);
 
 
         changeColourScheme();
 
-        displayStackPaneTop.toBack();
         left_box.toFront();
         right_box.toFront();
+        menuBox.toFront();
+        middleDisplayBox.toFront();
 
 
         return displayStackPaneTop;
