@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import uk.ac.soton.comp2211.runwayredeclaration.Calculator.RunwayCalculator;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.*;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomePane;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SideViewScene extends BaseScene{
+public class ViewScene extends BaseScene{
 
     private VBox left_box;
     private VBox right_box;
@@ -59,7 +60,7 @@ public class SideViewScene extends BaseScene{
      * Create a new side view scene
      * @param homeWindow the home Window this will be displayed in
      */
-    public SideViewScene(HomeWindow homeWindow) {
+    public ViewScene(HomeWindow homeWindow) {
         super(homeWindow);
     }
 
@@ -156,6 +157,8 @@ public class SideViewScene extends BaseScene{
      */
     public StackPane makeDirectionPane(){
         directionPane = new StackPane();
+        directionPane.setMaxHeight(300);
+        StackPane.setAlignment(directionPane, Pos.TOP_CENTER);
 
         BorderPane directionPane = new BorderPane();
 
@@ -1735,10 +1738,7 @@ public class SideViewScene extends BaseScene{
 
         sideViewStackPane.getChildren().add(clearWayBox);
 
-
-
         groundPane.setTop(runwayPaneBox);
-
 
         // Designator Display
         Text designator3 = new Text();
@@ -1759,6 +1759,54 @@ public class SideViewScene extends BaseScene{
         designatorBox2.getChildren().addAll(designator3, emptyHbox2, designator4);
 
         sideViewStackPane.getChildren().add(designatorBox2);
+
+        // check box for showing indicators
+        StackPane cheboxPane = new StackPane();
+        CheckBox indicatorsCheckBox = new CheckBox("Enable Indicators");
+        for (Node node : indicatorsSubRunway1.getChildren()){
+            node.setVisible(false);
+        }
+        for (Node node : indicatorsSubRunway2.getChildren()){
+            node.setVisible(false);
+        }
+
+        indicatorsCheckBox.setOnAction( e -> {
+            if (indicatorsCheckBox.isSelected()) {
+                for (Node node : indicatorsSubRunway1.getChildren()){
+                    node.setVisible(true);
+                }
+                for (Node node : indicatorsSubRunway2.getChildren()){
+                    node.setVisible(true);
+                }
+
+                notificationMessage.set("Enable Indicators");
+            }
+            else {
+                for (Node node : indicatorsSubRunway1.getChildren()){
+                    node.setVisible(false);
+                }
+                for (Node node : indicatorsSubRunway2.getChildren()){
+                    node.setVisible(false);
+                }
+                notificationMessage.set("Disable Indicators");
+            }
+            FadeTransition fd = new FadeTransition(Duration.millis(3000), notificationLabel);
+            fd.setFromValue(1.0);
+            fd.setToValue(0.0);
+            fd.play();
+
+        });
+
+
+        cheboxPane.toFront();
+
+        cheboxPane.getChildren().add(indicatorsCheckBox);
+        displayStackPane.getChildren().add(cheboxPane);
+        StackPane.setAlignment(indicatorsCheckBox, Pos.BOTTOM_RIGHT);
+
+
+
+
 
         changeColourScheme();
         changeColourSchemeTopSim();
