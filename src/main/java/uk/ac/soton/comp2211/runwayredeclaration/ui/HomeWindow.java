@@ -8,10 +8,8 @@ import javafx.stage.Stage;
 import uk.ac.soton.comp2211.runwayredeclaration.App;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import uk.ac.soton.comp2211.runwayredeclaration.scene.BaseScene;
-import uk.ac.soton.comp2211.runwayredeclaration.scene.ViewScene;
-import uk.ac.soton.comp2211.runwayredeclaration.scene.SimultaneousScene;
-import uk.ac.soton.comp2211.runwayredeclaration.scene.TopViewScene;
+import uk.ac.soton.comp2211.runwayredeclaration.Component.User;
+import uk.ac.soton.comp2211.runwayredeclaration.scene.*;
 
 public class HomeWindow {
 
@@ -39,11 +37,15 @@ public class HomeWindow {
         setupDefaultScene();
 
         //Go to home
-        startHome();
+        startLogIn();
     }
 
-    public void startHome() {
-        loadScene(new ViewScene(this));
+    public void startLogIn(){
+        loadScene(new LogInScene(this));
+    }
+
+    public void startHome(User user) {
+        loadScene(new ViewScene(this, user));
     }
 
     /**

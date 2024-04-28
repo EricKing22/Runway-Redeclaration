@@ -31,6 +31,7 @@ import java.util.List;
 
 
 public class ViewScene extends BaseScene{
+    private User currentUser;
 
     private VBox left_box;
     private VBox right_box;
@@ -62,6 +63,11 @@ public class ViewScene extends BaseScene{
      */
     public ViewScene(HomeWindow homeWindow) {
         super(homeWindow);
+    }
+
+    public ViewScene(HomeWindow homeWindow, User user) {
+        super(homeWindow);
+        this.currentUser = user;
     }
 
 

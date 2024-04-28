@@ -38,6 +38,7 @@ import java.util.ArrayList;
  * A Base Scene used in the game. Handles common functionality between all scenes.
  */
 public abstract class BaseScene {
+    protected User currentUser;
 
     protected final HomeWindow homeWindow;
 
@@ -217,7 +218,7 @@ public abstract class BaseScene {
         planeBox2.visibleProperty().set(false);
 
 
-        notificationLabel.setStyle("-fx-text-fill: red; -fx-font-size:34px;");
+        notificationLabel.setStyle("-fx-text-fill: grey; -fx-font-size:34px;");
 
 
     }
