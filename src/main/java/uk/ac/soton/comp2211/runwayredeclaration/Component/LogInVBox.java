@@ -132,6 +132,7 @@ public class LogInVBox extends VBox {
       try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
         String line;
         while ((line = br.readLine()) != null) {
+          System.out.println(line);
           String[] parts = line.split(",");
           if (parts.length == 3) {
             users.put(parts[0], new User(parts[0], parts[1], parts[2]));
@@ -220,8 +221,7 @@ public class LogInVBox extends VBox {
     createAccount.setAlignment(Pos.CENTER);
     createAccount.setOnAction(e -> {
       try {
-        handleCreatingAccount(newUsernameTextField.getText(), newPasswordField.getText(),
-            String.valueOf(roleChoiceBox.getSelectionModel().selectedItemProperty()));
+        handleCreatingAccount(newUsernameTextField.getText(), newPasswordField.getText(), roleChoiceBox.getValue());
       } catch (Exception ex) {
         throw new RuntimeException(ex);
       }
@@ -261,16 +261,16 @@ public class LogInVBox extends VBox {
   private void appendToCSV(String username, String password, String role) {
 
 
-    String newUserLine = username + "," + password + "," + role + "\n";
+    String newUserLine = "\n" + username + "," + password + "," + role ;
     URL csvFilePath = getClass().getResource("/predefined/Users.csv");
 
 
     try {
       File usersFile = new File(csvFilePath.toURI());
       FileWriter fw = new FileWriter(usersFile,true);
-
       fw.write(newUserLine);
       fw.close();
+      System.out.println("User added to file");
     } catch (Exception e) {
       System.out.println("Error writing to file: " + e.getMessage());
     }
