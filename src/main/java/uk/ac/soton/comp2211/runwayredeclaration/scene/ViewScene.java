@@ -449,8 +449,6 @@ public class ViewScene extends BaseScene{
         // Switch to Side View
         MenuItem sideView = new MenuItem("Side View");
 
-
-
         // Switch to Top view
         MenuItem topView = new MenuItem("Top View");
 
@@ -550,13 +548,24 @@ public class ViewScene extends BaseScene{
 
         // Help Menu
         Menu helpMenu = new Menu("Help");
+
+        // Only for admin user
+        if (currentUser.getPermissionLevel().equals("Admin")){
+            MenuItem airportInformation = new MenuItem("Airport Information");
+            airportInformation.setOnAction(e -> makeAirportInformation());
+            helpMenu.getItems().add(airportInformation);
+        }
+
+
+
+
         MenuItem colourSettings = new MenuItem("Colour Schemes");
         colourSettings.setOnAction(e -> makeColourSettingPage());
 
         MenuItem musicSettings = new MenuItem("Music Settings");
         musicSettings.setOnAction(e -> makeMusicSettingPage());
 
-        helpMenu.getItems().addAll(new MenuItem("About"), new MenuItem("Contact"), colourSettings, musicSettings);
+        helpMenu.getItems().addAll(colourSettings, musicSettings);
 
         // Add Menus to the MenuBar
         menuBar.getMenus().addAll(fileMenu, viewMenu, helpMenu);
@@ -1433,10 +1442,6 @@ public class ViewScene extends BaseScene{
 
         changeColourScheme();
 
-//
-//        left_box.toFront();
-//        right_box.toFront();
-//        menuBox.toFront();
 
 
         return displayStackPaneTop;
@@ -1825,8 +1830,6 @@ public class ViewScene extends BaseScene{
 
 
 
-
-        changeColourScheme();
         changeColourSchemeTopSim();
 //        changeBaseSceneColours();
         return displayStackPane;
@@ -1843,16 +1846,6 @@ public class ViewScene extends BaseScene{
                 groundPane.getStyleClass().clear();
                 groundPane.getStyleClass().add("sideView-ground");
 
-//                Image defaultGradeArea = new Image(getClass().getResource("/images/GradedArea.png").toExternalForm());
-//                ImageView defaultGradeAreaImageView = new ImageView(defaultGradeArea);
-//                defaultGradeAreaImageView.setPreserveRatio(true);
-//                defaultGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
-
-//                try{
-//                    displayStackPaneTop.getChildren().set(0,defaultGradeAreaImageView);
-//                }catch (IndexOutOfBoundsException e){
-//                    displayStackPaneTop.getChildren().add(defaultGradeAreaImageView);
-//                }
             });
 
 
@@ -1866,12 +1859,6 @@ public class ViewScene extends BaseScene{
                 groundPane.getStyleClass().clear();
                 groundPane.getStyleClass().add("sideView-ground-Deuteranopia");
 
-
-//                Image yellowGradeArea = new Image(getClass().getResource("/images/yellowGraded.png").toExternalForm());
-//                ImageView yellowGradeAreaImageView = new ImageView(yellowGradeArea);
-//                yellowGradeAreaImageView.setPreserveRatio(true);
-//                yellowGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
-//                displayStackPaneTop.getChildren().set(0,yellowGradeAreaImageView);
             });
         }else if (currentState.getColourSettting() == "Magenta/Lime Green"){
             Platform.runLater( () -> {
@@ -1881,11 +1868,7 @@ public class ViewScene extends BaseScene{
                 bluePane.getStyleClass().add("sideView-background-Tritanopia");
                 groundPane.getStyleClass().clear();
                 groundPane.getStyleClass().add("sideView-ground-Tritanopia");
-//                Image greenGradeArea = new Image(getClass().getResource("/images/greenGraded.png").toExternalForm());
-//                ImageView greenGradeAreaImageView = new ImageView(greenGradeArea);
-//                greenGradeAreaImageView.setPreserveRatio(true);
-//                greenGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
-//                displayStackPaneTop.getChildren().set(0,greenGradeAreaImageView);
+
             });
 
         }else if (currentState.getColourSettting() == "Cyan/Deep Purple"){
@@ -1896,11 +1879,7 @@ public class ViewScene extends BaseScene{
                 bluePane.getStyleClass().add("sideView-background-Protanopia");
                 groundPane.getStyleClass().clear();
                 groundPane.getStyleClass().add("sideView-ground-Protanopia");
-//                Image purpleGradeArea = new Image(getClass().getResource("/images/purpleGraded.png").toExternalForm());
-//                ImageView purpleGradeAreaImageView = new ImageView(purpleGradeArea);
-//                purpleGradeAreaImageView.setPreserveRatio(true);
-//                purpleGradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
-//                displayStackPaneTop.getChildren().set(0,purpleGradeAreaImageView);
+
             });
         }
     }
@@ -1957,6 +1936,54 @@ public class ViewScene extends BaseScene{
         musicSetting.show();
     }
 
+    public void makeAirportInformation(){
+        Stage airportInforStage = new Stage();
+        airportInforStage.initModality(Modality.WINDOW_MODAL);
+
+
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+
+
+
+        Label airportName = new Label("Airport Name: " + currentAirport.getName());
+        layout.getChildren().add(airportName);
+
+        VBox subRunwayBox1 = new VBox(10);
+        subRunwayBox1.setAlignment(Pos.CENTER);
+        Label subRunway1Name = new Label("Runway 1: " + subRunway1.getDesignator().getValue());
+        Label subRunway1DisplacedThreshold = new Label("Displaced Threshold: " + subRunway1.getDisplacedThreshold().getValue() + "m");
+        Label subRunway1RESA = new Label("RESA: " + subRunway1.getRESA().getValue() + "m");
+        Label subRunway1StripEnd = new Label("Strip End: " + subRunway1.getStripEndLength().getValue() + "m");
+        Label subRunway1BlastProtection = new Label("Blast Protection: " + subRunway1.getBlastProtection().getValue() + "m");
+        subRunwayBox1.getChildren().addAll(subRunway1Name, subRunway1DisplacedThreshold, subRunway1RESA, subRunway1StripEnd, subRunway1BlastProtection);
+
+        VBox subRunwayBox2 = new VBox(10);
+        subRunwayBox2.setAlignment(Pos.CENTER);
+        Label subRunway2Name = new Label("Runway 2: " + subRunway2.getDesignator().getValue());
+        Label subRunway2DisplacedThreshold = new Label("Displaced Threshold: " + subRunway2.getDisplacedThreshold().getValue() + "m");
+        Label subRunway2RESA = new Label("RESA: " + subRunway2.getRESA().getValue() + "m");
+        Label subRunway2StripEnd = new Label("Strip End: " + subRunway2.getStripEndLength().getValue() + "m");
+        Label subRunway2BlastProtection = new Label("Blast Protection: " + subRunway2.getBlastProtection().getValue() + "m");
+        subRunwayBox2.getChildren().addAll(subRunway2Name, subRunway2DisplacedThreshold, subRunway2RESA, subRunway2StripEnd, subRunway2BlastProtection);
+
+        HBox subRunwayHBox = new HBox(10, subRunwayBox1, subRunwayBox2);
+        subRunwayHBox.setAlignment(Pos.CENTER);
+        layout.getChildren().add(subRunwayHBox);
+
+        Button closeButton = new Button("Close");
+        closeButton.setOnAction(e -> airportInforStage.close());
+        layout.getChildren().add(closeButton);
+
+        Scene scene = new Scene(layout, 500, 300);
+        airportInforStage.setScene(scene);
+        airportInforStage.show();
+
+
+
+    }
+
+
 
 
     public void makeColourSettingPage(){
@@ -1964,7 +1991,7 @@ public class ViewScene extends BaseScene{
         colourSetting.initModality(Modality.WINDOW_MODAL);
 
 
-//        ToggleGroup group = new ToggleGroup();
+       ToggleGroup group = new ToggleGroup();
 //        RadioButton defaultOption = new RadioButton("Default");
         defaultOption.setToggleGroup(group);
 //        RadioButton option1 = new RadioButton("Option 1");

@@ -211,7 +211,7 @@ public class LogInVBox extends VBox {
 
 
     ChoiceBox<String> roleChoiceBox = new ChoiceBox<>();
-    roleChoiceBox.getItems().addAll("Admin", "User", "Guest");
+    roleChoiceBox.getItems().addAll("Admin", "User");
     roleChoiceBox.setValue("Select your role"); // Default text
     roleChoiceBox.setStyle("-fx-text-fill: black;");
 
