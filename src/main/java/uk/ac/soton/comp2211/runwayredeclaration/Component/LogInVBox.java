@@ -18,8 +18,10 @@ import java.util.Map;
 public class LogInVBox extends VBox {
   private User user;
 
+  private String adminPassword = "123456";
   private PasswordField passwordField;
   private TextField usernameTextField;
+  private TextField adminPasswordField = new TextField();
   private TextField visiblePasswordField;
   private Button showHidePasswordButton;
   private Button logInSuccessful;
@@ -36,7 +38,7 @@ public class LogInVBox extends VBox {
 
     build();
     this.setAlignment(Pos.CENTER);
-    this.user = new User("Guest", "", "Guest");
+    this.user = new User("Guest", "", "User");
 
   }
   /**
@@ -84,9 +86,11 @@ public class LogInVBox extends VBox {
 
 
     HBox userNameFields = new HBox(10, usernameLabel, usernameTextField);
-    userNameFields.setAlignment(Pos.CENTER);
-    HBox passwordFields = new HBox(10, passwordLabel, passwordField, visiblePasswordField, showHidePasswordButton);
-    passwordFields.setAlignment(Pos.CENTER);
+    userNameFields.setAlignment(Pos.CENTER_LEFT);
+    userNameFields.setPadding(new Insets(0,0,0,120));
+    HBox passwordFields = new HBox(14, passwordLabel, passwordField, visiblePasswordField, showHidePasswordButton);
+    passwordFields.setAlignment(Pos.CENTER_LEFT);
+    passwordFields.setPadding(new Insets(0,0,0,120));
 
     VBox layout = new VBox(10); // 10 is the spacing between elements
 
@@ -176,7 +180,7 @@ public class LogInVBox extends VBox {
     Label passwordLabel = new Label("Enter your Password:");
 
     TextField newUsernameTextField = new TextField();
-    usernameTextField.setPromptText("Username");
+    newUsernameTextField.setPromptText("Username");
 
     TextField newPasswordField = new TextField();
     newPasswordField.setPromptText("Password");
@@ -187,31 +191,31 @@ public class LogInVBox extends VBox {
     planeIconView.setFitHeight(150);
     planeIconView.setFitWidth(150);
     HBox plane = new HBox(planeIconView);
+    plane.setAlignment(Pos.CENTER);
+
+
 
 
     HBox usname = new HBox(5, usernameLabel, newUsernameTextField);
+    usname.setAlignment(Pos.CENTER_LEFT);
+    usname.setPadding(new Insets(0,0,0,120));
     Label checker = new Label(passwordChecker.check(newPasswordField.getText()));
-
     newPasswordField.textProperty().addListener((observable, oldValue, newValue) -> {
       checker.setText(passwordChecker.check(newValue));
     });
-    HBox pwname = new HBox(5, passwordLabel, newPasswordField, checker);
+    HBox pwname = new HBox(15, passwordLabel, newPasswordField, checker);
+    pwname.setAlignment(Pos.CENTER_LEFT);
+    pwname.setPadding(new Insets(0,0,0,120));
 
 
 
-    plane.setAlignment(Pos.CENTER);
-    usname.setAlignment(Pos.CENTER);
-    pwname.setAlignment(Pos.CENTER);
 
     ChoiceBox<String> roleChoiceBox = new ChoiceBox<>();
     roleChoiceBox.getItems().addAll("Admin", "User", "Guest");
     roleChoiceBox.setValue("Select your role"); // Default text
+    roleChoiceBox.setStyle("-fx-text-fill: black;");
 
-    roleChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
-      if (newValue != null) {
-        System.out.println("Selected role: " + newValue);
-      }
-    });
+
 
     HBox roleBox = new HBox(5, roleChoiceBox);
     roleBox.setAlignment(Pos.CENTER);
@@ -221,9 +225,18 @@ public class LogInVBox extends VBox {
     createAccount.setAlignment(Pos.CENTER);
     createAccount.setOnAction(e -> {
       try {
+        if (roleChoiceBox.getValue().equals("Admin")){
+          if (!adminPasswordField.getText().equals(adminPassword)){
+            throw new Exception();
+          }
+        }
         handleCreatingAccount(newUsernameTextField.getText(), newPasswordField.getText(), roleChoiceBox.getValue());
       } catch (Exception ex) {
-        throw new RuntimeException(ex);
+        Alert emptyFields = new Alert(Alert.AlertType.ERROR);
+        emptyFields.setTitle("Error");
+        emptyFields.setHeaderText("Unable to create account.");
+        emptyFields.setContentText("Please try again");
+        emptyFields.showAndWait();
       }
       newPasswordField.clear();
       newUsernameTextField.clear();
@@ -233,6 +246,26 @@ public class LogInVBox extends VBox {
     boxForCreateAccount.setAlignment(Pos.CENTER);
 
     VBox register = new VBox(10,plane, usname, pwname, roleBox, boxForCreateAccount);
+
+    roleChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+      if (newValue != null) {
+        System.out.println("Selected role: " + newValue);
+      }
+
+
+      if (newValue.equals("Admin")){
+        adminPasswordField.clear();
+        adminPasswordField.setPromptText("Please enter admin password");
+        adminPasswordField.setAlignment(Pos.CENTER);
+        int secondToLastIndex = Math.max(0, register.getChildren().size() - 1);
+        register.getChildren().add(secondToLastIndex,adminPasswordField);
+      }
+      else {
+        try{
+          register.getChildren().remove(adminPasswordField);
+        }catch (Exception e){}
+      }
+    });
     this.getChildren().add(register);
   }
 

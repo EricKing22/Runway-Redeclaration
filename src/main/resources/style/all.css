@@ -315,3 +315,7 @@
     -fx-font-family: "Calibri";
     -fx-font-weight: bold;
 }
+
+.choice-box .list-cell {
+    -fx-text-fill: red; /* Change 'red' to your desired color */
+}

@@ -237,73 +237,85 @@ public class ViewScene extends BaseScene{
 
         // Import XML
         importXML.setOnAction(e -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open XML File");
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
-            File file = fileChooser.showOpenDialog(null);
-            if (file != null) {
-                try {
-                    System.out.println("File selected: " + file.getName());
-                    FileInputStream inputStream = new FileInputStream(file);
-                    List<Airport> airports = xmlFileLoader.loadAirports(inputStream);
-                    inputStream = new FileInputStream(file);
-                    List<Obstacle> obstacles = xmlFileLoader.loadObstacles(inputStream);
-                    List<Airport> airportsToAdd = new ArrayList<>();
-                    List<Obstacle> obstaclesToAdd = new ArrayList<>();
-                    for (Airport airport : airports){
-                        airportsToAdd.add(airport);
-                        for (Airport airport1 : airportList){
-                            if (airport1.getName().equals(airport.getName())){
-                                Alert alert = new Alert(Alert.AlertType.ERROR);
-                                alert.setTitle("Warning");
-                                alert.setHeaderText("Airport " + airport1.getName() + " already exists.");
-                                alert.setContentText("The new imported airport is discarded.");
-                                alert.showAndWait();
-                                airportsToAdd.remove(airport);
-                                break;
+
+            // Check if the user has permission
+            if (currentUser.getPermissionLevel().equals("Guest")){
+                Alert noImport = new Alert(Alert.AlertType.ERROR);
+                noImport.setTitle("Error");
+                noImport.setHeaderText("Client doesn't have permission for this operation");
+                noImport.setContentText("Please log in");
+                noImport.showAndWait();
+
+            }
+            else {
+
+
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Open XML File");
+                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+                File file = fileChooser.showOpenDialog(null);
+                if (file != null) {
+                    try {
+                        System.out.println("File selected: " + file.getName());
+                        FileInputStream inputStream = new FileInputStream(file);
+                        List<Airport> airports = xmlFileLoader.loadAirports(inputStream);
+                        inputStream = new FileInputStream(file);
+                        List<Obstacle> obstacles = xmlFileLoader.loadObstacles(inputStream);
+                        List<Airport> airportsToAdd = new ArrayList<>();
+                        List<Obstacle> obstaclesToAdd = new ArrayList<>();
+                        for (Airport airport : airports) {
+                            airportsToAdd.add(airport);
+                            for (Airport airport1 : airportList) {
+                                if (airport1.getName().equals(airport.getName())) {
+                                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                                    alert.setTitle("Warning");
+                                    alert.setHeaderText("Airport " + airport1.getName() + " already exists.");
+                                    alert.setContentText("The new imported airport is discarded.");
+                                    alert.showAndWait();
+                                    airportsToAdd.remove(airport);
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    for (Obstacle obstacle : obstacles){
-                        obstaclesToAdd.add(obstacle);
-                        for (Obstacle obstacle1 : obstacleList){
-                            if (obstacle1.getName().equals(obstacle.getName())){
-                                Alert alert = new Alert(Alert.AlertType.ERROR);
-                                alert.setTitle("Warning");
-                                alert.setHeaderText("Obstacle " + obstacle1.getName() + " already exists.");
-                                alert.setContentText("Please use the pre-defined obstacle");
-                                alert.showAndWait();
-                                obstaclesToAdd.remove(obstacle);
-                                break;
+                        for (Obstacle obstacle : obstacles) {
+                            obstaclesToAdd.add(obstacle);
+                            for (Obstacle obstacle1 : obstacleList) {
+                                if (obstacle1.getName().equals(obstacle.getName())) {
+                                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                                    alert.setTitle("Warning");
+                                    alert.setHeaderText("Obstacle " + obstacle1.getName() + " already exists.");
+                                    alert.setContentText("Please use the pre-defined obstacle");
+                                    alert.showAndWait();
+                                    obstaclesToAdd.remove(obstacle);
+                                    break;
+                                }
                             }
                         }
+
+                        // Add the new airports and obstacles
+                        this.airportList.addAll(airportsToAdd);
+                        this.obstacleList.addAll(obstaclesToAdd);
+
+                        notificationMessage.set("Successfully Imported");
+                        FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(3000), notificationLabel);
+                        ft.setFromValue(1.0);
+                        ft.setToValue(0.0);
+                        ft.play();
+
+
+                    } catch (FileNotFoundException ex) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("An error occurred while reading the file.");
+                        alert.setContentText("Please try again.");
+                        alert.showAndWait();
+                        ex.printStackTrace();
                     }
 
-                    // Add the new airports and obstacles
-                    this.airportList.addAll(airportsToAdd);
-                    this.obstacleList.addAll(obstaclesToAdd);
-
-                    notificationMessage.set("Successfully Imported");
-                    FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(3000), notificationLabel);
-                    ft.setFromValue(1.0);
-                    ft.setToValue(0.0);
-                    ft.play();
-
-
-
-
-                } catch (FileNotFoundException ex) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error");
-                    alert.setHeaderText("An error occurred while reading the file.");
-                    alert.setContentText("Please try again.");
-                    alert.showAndWait();
-                    ex.printStackTrace();
+                } else {
+                    System.out.println("No file selected.");
                 }
-
-            } else {
-                System.out.println("No file selected.");
             }
         });
 
@@ -551,7 +563,7 @@ public class ViewScene extends BaseScene{
 
         // Create Log out button
         Button logoutButton = new Button("Log out");
-        //logoutButton.setOnAction(e -> homeWindow.startLogin());
+        logoutButton.setOnAction(e -> homeWindow.startLogIn());
         logoutButton.getStyleClass().add("logout-button");
 
 
