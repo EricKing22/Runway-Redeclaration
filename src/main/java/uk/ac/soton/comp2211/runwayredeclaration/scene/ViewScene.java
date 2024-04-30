@@ -79,6 +79,7 @@ public class ViewScene extends BaseScene{
         for (Airport airport : airportList){
             if (airport.getName().equals(currentUser.getWorkingAirport())){
                 currentAirport = airport;
+                currentRunway = airport.getRunways().get(0);
             }
         }
 
@@ -2251,7 +2252,6 @@ public class ViewScene extends BaseScene{
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF files", "*.pdf"));
         File file = fileChooser.showSaveDialog(null);
 
-        //TODO checks
         if (file != null) {
 
             PDDocument document = new PDDocument();
@@ -2266,10 +2266,33 @@ public class ViewScene extends BaseScene{
             float imageHeight = pdImage.getHeight() * 0.38f; // Adjust the scale factor as needed
             contentStream.drawImage(pdImage, 50f, 450f, imageWidth, imageHeight);
 
-            contentStream.setFont(PDType1Font.TIMES_ROMAN, 12);
             contentStream.beginText();
             contentStream.setLeading(14.5f);
             contentStream.newLineAtOffset(100, 700);
+
+            if (firstDirectionButton.isSelected()) {
+                contentStream.showText(RunwayCalculator.breakdownTORA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+            } else if (secondDirectionButton.isSelected()) {
+                contentStream.showText(RunwayCalculator.breakdownTORA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+            }
+            contentStream.newLine();
+            if (firstDirectionButton.isSelected()) {
+                contentStream.showText(RunwayCalculator.breakdownTODA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+            } else if (secondDirectionButton.isSelected()) {
+                contentStream.showText(RunwayCalculator.breakdownTODA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+            }
+            contentStream.newLine();
+            if (firstDirectionButton.isSelected()) {
+                contentStream.showText(RunwayCalculator.breakdownASDA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+            } else if (secondDirectionButton.isSelected()) {
+                contentStream.showText(RunwayCalculator.breakdownASDA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+            }
+            contentStream.newLine();
+            if (firstDirectionButton.isSelected()) {
+                contentStream.showText(RunwayCalculator.breakdownLDA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+            } else if (secondDirectionButton.isSelected()) {
+                contentStream.showText(RunwayCalculator.breakdownLDA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+            }
             contentStream.endText();
             contentStream.close();
 
