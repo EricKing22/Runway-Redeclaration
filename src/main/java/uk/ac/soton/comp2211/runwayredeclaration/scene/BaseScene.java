@@ -191,19 +191,11 @@ public abstract class BaseScene {
         // Load Obstacles
         this.obstacleList = xmlFileLoader.loadObstacles(obstacle_file);
 
-
         currentAirport = airportList.get(0);
         currentRunway = currentAirport.getRunways().get(0);
 
 
-        subRunway1 = new SubRunway(currentRunway.getSubRunways().get(0));
-        subRunway2 = new SubRunway(currentRunway.getSubRunways().get(1));
 
-        stopWayLength1.bind(subRunway1.getStopwayLength());
-        stopWayLength2.bind(subRunway2.getStopwayLength());
-
-        clearWayLength1.bind(subRunway1.getClearwayLength());
-        clearWayLength2.bind(subRunway2.getClearwayLength());
 
 
         // Set the runway length
