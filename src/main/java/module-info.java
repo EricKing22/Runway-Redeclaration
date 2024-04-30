@@ -5,6 +5,9 @@ module uk.ac.soton.comp2211.runwayredeclaration {
     requires java.desktop;
     requires java.sql;
     requires javafx.media;
+    requires pdfbox;
+    requires javafx.swing;
+
 
 
     opens uk.ac.soton.comp2211.runwayredeclaration to javafx.fxml;

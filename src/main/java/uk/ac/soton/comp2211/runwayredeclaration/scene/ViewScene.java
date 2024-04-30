@@ -3,17 +3,24 @@ package uk.ac.soton.comp2211.runwayredeclaration.scene;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.*;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import uk.ac.soton.comp2211.runwayredeclaration.Calculator.RunwayCalculator;
 import uk.ac.soton.comp2211.runwayredeclaration.Component.*;
 import uk.ac.soton.comp2211.runwayredeclaration.ui.HomePane;
@@ -25,6 +32,7 @@ import javafx.scene.text.Text;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
+import javax.imageio.ImageIO;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +79,6 @@ public class ViewScene extends BaseScene{
         for (Airport airport : airportList){
             if (airport.getName().equals(currentUser.getWorkingAirport())){
                 currentAirport = airport;
-                currentRunway = currentAirport.getRunways().get(0);
             }
         }
 
@@ -249,7 +256,8 @@ public class ViewScene extends BaseScene{
         MenuItem exportReport = new MenuItem("Export Report");
         MenuItem importXML = new MenuItem("Import XML");
         MenuItem exportXML = new MenuItem("Export XML");
-        fileMenu.getItems().addAll(importXML, exportXML, exportReport);
+        MenuItem exportPDF = new MenuItem("Export PDF");
+        fileMenu.getItems().addAll(importXML, exportXML, exportReport, exportPDF);
 
         // Import XML
         importXML.setOnAction(e -> {
@@ -457,6 +465,18 @@ public class ViewScene extends BaseScene{
             }
 
 
+        });
+
+        exportPDF.setOnAction(e -> {
+            try{
+                exportPDF();;
+            }catch (Exception exportPDFfailed){
+                Alert failedExportPDF = new Alert(Alert.AlertType.ERROR);
+                failedExportPDF.setTitle("Error");
+                failedExportPDF.setHeaderText("An error occurred while exporting the PDF");
+                failedExportPDF.setContentText("Please try again");
+                failedExportPDF.showAndWait();
+            }
         });
 
         // View Menu
@@ -2202,6 +2222,65 @@ public class ViewScene extends BaseScene{
                 gradeAreaImageView.setFitWidth(displayRunwayLength.getValue() + 2 * displayStopWayLength.getValue() + 50);
                 topViewPane.getChildren().set(0, gradeAreaImageView);
             });
+        }
+    }
+
+    private void exportPDF() throws IOException {
+
+        // Temporary directory
+        String tempDir = System.getProperty("java.io.tmpdir");
+
+        // Define the file path for the image in the temporary directory
+        String imagePath = tempDir + "tempChart.png";
+
+        WritableImage image = mainPane.snapshot(null, null);
+
+        File imageFile = new File(imagePath);
+        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", imageFile);
+
+        notificationMessage.set("Image is Saved");
+        FadeTransition fd = new FadeTransition(Duration.millis(3000), notificationLabel);
+        fd.setFromValue(1.0);
+        fd.setToValue(0.0);
+        fd.play();
+
+
+        //PDF creating
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Report as PDF");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF files", "*.pdf"));
+        File file = fileChooser.showSaveDialog(null);
+
+        //TODO checks
+        if (file != null) {
+
+            PDDocument document = new PDDocument();
+            PDPage page = new PDPage();
+            PDImageXObject pdImage = PDImageXObject.createFromFileByContent(imageFile, document);
+
+            document.addPage(page);
+
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+
+            float imageWidth = pdImage.getWidth() * 0.38f; // Adjust the scale factor as needed
+            float imageHeight = pdImage.getHeight() * 0.38f; // Adjust the scale factor as needed
+            contentStream.drawImage(pdImage, 50f, 450f, imageWidth, imageHeight);
+
+            contentStream.setFont(PDType1Font.TIMES_ROMAN, 12);
+            contentStream.beginText();
+            contentStream.setLeading(14.5f);
+            contentStream.newLineAtOffset(100, 700);
+            contentStream.endText();
+            contentStream.close();
+
+            document.save(file);
+            document.close();
+
+            notificationMessage.set("Pdf has been created");
+            FadeTransition fd2 = new FadeTransition(Duration.millis(3000), notificationLabel);
+            fd2.setFromValue(1.0);
+            fd2.setToValue(0.0);
+            fd2.play();
         }
     }
 

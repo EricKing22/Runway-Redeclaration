@@ -286,6 +286,7 @@ public class LogInScene extends BaseScene{
                             throw new Exception();
                         }
                     }
+                    System.out.println("!!!!"+airportChoiceBox.getValue());
                     handleCreatingAccount(newUsernameTextField.getText(), newPasswordField.getText(), roleChoiceBox.getValue(), airportChoiceBox.getValue());
                 } catch (Exception ex) {
                     Alert emptyFields = new Alert(Alert.AlertType.ERROR);
