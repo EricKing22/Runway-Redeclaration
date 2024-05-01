@@ -681,54 +681,6 @@ public abstract class BaseScene {
 
         });
 
-//        comboAirports.valueProperty().addListener(new ChangeListener<String>() {
-//            @Override
-//            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-//                for (Airport airport : airportList){
-//                    if (airport.getName().equals(newValue)){
-//                        clearAllButtons();
-//                        obstacleBox.getChildren().clear();
-//                        planeBox.visibleProperty().set(false);
-//                        planeBox2.visibleProperty().set(false);
-//
-//                        displayBorderToObstacle.set(0);
-//
-//                        // Hide all indicators
-//                        indicatorsSubRunway1.getChildren().clear();
-//                        indicatorsSubRunway2.getChildren().clear();
-//
-//                        currentAirport = airport;
-//                        currentRunway = currentAirport.getRunways().get(0);
-//
-//                        comboRunways.getItems().clear();
-//                        for (Runway runway : currentAirport.getRunways()){
-//                            comboRunways.getItems().add(runway.getName());
-//                        }
-//                        comboRunways.setValue(currentRunway.getName());
-//
-//                        subRunway1.update(currentRunway.getSubRunways().get(0));
-//                        subRunway2.update(currentRunway.getSubRunways().get(1));
-//
-//                        stopwayLengthDisplay.setText("(Select designator to show)");
-//                        clearwayLengthDisplay.setText("(Select designator to show)");
-//                        thresholdLengthDisplay.setText("(Select designator to show)");
-//
-//                        displayBorderToTORA.set(displayBorderToRunway.get());
-//                        displayBorderToTODA.set(displayBorderToRunway.get());
-//                        displayBorderToASDA.set(displayBorderToRunway.get());
-//                        displayBorderToLDA.set(displayBorderToRunway.get());
-//
-//
-//
-//
-//                    }
-//                }
-//
-//
-//            }
-//        });
-
-
 
 
         airportGrid.addRow(0, new Label("Airport:"), comboAirports);

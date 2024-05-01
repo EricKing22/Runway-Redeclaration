@@ -229,6 +229,11 @@ public class ViewScene extends BaseScene{
 
         notificationMessage.addListener((observable, oldValue, newValue) -> {
             notificationLabel.setText(newValue);
+            FadeTransition fadeTransition = new FadeTransition(Duration.millis(3000), notificationLabel);
+            fadeTransition.setFromValue(1.0);
+            fadeTransition.setToValue(0.0);
+            fadeTransition.play();
+
         });
 
         VBox notificationBox = new VBox();
@@ -268,7 +273,7 @@ public class ViewScene extends BaseScene{
                 Alert noImport = new Alert(Alert.AlertType.ERROR);
                 noImport.setTitle("Error");
                 noImport.setHeaderText("Client doesn't have permission for this operation");
-                noImport.setContentText("Please log in");
+                noImport.setContentText("Please log in as an admin to import XML files.");
                 noImport.showAndWait();
 
             }
@@ -320,13 +325,12 @@ public class ViewScene extends BaseScene{
 
                         // Add the new airports and obstacles
                         this.airportList.addAll(airportsToAdd);
+                        comboAirports.getItems().addAll(airportsToAdd);
                         this.obstacleList.addAll(obstaclesToAdd);
+                        comboObstacles.getItems().addAll(obstaclesToAdd);
 
                         notificationMessage.set("Successfully Imported");
-                        FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(3000), notificationLabel);
-                        ft.setFromValue(1.0);
-                        ft.setToValue(0.0);
-                        ft.play();
+
 
 
                     } catch (FileNotFoundException ex) {
@@ -397,10 +401,7 @@ public class ViewScene extends BaseScene{
                     writer.write("</data>");
                     writer.close();
                     notificationMessage.set("Successfully Exported");
-                    FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(3000), notificationLabel);
-                    ft.setFromValue(1.0);
-                    ft.setToValue(0.0);
-                    ft.play();
+
                 } catch (IOException ex) {
                     System.out.println("An error occurred while writing to the file.");
                     Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -426,6 +427,39 @@ public class ViewScene extends BaseScene{
             if (file != null) {
                 try {
                     FileWriter writer = new FileWriter(file);
+                    writer.write("Username: " + currentUser.getUsername() + "\n");
+                    writer.write("Airport: " + currentAirport.getName() + "\n");
+                    writer.write("Runway: " + currentRunway.getName() + "\n");
+                    if (currentObstacle != null) {
+                        writer.write("Obstacle: " + currentObstacle.getName() + "\n\n");
+                    }
+
+                    writer.write("Runway Information: \n" );
+                    writer.write(subRunway1.getDesignator().getValue() + ": \n");
+                    writer.write("TORA: " + subRunway1.getTORA().getValue() + "\n");
+                    writer.write("TODA: " + subRunway1.getTODA().getValue() + "\n");
+                    writer.write("ASDA: " + subRunway1.getASDA().getValue() + "\n");
+                    writer.write("LDA: " + subRunway1.getLDA().getValue() + "\n");
+                    writer.write("Displaced Threshold: " + subRunway1.getDisplacedThreshold().getValue() + "\n");
+                    writer.write("Strip End Length: " + subRunway1.getStripEndLength().getValue() + "\n");
+                    writer.write("Blast Protection: " + subRunway1.getBlastProtection().getValue() + "\n");
+                    writer.write("RESA: " + subRunway1.getRESA().getValue() + "\n");
+                    writer.write("Clearway Length: " + subRunway1.getClearwayLength().getValue() + "\n");
+                    writer.write("Stopway Length: " + subRunway1.getStopwayLength().getValue() + "\n\n");
+                    writer.write(subRunway2.getDesignator().getValue() + ": \n");
+                    writer.write("TORA: " + subRunway2.getTORA().getValue() + "\n");
+                    writer.write("TODA: " + subRunway2.getTODA().getValue() + "\n");
+                    writer.write("ASDA: " + subRunway2.getASDA().getValue() + "\n");
+                    writer.write("LDA: " + subRunway2.getLDA().getValue() + "\n");
+                    writer.write("Displaced Threshold: " + subRunway2.getDisplacedThreshold().getValue() + "\n");
+                    writer.write("Strip End Length: " + subRunway2.getStripEndLength().getValue() + "\n");
+                    writer.write("Blast Protection: " + subRunway2.getBlastProtection().getValue() + "\n");
+                    writer.write("RESA: " + subRunway2.getRESA().getValue() + "\n");
+                    writer.write("Clearway Length: " + subRunway2.getClearwayLength().getValue() + "\n");
+                    writer.write("Stopway Length: " + subRunway2.getStopwayLength().getValue() + "\n\n");
+
+
+
                     if (firstDirectionButton.isSelected()) {
                         writer.write(RunwayCalculator.breakdownTORA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
                     } else if (secondDirectionButton.isSelected()) {
@@ -452,17 +486,19 @@ public class ViewScene extends BaseScene{
                     writer.close();
 
                     notificationMessage.set("Successfully Exported.");
-                    FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(3000), notificationLabel);
-                    ft.setFromValue(1.0);
-                    ft.setToValue(0.0);
-                    ft.play();
 
-                } catch (IOException ex) {
-                    System.out.println("An error occurred while writing to the file.");
-                    ex.printStackTrace();
+
+                } catch (Exception ex) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("An error occurred while writing to the file.");
+                    alert.setContentText("Please try again.");
+                    alert.showAndWait();
                 }
             } else {
-                System.out.println("Report saving cancelled.");
+                notificationMessage.set("Export Cancelled");
+
+
             }
 
 
@@ -495,10 +531,7 @@ public class ViewScene extends BaseScene{
 
         sideView.setOnAction(e -> {
             notificationMessage.set("Successfully switched to Side View");
-            FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(3000), notificationLabel);
-            ft.setFromValue(1.0);
-            ft.setToValue(0.0);
-            ft.play();
+
 
             currentView = "Side";
             bluePane.setTop(null);
@@ -526,10 +559,7 @@ public class ViewScene extends BaseScene{
 
         topView.setOnAction(e -> {
             notificationMessage.set("Successfully switched to Top View");
-            FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(3000), notificationLabel);
-            ft.setFromValue(1.0);
-            ft.setToValue(0.0);
-            ft.play();
+
 
             currentView = "Top";
             middleDisplayBox.getChildren().clear();
@@ -556,10 +586,7 @@ public class ViewScene extends BaseScene{
 
         simultaneous.setOnAction(e -> {
             notificationMessage.set("Successfully switched to Simultaneous");
-            FadeTransition ft = new FadeTransition(javafx.util.Duration.millis(3000), notificationLabel);
-            ft.setFromValue(1.0);
-            ft.setToValue(0.0);
-            ft.play();
+
 
             currentView = "Simultaneous";
             middleDisplayBox.getChildren().clear();
@@ -1869,10 +1896,6 @@ public class ViewScene extends BaseScene{
                 }
                 notificationMessage.set("Disable Indicators");
             }
-            FadeTransition fd = new FadeTransition(Duration.millis(3000), notificationLabel);
-            fd.setFromValue(1.0);
-            fd.setToValue(0.0);
-            fd.play();
 
         });
 
@@ -2259,11 +2282,6 @@ public class ViewScene extends BaseScene{
         ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", imageFile);
 
         notificationMessage.set("Image is Saved");
-        FadeTransition fd = new FadeTransition(Duration.millis(3000), notificationLabel);
-        fd.setFromValue(1.0);
-        fd.setToValue(0.0);
-        fd.play();
-
 
         //PDF creating
         FileChooser fileChooser = new FileChooser();
@@ -2271,7 +2289,6 @@ public class ViewScene extends BaseScene{
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF files", "*.pdf"));
         File file = fileChooser.showSaveDialog(null);
 
-        //TODO checks
         if (file != null) {
 
             PDDocument document = new PDDocument();
@@ -2365,10 +2382,7 @@ public class ViewScene extends BaseScene{
             document.close();
 
             notificationMessage.set("Pdf has been created");
-            FadeTransition fd2 = new FadeTransition(Duration.millis(3000), notificationLabel);
-            fd2.setFromValue(1.0);
-            fd2.setToValue(0.0);
-            fd2.play();
+
         }
     }
 
