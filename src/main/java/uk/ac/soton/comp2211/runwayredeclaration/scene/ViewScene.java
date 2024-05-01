@@ -2271,6 +2271,7 @@ public class ViewScene extends BaseScene{
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF files", "*.pdf"));
         File file = fileChooser.showSaveDialog(null);
 
+        //TODO checks
         if (file != null) {
 
             PDDocument document = new PDDocument();
@@ -2283,36 +2284,81 @@ public class ViewScene extends BaseScene{
 
             float imageWidth = pdImage.getWidth() * 0.38f; // Adjust the scale factor as needed
             float imageHeight = pdImage.getHeight() * 0.38f; // Adjust the scale factor as needed
-            contentStream.drawImage(pdImage, 50f, 450f, imageWidth, imageHeight);
+
+
 
             contentStream.beginText();
+            contentStream.newLineAtOffset(25, 700);
             contentStream.setLeading(14.5f);
-            contentStream.newLineAtOffset(100, 700);
+            contentStream.newLineAtOffset(0, -270); // Move the text further down on the page
+            contentStream.setFont(PDType1Font.TIMES_ROMAN, 9);
 
             if (firstDirectionButton.isSelected()) {
-                contentStream.showText(RunwayCalculator.breakdownTORA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                String[] TORA = (RunwayCalculator.breakdownTORA(subRunway1, currentObstacle, subRunway1.getObstacleDistance())).split("\n");
+                for (String line : TORA) {
+                    contentStream.showText(line);
+                    contentStream.newLine();
+                }
             } else if (secondDirectionButton.isSelected()) {
-                contentStream.showText(RunwayCalculator.breakdownTORA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                String[] TORA = (RunwayCalculator.breakdownTORA(subRunway2, currentObstacle, subRunway2.getObstacleDistance())).split("\n");
+                for (String line : TORA) {
+                    contentStream.showText(line);
+                    contentStream.newLine();
+                }
             }
-            contentStream.newLine();
+
+            contentStream.newLineAtOffset(0, -40); // Move the text further down on the page
+
             if (firstDirectionButton.isSelected()) {
-                contentStream.showText(RunwayCalculator.breakdownTODA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                String[] TODA = (RunwayCalculator.breakdownTODA(subRunway1, currentObstacle, subRunway1.getObstacleDistance())).split("\n");
+                for (String line : TODA) {
+                    contentStream.showText(line);
+                    contentStream.newLine();
+                }
             } else if (secondDirectionButton.isSelected()) {
-                contentStream.showText(RunwayCalculator.breakdownTODA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                String[] TODA = (RunwayCalculator.breakdownTODA(subRunway2, currentObstacle, subRunway2.getObstacleDistance())).split("\n");
+                for (String line : TODA) {
+                    contentStream.showText(line);
+                    contentStream.newLine();
+                }
             }
-            contentStream.newLine();
+
+            contentStream.newLineAtOffset(310, 242); // Move the text further down on the page
+
             if (firstDirectionButton.isSelected()) {
-                contentStream.showText(RunwayCalculator.breakdownASDA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                String[] ASDA = (RunwayCalculator.breakdownASDA(subRunway1, currentObstacle, subRunway1.getObstacleDistance())).split("\n");
+                for (String line : ASDA) {
+                    contentStream.showText(line);
+                    contentStream.newLine();
+                }
             } else if (secondDirectionButton.isSelected()) {
-                contentStream.showText(RunwayCalculator.breakdownASDA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                String[] ASDA = (RunwayCalculator.breakdownASDA(subRunway2, currentObstacle, subRunway2.getObstacleDistance())).split("\n");
+                for (String line : ASDA) {
+                    contentStream.showText(line);
+                    contentStream.newLine();
+                }
             }
-            contentStream.newLine();
+
+            contentStream.newLineAtOffset(0, -35); // Move the text further down on the page
+
             if (firstDirectionButton.isSelected()) {
-                contentStream.showText(RunwayCalculator.breakdownLDA(subRunway1, currentObstacle, subRunway1.getObstacleDistance()));
+                String[] LDA = (RunwayCalculator.breakdownLDA(subRunway1, currentObstacle, subRunway1.getObstacleDistance())).split("\n");
+                for (String line : LDA) {
+                    contentStream.showText(line);
+                    contentStream.newLine();
+                }
             } else if (secondDirectionButton.isSelected()) {
-                contentStream.showText(RunwayCalculator.breakdownLDA(subRunway2, currentObstacle, subRunway2.getObstacleDistance()));
+                String[] LDA = (RunwayCalculator.breakdownLDA(subRunway2, currentObstacle, subRunway2.getObstacleDistance())).split("\n");
+                for (String line : LDA) {
+                    contentStream.showText(line);
+                    contentStream.newLine();
+                }
             }
+
+
+
             contentStream.endText();
+            contentStream.drawImage(pdImage, 50f, 450f, imageWidth, imageHeight);
             contentStream.close();
 
             document.save(file);
