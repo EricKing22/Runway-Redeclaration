@@ -187,7 +187,7 @@ public class ViewScene extends BaseScene{
      */
     public StackPane makeDirectionPane(){
         directionPane = new StackPane();
-        directionPane.setMaxHeight(300);
+        directionPane.setMaxHeight(100);
         StackPane.setAlignment(directionPane, Pos.TOP_CENTER);
 
         BorderPane directionPane = new BorderPane();
@@ -1133,8 +1133,27 @@ public class ViewScene extends BaseScene{
      * @return StackPane Middle display box
      */
     public StackPane makeSideViewMiddleDisplayBox(){
+
+
         StackPane displayStackPane = new StackPane();
         BorderPane displayBorderPane = new BorderPane();
+
+        ScrollPane scrollPane = new ScrollPane(displayStackPane);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPannable(true);
+
+        StackPane returnPane = new StackPane(scrollPane);
+        returnPane.setOnScroll(e -> {
+            double zoomFactor = 1.05;
+            double deltaY = e.getDeltaY();
+            if (deltaY < 0) {
+                zoomFactor = 1 / zoomFactor;
+            }
+            displayStackPane.setScaleX(displayStackPane.getScaleX() * zoomFactor);
+            displayStackPane.setScaleY(displayStackPane.getScaleY() * zoomFactor);
+            e.consume();
+        });
 
         displayStackPane.getChildren().add(displayBorderPane);
 
@@ -1310,7 +1329,7 @@ public class ViewScene extends BaseScene{
 
 
 
-        return displayStackPane;
+        return returnPane;
     }
 
     /**

@@ -71,7 +71,7 @@ public class RunwayCalculator {
         // then the operation is taking off away from the obstacle
         if (distance < originalTORA / 2){
             tora = calculateTORA(subRunway, obstacle, distance);
-            breakdown = "The Object is located closer to the threshold\n"
+            breakdown = "The object is located closer to the threshold\n"
                     + "Because the distance < half the original TORA\n"
                     + "(" + distance + "<" + distance +"/2)\n"
                     + "(" + distance + "<" + (distance/2) + ")\n"
@@ -88,7 +88,7 @@ public class RunwayCalculator {
             // Check if the RESA is greater than the slope calculation
             if (RESA < slopCalculation){ // if the RESA is smaller than the slop calculation
                 tora = distance + displacedThreshold - slopCalculation - stripEnd;
-                breakdown = "The Object is located closer to the end of the runway\n"
+                breakdown = "The object is located closer to the end of the runway\n"
                         + "Because the distance > half the original TORA\n"
                         + "(" + distance + ">" + distance +"/2)\n"
                         + "(" + distance + ">" + (distance/2) + ")\n"
@@ -103,7 +103,7 @@ public class RunwayCalculator {
             }
             else{ // if the RESA is greater than the slop calculation
                 tora = distance + displacedThreshold - RESA - stripEnd;
-                breakdown = "The Object is located closer to the end of the runway\n"
+                breakdown = "The object is located closer to the end of the runway\n"
                         + "Because the distance > half the original TORA\n"
                         + "(" + distance + ">" + distance +"/2)\n"
                         + "(" + distance + ">" + (distance/2) + ")\n"
@@ -158,7 +158,7 @@ public class RunwayCalculator {
 
         if (distance < original_TORA / 2) {
             toda = RunwayCalculator.calculateTORA(subRunway, obstacle, distance) + clearwayLength;
-            breakdown = "The Object is located closer to the end of the runway\n"
+            breakdown = "The object is located closer to the end of the runway\n"
                     + "Because the distance > half the original TORA\n"
                     + "(" + distance + ">" + distance +"/2)\n"
                     + "(" + distance + ">" + (distance/2) + ")\n"
@@ -167,7 +167,7 @@ public class RunwayCalculator {
                     + "TODA = " + toda;
         } else {
             toda = RunwayCalculator.calculateTORA(subRunway, obstacle, distance);
-            breakdown = "The Object is located closer to the end of the runway\n"
+            breakdown = "The object is located closer to the end of the runway\n"
                     + "Because the distance > half the original TORA\n"
                     + "(" + distance + ">" + distance +"/2)\n"
                     + "(" + distance + ">" + (distance/2) + ")\n"
@@ -213,7 +213,7 @@ public class RunwayCalculator {
 
         if (distance < original_TORA / 2) {
             asda = RunwayCalculator.calculateTORA(subRunway, obstacle, distance) + stopwayLength;
-            breakdown = "The Object is located closer to the end of the runway\n"
+            breakdown = "The object is located closer to the end of the runway\n"
                     + "Because the distance > half the original TORA\n"
                     + "(" + distance + ">" + distance +"/2)\n"
                     + "(" + distance + ">" + (distance/2) + ")\n"
@@ -222,7 +222,7 @@ public class RunwayCalculator {
                     + "ASDA = " + asda;
         } else {
             asda = RunwayCalculator.calculateTORA(subRunway, obstacle, distance);
-            breakdown = "The Object is located closer to the end of the runway\n"
+            breakdown = "The object is located closer to the end of the runway\n"
                     + "Because the distance > half the original TORA\n"
                     + "(" + distance + ">" + distance +"/2)\n"
                     + "(" + distance + ">" + (distance/2) + ")\n"
