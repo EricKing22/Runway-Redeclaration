@@ -1,0 +1,68 @@
+<data>
+
+
+    <airports>
+        <airport>
+            <name>Edinburgh (EDI)</name>
+            <runway>
+                <name>06/24</name>
+                <subRunway>
+                    <tora>2556</tora>
+                    <toda>2616</toda>
+                    <asda>2616</asda>
+                    <lda>2344</lda>
+                    <designator>06</designator>
+                    <displacedThreshold>0</displacedThreshold>
+                    <RESA>240</RESA>
+                    <stripEndLength>60</stripEndLength>
+                    <blastProtection>300</blastProtection>
+                </subRunway>
+                <subRunway>
+                    <tora>2554</tora>
+                    <toda>3002</toda>
+                    <asda>2614</asda>
+                    <lda>2347</lda>
+                    <designator>24</designator>
+                    <displacedThreshold>0</displacedThreshold>
+                    <RESA>240</RESA>
+                    <stripEndLength>60</stripEndLength>
+                    <blastProtection>300</blastProtection>
+                </subRunway>
+            </runway>
+        </airport>
+        
+        <airport>
+            <name>Bristol (BRS)</name>
+            <runway>
+                <name>09/27</name>
+                <subRunway>
+                    <tora>2011</tora>
+                    <toda>2133</toda>
+                    <asda>2011</asda>
+                    <lda>2011</lda>
+                    <designator>09</designator>
+                    <displacedThreshold>0</displacedThreshold>
+                    <RESA>240</RESA>
+                    <stripEndLength>60</stripEndLength>
+                    <blastProtection>300</blastProtection>
+                </subRunway>
+                <subRunway>
+                    <tora>2011</tora>
+                    <toda>3016</toda>
+                    <asda>2011</asda>
+                    <lda>1882</lda>
+                    <designator>27</designator>
+                    <displacedThreshold>0</displacedThreshold>
+                    <RESA>240</RESA>
+                    <stripEndLength>60</stripEndLength>
+                    <blastProtection>300</blastProtection>
+                </subRunway>
+            </runway>
+        </airport>
+
+
+
+        
+
+    </airports>
+</data>
