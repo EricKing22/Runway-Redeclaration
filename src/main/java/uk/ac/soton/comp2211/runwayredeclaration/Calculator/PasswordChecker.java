@@ -140,6 +140,5 @@ public class PasswordChecker {
 
   }
 
-// very week 50
 
 }
